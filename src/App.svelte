@@ -1,19 +1,28 @@
 <script lang="ts">
 	import Pane from "./components/Pane.svelte";
-	import type { TreeNode } from "./models/treeNode";
-	export let model: TreeNode;
+	import { SplitType } from "./models/splitType";
+	import { GridService } from "./services/gridService";
+	import { PaneService } from "./services/paneService";
+	const paneService = new PaneService();
+	const gridService = new GridService(paneService);
+
+	$: update = {};
 </script>
 
 <main>
-	<Pane />
+	{#each paneService.panes as pane}
+		<Pane
+			command={pane.content}
+			style={gridService.getGridStylesForPane(pane)}
+			on:splitHorizontal={() => {paneService.splitPane(pane, SplitType.Horizontal); update ={}}}
+			on:splitVertical={() => {paneService.splitPane(pane, SplitType.Vertical); update = {}}} />
+	{/each}
 </main>
 
 <style>
 	main {
-		text-align: center;
-		padding: 1em;
 		max-width: 240px;
-		margin: 0 auto;
+		display: grid;
 	}
 
 	@media (min-width: 640px) {

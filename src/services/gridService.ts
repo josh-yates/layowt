@@ -10,17 +10,20 @@ export class GridService {
         const columnCount = this.gridColumns;
         const rowCount = this.gridRows;
 
+        const columnSpan = columnCount / Math.pow(2, pane.rightDepth);
+        const rowSpan = rowCount / Math.pow(2, pane.downDepth);
+        
         return `
-            grid-column: ${TreeNodeService.getIndex(columnCount, pane, SplitType.Vertical)};
-            grid-row: ${TreeNodeService.getIndex(rowCount, pane, SplitType.Horizontal)};
+            grid-column: ${TreeNodeService.getIndex(columnCount, pane, SplitType.Vertical)} / span ${columnSpan};
+            grid-row: ${TreeNodeService.getIndex(rowCount, pane, SplitType.Horizontal)} / span ${rowSpan};
         `;
     }
 
     public get gridColumns(): number {
-        return this._paneService.panes.sort((a, b) => b.rightDepth - a.rightDepth)[0].rightDepth;
+        return Math.pow(2, this._paneService.panes.sort((a, b) => b.verticalSplits - a.verticalSplits)[0].verticalSplits);
     }
 
     public get gridRows(): number {
-        return this._paneService.panes.sort((a, b) => b.downDepth - a.downDepth)[0].downDepth;
+        return Math.pow(2, this._paneService.panes.sort((a, b) => b.horizontalSplits - a.horizontalSplits)[0].horizontalSplits);
     }
 }

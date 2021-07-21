@@ -68,6 +68,6 @@ export namespace TreeNodeService {
             summation += Math.pow(2, i);
         }
 
-        return (maxSize / Math.pow(2, steps)) * summation;
+        return 1 + ((maxSize / Math.pow(2, steps)) * summation);
     }
 }

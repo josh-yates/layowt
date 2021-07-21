@@ -1,12 +1,13 @@
 <script lang="ts">
     import { createEventDispatcher } from "svelte";
-    export let command: string;command
+    export let command: string;
+    export let style: string;
     const dispatch = createEventDispatcher();
     const splitVertical = () => dispatch('splitVertical');
     const splitHorizontal = () => dispatch('splitHorizontal');
 </script>
 
-<div class="pane">
+<div class="pane" style="{style}">
     <div class="command-holder">
         <input bind:value="{command}" />
     </div>
