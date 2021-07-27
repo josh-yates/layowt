@@ -3,16 +3,18 @@
     export let command: string;
     export let style: string;
     const dispatch = createEventDispatcher();
-    const splitVertical = () => dispatch('splitVertical');
-    const splitHorizontal = () => dispatch('splitHorizontal');
+    const splitVertical = () => dispatch("splitVertical");
+    const splitHorizontal = () => dispatch("splitHorizontal");
 </script>
 
-<div class="pane" style="{style}">
+<div class="pane" {style}>
     <div class="command-holder">
-        <input bind:value="{command}" />
+        <input bind:value={command} />
     </div>
-    <button class="vertical" on:click="{splitVertical}">Split vertical</button>
-    <button class="horizontal" on:click="{splitHorizontal}">Split horizontal</button>
+    <button class="vertical" on:click={splitVertical}>Split vertical</button>
+    <button class="horizontal" on:click={splitHorizontal}
+        >Split horizontal</button
+    >
 </div>
 
 <style>
@@ -21,6 +23,8 @@
         display: grid;
         grid-template-columns: auto var(--button-thickness);
         grid-template-rows: auto var(--button-thickness);
+        border: 2px solid black;
+        overflow: auto;
     }
 
     .command-holder {

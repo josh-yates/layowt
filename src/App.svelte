@@ -9,13 +9,20 @@
 	$: update = {};
 </script>
 
-<main>
+<main style={gridService.getGridStylesForContainer(update)}>
 	{#each paneService.panes as pane}
 		<Pane
 			command={pane.content}
-			style={gridService.getGridStylesForPane(pane)}
-			on:splitHorizontal={() => {paneService.splitPane(pane, SplitType.Horizontal); update ={}}}
-			on:splitVertical={() => {paneService.splitPane(pane, SplitType.Vertical); update = {}}} />
+			style={gridService.getGridStylesForPane(pane, update)}
+			on:splitHorizontal={() => {
+				paneService.splitPane(pane, SplitType.Horizontal);
+				update = {};
+			}}
+			on:splitVertical={() => {
+				paneService.splitPane(pane, SplitType.Vertical);
+				update = {};
+			}}
+		/>
 	{/each}
 </main>
 
