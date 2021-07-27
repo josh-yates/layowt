@@ -1,10 +1,12 @@
 <script lang="ts">
 	import Pane from "./components/Pane.svelte";
 	import { SplitType } from "./models/splitType";
+import { CommandService } from "./services/commandService";
 	import { GridService } from "./services/gridService";
 	import { PaneService } from "./services/paneService";
 	const paneService = new PaneService();
 	const gridService = new GridService(paneService);
+	const commandService = new CommandService(paneService);
 
 	$: update = {};
 </script>
@@ -12,8 +14,9 @@
 <main style={gridService.getGridStylesForContainer(update)}>
 	{#each paneService.panes as pane}
 		<Pane
-			command={pane.content}
+			pane={pane}
 			style={gridService.getGridStylesForPane(pane, update)}
+			on:input={() => update = {}}
 			on:splitHorizontal={() => {
 				paneService.splitPane(pane, SplitType.Horizontal);
 				update = {};
@@ -25,6 +28,7 @@
 		/>
 	{/each}
 </main>
+<p>{commandService.getCommandText(update)}</p>
 
 <style>
 	main {
