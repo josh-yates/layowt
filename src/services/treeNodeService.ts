@@ -1,55 +1,36 @@
 import { SplitType } from "../models/splitType";
 import { TreeNode } from "../models/treeNode";
 
-export namespace TreeNodeService {
-    export function split(node: TreeNode, split: SplitType): [TreeNode, TreeNode] {
-        const valid = (node.split === null || node.split === undefined) &&
-            !node.child1 &&
-            !node.child2;
+export class TreeNodeService {
+    public readonly nodes: TreeNode[] = [new TreeNode()]
 
-        if (!valid) throw 'Invalid node';
+    public split(node: TreeNode, split: SplitType): void {
+        const newChild = new TreeNode();
+        newChild.parentSplit = split;
+        newChild.parent = node;
+        node.children.push(newChild);
 
-        const child1 = new TreeNode();
-        const child2 = new TreeNode();
-
-        child1.parent = node;
-        child1.content = node.content;
-        child2.parent = node;
-
-        node.content = undefined;
-        node.split = split;
-        node.child1 = child1;
-        node.child2 = child2;
-
-        return [child1, child2];
+        this.nodes.push(newChild);
     }
 
-    export function remove(node: TreeNode): TreeNode {
-        const valid = (node.split === null || node.split === undefined) &&
-            !node.child1 &&
-            !node.child2
-        node.parent &&
-            ((node === node.parent.child1 && node.parent.child2) ||
-                (node === node.parent.child2 && node.parent.child1));
+    public remove(node: TreeNode): void {
+        const lastChild = node.children[node.children.length - 1];
+        const indexInParent = node.parent ? node.parent.children.indexOf(node) : -1;
 
-        if (!valid || !node.parent) throw 'Invalid node';
+        if (lastChild) {
+            if (indexInParent >= 0) {
+                node.parent.children[indexInParent] = lastChild;
+            }
 
-        if (node === node.parent.child1) {
-            node.parent.split = undefined;
-            node.parent.child1 = undefined;
-            node.parent.content = node.parent.child2?.content;
-            node.parent.child2 = undefined;
-        } else if (node === node.parent.child2) {
-            node.parent.split = undefined;
-            node.parent.child2 = undefined;
-            node.parent.content = node.parent.child1?.content;
-            node.parent.child1 = undefined;
+            lastChild.children = [...node.children.filter(c => c !== lastChild), ...lastChild.children];
         }
 
-        return node.parent;
+        if (indexInParent >= 0) {
+            node.parent.children.splice(indexInParent, 1);
+        }
     }
 
-    export function getIndex(maxSize: number, node: TreeNode, split: SplitType): number {
+    public getIndex(maxSize: number, node: TreeNode, split: SplitType): number {
         let summation = 0;
         let steps = 0;
 

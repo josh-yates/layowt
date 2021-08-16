@@ -1,10 +1,9 @@
 import { SplitType } from '../models/splitType';
 import type { TreeNode } from '../models/treeNode';
-import type { PaneService } from './paneService';
-import { TreeNodeService } from './treeNodeService';
+import type { TreeNodeService } from './treeNodeService';
 
 export class GridService {
-    constructor(private readonly _paneService: PaneService) { }
+    constructor(private readonly _treeNodeService: TreeNodeService) { }
 
     public getGridStylesForPane(pane: TreeNode, update: any): string {
         const columnCount = this.gridColumns;
@@ -27,11 +26,11 @@ export class GridService {
     }
 
     public get gridColumns(): number {
-        return Math.pow(2, this._paneService.panes.sort((a, b) => b.verticalSplits - a.verticalSplits)[0].verticalSplits);
+        return Math.pow(2, this._treeNodeService.nodes.sort((a, b) => b.rightDepth - a.rightDepth)[0].rightDepth);
     }
 
     public get gridRows(): number {
-        return Math.pow(2, this._paneService.panes.sort((a, b) => b.horizontalSplits - a.horizontalSplits)[0].horizontalSplits);
+        return Math.pow(2, this._treeNodeService.nodes.sort((a, b) => b.downDepth - a.downDepth)[0].downDepth);
     }
 
     public getIndex(pane: TreeNode, splitType: SplitType): number {
