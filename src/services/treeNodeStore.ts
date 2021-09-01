@@ -1,7 +1,7 @@
-import { SplitType } from "../models/splitType";
+import type { SplitType } from "../models/splitType";
 import { TreeNode } from "../models/treeNode";
 
-export class TreeNodeService {
+export class TreeNodeStore {
     public readonly nodes: TreeNode[] = [new TreeNode()]
 
     public split(node: TreeNode, split: SplitType): void {
@@ -28,27 +28,5 @@ export class TreeNodeService {
         if (indexInParent >= 0) {
             node.parent.children.splice(indexInParent, 1);
         }
-    }
-
-    public getIndex(maxSize: number, node: TreeNode, split: SplitType): number {
-        let summation = 0;
-        let steps = 0;
-
-        switch (split) {
-            case SplitType.Horizontal:
-                steps = node.downDepth;
-                break;
-            case SplitType.Vertical:
-                steps = node.rightDepth;
-                break;
-            default:
-                break;
-        }
-
-        for (let i = 1; i <= steps; i++) {
-            summation += Math.pow(2, i);
-        }
-
-        return 1 + ((maxSize / Math.pow(2, steps)) * summation);
     }
 }

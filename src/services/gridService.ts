@@ -1,9 +1,9 @@
 import { SplitType } from '../models/splitType';
 import type { TreeNode } from '../models/treeNode';
-import type { TreeNodeService } from './treeNodeService';
+import type { TreeNodeStore } from './treeNodeStore';
 
 export class GridService {
-    constructor(private readonly _treeNodeService: TreeNodeService) { }
+    constructor(private readonly _treeNodeService: TreeNodeStore) { }
 
     public getGridStylesForPane(pane: TreeNode, update: any): string {
         const columnCount = this.gridColumns;
