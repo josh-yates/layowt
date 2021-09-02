@@ -3,7 +3,7 @@ import type { TreeNode } from '../models/treeNode';
 import type { TreeNodeStore } from './treeNodeStore';
 
 export class GridService {
-    constructor(private readonly _treeNodeService: TreeNodeStore) { }
+    constructor(private readonly _treeNodeStore: TreeNodeStore) { }
 
     public getGridStylesForPane(pane: TreeNode, update: any): string {
         const columnCount = this.gridColumns;
@@ -26,11 +26,11 @@ export class GridService {
     }
 
     public get gridColumns(): number {
-        return Math.pow(2, this._treeNodeService.nodes.sort((a, b) => b.rightDepth - a.rightDepth)[0].rightDepth);
+        return Math.pow(2, this._treeNodeStore.nodes.sort((a, b) => b.rightDepth - a.rightDepth)[0].rightDepth);
     }
 
     public get gridRows(): number {
-        return Math.pow(2, this._treeNodeService.nodes.sort((a, b) => b.downDepth - a.downDepth)[0].downDepth);
+        return Math.pow(2, this._treeNodeStore.nodes.sort((a, b) => b.downDepth - a.downDepth)[0].downDepth);
     }
 
     public getIndex(pane: TreeNode, splitType: SplitType): number {
