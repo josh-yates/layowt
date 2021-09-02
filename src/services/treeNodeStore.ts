@@ -14,6 +14,8 @@ export class TreeNodeStore {
     }
 
     public remove(node: TreeNode): void {
+        if (this.nodes.length === 1 && this.nodes[0] === node) throw new Error('Cannot remove final node in store');
+
         const lastChild = node.children[node.children.length - 1];
         const indexInParent = node.parent ? node.parent.children.indexOf(node) : -1;
 
@@ -21,12 +23,17 @@ export class TreeNodeStore {
             if (indexInParent >= 0) {
                 node.parent.children[indexInParent] = lastChild;
             }
+            
+            lastChild.parent = node.parent;
 
             lastChild.children = [...node.children.filter(c => c !== lastChild), ...lastChild.children];
+            lastChild.children.forEach(c => c.parent = lastChild);
         }
 
         if (indexInParent >= 0) {
             node.parent.children.splice(indexInParent, 1);
         }
+
+        this.nodes.splice(this.nodes.indexOf(node), 1);
     }
 }
