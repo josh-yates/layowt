@@ -6,85 +6,101 @@ import { TreeNodeStore } from '../../src/services/treeNodeStore';
 let treeNodeStore: TreeNodeStore;
 let sut: GridService;
 
-function setupScenario1(): void {
+let node1: TreeNode;
+let node2: TreeNode;
+let node3: TreeNode;
+let node4: TreeNode;
+let node5: TreeNode;
+let node6: TreeNode;
+let node7: TreeNode;
+let node8: TreeNode;
 
+function setupScenario1(): void {
+    // -----------------
+    // |1  |2  |3  |4  |
+    // |   |---|   |   |
+    // |   |8  |   |   |
+    // |   |---|-------|
+    // |   |6|7|5      |
+    // |   | | |       |
+    // |   | | |       |
+    // |   | | |       |
+    // -----------------
+    //            1
+    //            |
+    //     3-v----|-v-2
+    //     |          |
+    // 5-H-|-V-4  6-H-|-H-8
+    //            |
+    //        7-v-|
+    //
+    // 4 rows, 8 columns
+    //
+    //   | X | Y | R | C
+    // 1 | 0 | 0 | 2 | 4
+    // 2 | 2 | 0 | 2 | 1
+    // 3 | 4 | 0 | 2 | 2
+    // 4 | 6 | 0 | 2 | 2
+    // 5 | 4 | 2 | 4 | 2
+    // 6 | 2 | 2 | 1 | 2
+    // 7 | 3 | 2 | 1 | 2
+    // 8 | 2 | 1 | 2 | 1
+
+    const node1 = treeNodeStore.nodes[0];
+    node1.content = "1";
+
+    treeNodeStore.split(node1, SplitType.Vertical);
+    treeNodeStore.split(node1, SplitType.Vertical);
+
+    const node3 = node1.children[0];
+    node3.content = "3";
+
+    const node2 = node1.children[1];
+    node2.content = "2";
+
+    treeNodeStore.split(node3, SplitType.Horizontal);
+    treeNodeStore.split(node3, SplitType.Vertical);
+
+    const node5 = node3.children[0];
+    node5.content = "5";
+
+    const node4 = node3.children[1];
+    node4.content = "4";
+
+    treeNodeStore.split(node2, SplitType.Horizontal);
+    treeNodeStore.split(node2, SplitType.Horizontal);
+
+    const node6 = node2.children[0];
+    node6.content = "6";
+
+    const node8 = node2.children[1];
+    node8.content = "8";
+
+    treeNodeStore.split(node6, SplitType.Vertical);
+
+    const node7 = node6.children[0];
+    node7.content = "7";
 };
 
 beforeEach(() => {
     treeNodeStore = new TreeNodeStore();
     sut = new GridService(treeNodeStore);
+    setupScenario1();
 });
 
 describe('GridService', () => {
-    describe('gridColumns', () => { });
-    describe('gridRows', () => { });
+    describe('gridColumns', () => {
+        it('Gets the column count correctly', () => {
+            expect(sut.gridColumns).toBe(8);
+        });
+     });
+    describe('gridRows', () => {
+        it('Gets the row count correctly', () => {
+            expect(sut.gridRows).toBe(4);
+        });
+     });
     describe('getIndex', () => {
         it('Calculates index correctly', () => {
-            // -----------------
-            // |1  |2  |3  |4  |
-            // |   |---|   |   |
-            // |   |8  |   |   |
-            // |   |---|-------|
-            // |   |6|7|5      |
-            // |   | | |       |
-            // |   | | |       |
-            // |   | | |       |
-            // -----------------
-            //            1
-            //            |
-            //     3-v----|-v-2
-            //     |          |
-            // 5-H-|-V-4  6-H-|-H-8
-            //            |
-            //        7-v-|
-            //
-            // 4 rows, 8 columns
-            //
-            //   | X | Y |
-            // 1 | 0 | 0 |
-            // 2 | 2 | 0 |
-            // 3 | 4 | 0 |
-            // 4 | 6 | 0 |
-            // 5 | 4 | 2 |
-            // 6 | 2 | 2 |
-            // 7 | 3 | 2 |
-            // 8 | 2 | 1 |
-
-            const node1 = treeNodeStore.nodes[0];
-            node1.content = "1";
-
-            treeNodeStore.split(node1, SplitType.Vertical);
-            treeNodeStore.split(node1, SplitType.Vertical);
-
-            const node3 = node1.children[0];
-            node3.content = "3";
-
-            const node2 = node1.children[1];
-            node2.content = "2";
-
-            treeNodeStore.split(node3, SplitType.Horizontal);
-            treeNodeStore.split(node3, SplitType.Vertical);
-
-            const node5 = node3.children[0];
-            node5.content = "5";
-
-            const node4 = node3.children[1];
-            node4.content = "4";
-
-            treeNodeStore.split(node2, SplitType.Horizontal);
-            treeNodeStore.split(node2, SplitType.Horizontal);
-
-            const node6 = node2.children[0];
-            node6.content = "6";
-
-            const node8 = node2.children[1];
-            node8.content = "8";
-
-            treeNodeStore.split(node6, SplitType.Vertical);
-
-            const node7 = node6.children[0];
-            node7.content = "7";
-
             const expectedResults: { key: TreeNode, x: number, y: number }[] = [];
 
             expectedResults.push({
@@ -138,6 +154,64 @@ describe('GridService', () => {
 
                 expect(x).toBe(expected.x);
                 expect(y).toBe(expected.y);
+            });
+        });
+    });
+    describe('getSpan', () => {
+        it('Calculates span correctly', () => {
+            const expectedResults: { key: TreeNode, cols: number, rows: number }[] = [];
+
+            expectedResults.push({
+                key: node1,
+                cols: 2,
+                rows: 4
+            });
+            expectedResults.push({
+                key: node2,
+                cols: 2,
+                rows: 1
+            });
+            expectedResults.push({
+                key: node3,
+                cols: 2,
+                rows: 2
+            });
+            expectedResults.push({
+                key: node4,
+                cols: 2,
+                rows: 2
+            });
+            expectedResults.push({
+                key: node5,
+                cols: 4,
+                rows: 2
+            });
+            expectedResults.push({
+                key: node6,
+                cols: 1,
+                rows: 2
+            });
+            expectedResults.push({
+                key: node7,
+                cols: 1,
+                rows: 2
+            });
+            expectedResults.push({
+                key: node8,
+                cols: 2,
+                rows: 1
+            });
+
+            treeNodeStore.nodes.forEach(n => {
+                const cols = sut.getIndex(n, SplitType.Vertical);
+                const rows = sut.getIndex(n, SplitType.Horizontal);
+
+                const expected = expectedResults.filter(r => r.key === n)[0];
+
+                console.log(`Node content: '${n.content}', cols: ${cols}, rows: ${rows}'`);
+
+                expect(cols).toBe(expected.cols);
+                expect(rows).toBe(expected.rows);
             });
         });
     });

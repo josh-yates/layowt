@@ -16,4 +16,8 @@ export class GridService {
     public getIndex(node: TreeNode, splitType: SplitType): number {
         return 0;
     }
+
+    public getSpan(node: TreeNode, splitType: SplitType): number {
+        return 0;
+    }
 }
