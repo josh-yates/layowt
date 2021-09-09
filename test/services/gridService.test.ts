@@ -46,39 +46,39 @@ function setupScenario1(): void {
     // 7 | 3 | 2 | 1 | 2
     // 8 | 2 | 1 | 2 | 1
 
-    const node1 = treeNodeStore.nodes[0];
+    node1 = treeNodeStore.nodes[0];
     node1.content = "1";
 
     treeNodeStore.split(node1, SplitType.Vertical);
     treeNodeStore.split(node1, SplitType.Vertical);
 
-    const node3 = node1.children[0];
+    node3 = node1.children[0];
     node3.content = "3";
 
-    const node2 = node1.children[1];
+    node2 = node1.children[1];
     node2.content = "2";
 
     treeNodeStore.split(node3, SplitType.Horizontal);
     treeNodeStore.split(node3, SplitType.Vertical);
 
-    const node5 = node3.children[0];
+    node5 = node3.children[0];
     node5.content = "5";
 
-    const node4 = node3.children[1];
+    node4 = node3.children[1];
     node4.content = "4";
 
     treeNodeStore.split(node2, SplitType.Horizontal);
     treeNodeStore.split(node2, SplitType.Horizontal);
 
-    const node6 = node2.children[0];
+    node6 = node2.children[0];
     node6.content = "6";
 
-    const node8 = node2.children[1];
+    node8 = node2.children[1];
     node8.content = "8";
 
     treeNodeStore.split(node6, SplitType.Vertical);
 
-    const node7 = node6.children[0];
+    node7 = node6.children[0];
     node7.content = "7";
 };
 
@@ -93,12 +93,12 @@ describe('GridService', () => {
         it('Gets the column count correctly', () => {
             expect(sut.gridColumns).toBe(8);
         });
-     });
+    });
     describe('gridRows', () => {
         it('Gets the row count correctly', () => {
             expect(sut.gridRows).toBe(4);
         });
-     });
+    });
     describe('getIndex', () => {
         it('Calculates index correctly', () => {
             const expectedResults: { key: TreeNode, x: number, y: number }[] = [];
