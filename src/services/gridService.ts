@@ -1,16 +1,21 @@
-import type { SplitType } from '../models/splitType';
+import { SplitType } from '../models/splitType';
 import type { TreeNode } from '../models/treeNode';
 import type { TreeNodeStore } from './treeNodeStore';
+import type { TreeService } from './treeService';
 
 export class GridService {
-    constructor(private readonly _treeNodeStore: TreeNodeStore) { }
+    constructor(
+        private readonly _treeNodeStore: TreeNodeStore,
+        private readonly _treeService: TreeService) { }
 
-    public get gridColumns(): number {
-        return Math.pow(2, this._treeNodeStore.nodes.sort((a, b) => b.rightDepth - a.rightDepth)[0].rightDepth);
+    public getGridColumns(): number {
+        const mostVerticalSteps = Math.max(...this._treeNodeStore.nodes.map(n => this._treeService.getStepsTo(n, SplitType.Vertical)));
+        return Math.pow(2, mostVerticalSteps);
     }
 
-    public get gridRows(): number {
-        return Math.pow(2, this._treeNodeStore.nodes.sort((a, b) => b.downDepth - a.downDepth)[0].downDepth);
+    public getGridRows(): number {
+        const mostHorizontalSteps = Math.max(...this._treeNodeStore.nodes.map(n => this._treeService.getStepsTo(n, SplitType.Horizontal)));
+        return Math.pow(2, mostHorizontalSteps);
     }
 
     public getIndex(node: TreeNode, splitType: SplitType): number {
@@ -18,6 +23,7 @@ export class GridService {
     }
 
     public getSpan(node: TreeNode, splitType: SplitType): number {
-        return 0;
+        const colsOrRowCount = splitType === SplitType.Horizontal ? this.getGridRows() : this.getGridColumns();
+        return colsOrRowCount / Math.pow(2, this._treeService.getStepsTo(node, splitType) + node.children.filter(c => c.parentSplit === splitType).length);
     }
 }

@@ -2,8 +2,10 @@ import { SplitType } from '../../src/models/splitType';
 import type { TreeNode } from '../../src/models/treeNode';
 import { GridService } from '../../src/services/gridService';
 import { TreeNodeStore } from '../../src/services/treeNodeStore';
+import { TreeService } from '../../src/services/treeService';
 
 let treeNodeStore: TreeNodeStore;
+let treeService: TreeService;
 let sut: GridService;
 
 let node1: TreeNode;
@@ -84,19 +86,20 @@ function setupScenario1(): void {
 
 beforeEach(() => {
     treeNodeStore = new TreeNodeStore();
-    sut = new GridService(treeNodeStore);
+    treeService = new TreeService(treeNodeStore);
+    sut = new GridService(treeNodeStore, treeService);
     setupScenario1();
 });
 
 describe('GridService', () => {
-    describe('gridColumns', () => {
+    describe('getGridColumns', () => {
         it('Gets the column count correctly', () => {
-            expect(sut.gridColumns).toBe(8);
+            expect(sut.getGridColumns()).toBe(8);
         });
     });
-    describe('gridRows', () => {
+    describe('getGridRows', () => {
         it('Gets the row count correctly', () => {
-            expect(sut.gridRows).toBe(4);
+            expect(sut.getGridRows()).toBe(4);
         });
     });
     describe('getIndex', () => {
