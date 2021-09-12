@@ -36,4 +36,10 @@ export class TreeNodeStore {
 
         this.nodes.splice(this.nodes.indexOf(node), 1);
     }
+
+    public getStepsTo(node: TreeNode, split: SplitType): number {
+        if (!node.parent) return 0;
+
+        return this.getStepsTo(node.parent, split) + (node.parentSplit === split ? node.parent.children.filter(n => n.parentSplit === split).indexOf(node) + 1 : 0);
+    }
 }

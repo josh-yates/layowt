@@ -2,10 +2,8 @@ import { SplitType } from '../../src/models/splitType';
 import type { TreeNode } from '../../src/models/treeNode';
 import { GridService } from '../../src/services/gridService';
 import { TreeNodeStore } from '../../src/services/treeNodeStore';
-import { TreeService } from '../../src/services/treeService';
 
 let treeNodeStore: TreeNodeStore;
-let treeService: TreeService;
 let sut: GridService;
 
 let node1: TreeNode;
@@ -86,8 +84,7 @@ function setupScenario1(): void {
 
 beforeEach(() => {
     treeNodeStore = new TreeNodeStore();
-    treeService = new TreeService(treeNodeStore);
-    sut = new GridService(treeNodeStore, treeService);
+    sut = new GridService(treeNodeStore);
     setupScenario1();
 });
 
