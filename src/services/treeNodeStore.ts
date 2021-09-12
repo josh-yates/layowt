@@ -42,4 +42,8 @@ export class TreeNodeStore {
 
         return this.getStepsTo(node.parent, split) + (node.parentSplit === split ? node.parent.children.filter(n => n.parentSplit === split).indexOf(node) + 1 : 0);
     }
+
+    public getPriorSiblings(node: TreeNode, split: SplitType): TreeNode[] {
+        return node?.parent?.children?.slice(0, node?.parent?.children?.indexOf(node)).filter(n => n.parentSplit === split) ?? [];
+    }
 }

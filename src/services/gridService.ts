@@ -22,6 +22,9 @@ export class GridService {
 
     public getSpan(node: TreeNode, splitType: SplitType): number {
         const colsOrRowCount = splitType === SplitType.Horizontal ? this.getGridRows() : this.getGridColumns();
-        return colsOrRowCount / Math.pow(2, this._treeNodeStore.getStepsTo(node, splitType) + node.children.filter(c => c.parentSplit === splitType).length);
+        const stepsTo = this._treeNodeStore.getStepsTo(node, splitType);
+        const childrenWithSplit = node.children.filter(c => c.parentSplit === splitType).length;
+        const priorSibilingsWithSplit = this._treeNodeStore.getPriorSiblings(node, splitType).length;
+        return colsOrRowCount / Math.pow(2, stepsTo + childrenWithSplit + priorSibilingsWithSplit);
     }
 }

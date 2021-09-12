@@ -244,4 +244,23 @@ describe('TreeNodeStore', () => {
             });
         });
     });
+    describe('getPriorSibilings', () => {
+        it('Returns the prior siblings with the split type', () => {
+            const topLevelParent = sut.nodes[0];
+
+            sut.split(topLevelParent, SplitType.Horizontal); // 1
+            sut.split(topLevelParent, SplitType.Vertical); // 2
+            sut.split(topLevelParent, SplitType.Horizontal); // 3
+            sut.split(topLevelParent, SplitType.Vertical); // 4
+            sut.split(topLevelParent, SplitType.Horizontal); // 5
+
+            const testNode = sut.nodes[4];
+
+            const priorSiblings = sut.getPriorSiblings(testNode, SplitType.Horizontal);
+
+            expect(priorSiblings.length).toBe(2);
+            expect(priorSiblings[0] === sut.nodes[1]).toBe(true);
+            expect(priorSiblings[1] === sut.nodes[3]).toBe(true);
+        });
+    });
 })
