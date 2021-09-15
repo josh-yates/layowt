@@ -131,7 +131,7 @@ describe('TreeNodeStore', () => {
         });
         it('Removes the node from its parent\'s children', () => {
             const parentNode = sut.nodes[0];
-            
+
             sut.split(sut.nodes[0], SplitType.Horizontal);
 
             const childNode = sut.nodes[0];
@@ -162,7 +162,7 @@ describe('TreeNodeStore', () => {
 
         it('Replaces itself with last child when it has children (with parent)', () => {
             const topLevelParent = sut.nodes[0];
-            
+
             sut.split(topLevelParent, SplitType.Horizontal);
 
             const nodeToRemove = sut.nodes[1];
@@ -236,8 +236,6 @@ describe('TreeNodeStore', () => {
                 const stepsH = sut.getStepsTo(n, SplitType.Horizontal);
 
                 const expected = expectedResults.filter(r => r.key === n)[0];
-
-                console.log(`Node content: '${n.content}', stepsV: ${stepsV}, stepsH: ${stepsH}'`);
 
                 expect(stepsV).toBe(expected.stepsV);
                 expect(stepsH).toBe(expected.stepsH);

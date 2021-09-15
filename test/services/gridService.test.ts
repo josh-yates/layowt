@@ -150,8 +150,6 @@ describe('GridService', () => {
 
                 const expected = expectedResults.filter(r => r.key === n)[0];
 
-                console.log(`Node content: '${n.content}', x: ${x}, y: ${y}'`);
-
                 expect(x).toBe(expected.x);
                 expect(y).toBe(expected.y);
             });
@@ -207,8 +205,6 @@ describe('GridService', () => {
                 const rows = sut.getSpan(n, SplitType.Horizontal);
 
                 const expected = expectedResults.filter(r => r.key === n)[0];
-
-                console.log(`Node content: '${n.content}', cols: ${cols}, rows: ${rows}'`);
 
                 expect(cols).toBe(expected.cols);
                 expect(rows).toBe(expected.rows);
