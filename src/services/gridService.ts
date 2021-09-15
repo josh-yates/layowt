@@ -21,10 +21,17 @@ export class GridService {
     }
 
     public getSpan(node: TreeNode, splitType: SplitType): number {
-        const colsOrRowCount = splitType === SplitType.Horizontal ? this.getGridRows() : this.getGridColumns();
-        const stepsTo = this._treeNodeStore.getStepsTo(node, splitType);
-        const childrenWithSplit = node.children.filter(c => c.parentSplit === splitType).length;
-        const priorSibilingsWithSplit = this._treeNodeStore.getPriorSiblings(node, splitType).length;
-        return colsOrRowCount / Math.pow(2, stepsTo + childrenWithSplit + priorSibilingsWithSplit);
+        return this.getSpanInternal(node, null, splitType);
+    }
+
+    private getSpanInternal(node: TreeNode, checkUpToChild: TreeNode, splitType: SplitType): number {
+        const parentSpan = node.parent ? this.getSpanInternal(node.parent, node, splitType) :
+            (splitType === SplitType.Horizontal ? this.getGridRows() : this.getGridColumns());
+
+        const childrenToCheck = checkUpToChild ? node.children.slice(0, node.children.indexOf(checkUpToChild) + 1) : node.children;
+
+        const childrenWithSplit = childrenToCheck.filter(n => n.parentSplit === splitType);
+
+        return parentSpan / Math.pow(2, childrenWithSplit.length);
     }
 }

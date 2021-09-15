@@ -203,8 +203,8 @@ describe('GridService', () => {
             });
 
             treeNodeStore.nodes.forEach(n => {
-                const cols = sut.getIndex(n, SplitType.Vertical);
-                const rows = sut.getIndex(n, SplitType.Horizontal);
+                const cols = sut.getSpan(n, SplitType.Vertical);
+                const rows = sut.getSpan(n, SplitType.Horizontal);
 
                 const expected = expectedResults.filter(r => r.key === n)[0];
 
