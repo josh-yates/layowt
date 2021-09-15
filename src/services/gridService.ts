@@ -17,7 +17,11 @@ export class GridService {
     }
 
     public getIndex(node: TreeNode, splitType: SplitType): number {
-        return 0;
+        if (!node.parent) return 0;
+
+        const parentIndex = this.getIndex(node.parent, splitType);
+
+        return node.parentSplit === splitType ? parentIndex + this.getSpanInternal(node.parent, node, splitType) : parentIndex;
     }
 
     public getSpan(node: TreeNode, splitType: SplitType): number {
