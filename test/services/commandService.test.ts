@@ -92,7 +92,7 @@ beforeEach(() => {
 describe('CommandService', () => {
     describe('getCommand', () => {
         it('Gets the command correctly', () => {
-            expect(sut.getCommand()).toBe('a');
+            expect(sut.getCommand()).toBe('wt powershell -NoExit "Write-Host 1" `; sp -V powershell -NoExit "Write-Host 3" `; sp -H powershell -NoExit "Write-Host 5" `; mf up `; sp -V  powershell -NoExit "Write-Host 4" `; mf left `; mf left `; sp -V  powershell -NoExit "Write-Host 2" `; sp -H  powershell -NoExit "Write-Host 6" `; sp -V  powershell -NoExit "Write-Host 7" `; mf left `; mf up `; sp -H  powershell -NoExit "Write-Host 8" `; mf up `; mf left');
         });
     });
 });
