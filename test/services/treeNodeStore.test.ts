@@ -86,6 +86,17 @@ describe('TreeNodeStore', () => {
     describe('constructor', () => {
         it('Creates a single node', () => expect(sut.nodes.length).toBe(1))
     });
+    describe('getRootNode', () => {
+        it('Gets the root node', () => {
+            const rootNode = sut.nodes[0];
+
+            sut.split(rootNode, SplitType.Horizontal);
+            sut.split(rootNode, SplitType.Horizontal);
+            sut.split(rootNode, SplitType.Horizontal);
+
+            expect(sut.getRootNode()).toBe(rootNode);
+        });
+    });
     describe('split', () => {
         it('Creates a new node in the store', () => {
             sut.split(sut.nodes[0], SplitType.Horizontal);
