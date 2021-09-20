@@ -48,39 +48,39 @@ function setupScenario1(): void {
 
     // TODO: add commands here
     node1 = treeNodeStore.nodes[0];
-    node1.content = "1";
+    node1.content = "Write-Host 1";
 
     treeNodeStore.split(node1, SplitType.Vertical);
     treeNodeStore.split(node1, SplitType.Vertical);
 
     node3 = node1.children[0];
-    node3.content = "3";
+    node3.content = "Write-Host 3";
 
     node2 = node1.children[1];
-    node2.content = "2";
+    node2.content = "Write-Host 2";
 
     treeNodeStore.split(node3, SplitType.Horizontal);
     treeNodeStore.split(node3, SplitType.Vertical);
 
     node5 = node3.children[0];
-    node5.content = "5";
+    node5.content = "Write-Host 5";
 
     node4 = node3.children[1];
-    node4.content = "4";
+    node4.content = "Write-Host 4";
 
     treeNodeStore.split(node2, SplitType.Horizontal);
     treeNodeStore.split(node2, SplitType.Horizontal);
 
     node6 = node2.children[0];
-    node6.content = "6";
+    node6.content = "Write-Host 6";
 
     node8 = node2.children[1];
-    node8.content = "8";
+    node8.content = "Write-Host 8";
 
     treeNodeStore.split(node6, SplitType.Vertical);
 
     node7 = node6.children[0];
-    node7.content = "7";
+    node7.content = "Write-Host 7";
 };
 
 beforeEach(() => {
