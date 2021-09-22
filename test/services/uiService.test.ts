@@ -100,10 +100,7 @@ beforeEach(() => {
 describe('UIService', () => {
     describe('getContainerGridStyles', () => {
         it('Gets the container grid styles correctly', () => {
-            expect(sut.getContainerGridStyles({})).toBe(`
-                grid-template-columns: repeat(8, 1fr);
-                grid-template-rows: repeat(4, 1fr);
-            `);
+            expect(sut.getContainerGridStyles({})).toBe('grid-template-columns: repeat(8, 1fr); grid-template-rows: repeat(4, 1fr);');
         });
     });
     describe('getPaneGridStyles', () => {
@@ -112,59 +109,35 @@ describe('UIService', () => {
 
             expectedResults.push({
                 key: node1,
-                styles: `
-                    grid-column: 1 / span 2;
-                    grid-row: 1 / span 4;
-                `
+                styles: 'grid-column: 1 / span 2; grid-row: 1 / span 4;'
             });
             expectedResults.push({
                 key: node2,
-                styles: `
-                    grid-column: 3 / span 2;
-                    grid-row: 1 / span 1;
-                `
+                styles: 'grid-column: 3 / span 2; grid-row: 1 / span 1;'
             });
             expectedResults.push({
                 key: node3,
-                styles: `
-                    grid-column: 5 / span 2;
-                    grid-row: 1 / span 2;
-                `
+                styles: 'grid-column: 5 / span 2; grid-row: 1 / span 2;'
             });
             expectedResults.push({
                 key: node4,
-                styles: `
-                    grid-column: 7 / span 2;
-                    grid-row: 1 / span 2;
-                `
+                styles: 'grid-column: 7 / span 2; grid-row: 1 / span 2;'
             });
             expectedResults.push({
                 key: node5,
-                styles: `
-                    grid-column: 5 / span 4;
-                    grid-row: 3 / span 2;
-                `
+                styles: 'grid-column: 5 / span 4; grid-row: 3 / span 2;'
             });
             expectedResults.push({
                 key: node6,
-                styles: `
-                    grid-column: 3 / span 1;
-                    grid-row: 3 / span 2;
-                `
+                styles: 'grid-column: 3 / span 1; grid-row: 3 / span 2;'
             });
             expectedResults.push({
                 key: node7,
-                styles: `
-                    grid-column: 4 / span 1;
-                    grid-row: 3 / span 2;
-                `
+                styles: 'grid-column: 4 / span 1; grid-row: 3 / span 2;'
             });
             expectedResults.push({
                 key: node8,
-                styles: `
-                    grid-column: 3 / span 2;
-                    grid-row: 2 / span 1;
-                `
+                styles: 'grid-column: 3 / span 2; grid-row: 2 / span 1;'
             });
 
             treeNodeStore.nodes.forEach(n => {
