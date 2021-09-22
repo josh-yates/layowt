@@ -1,34 +1,36 @@
 <script lang="ts">
 	import Pane from "./components/Pane.svelte";
 	import { SplitType } from "./models/splitType";
-import { CommandService } from "./services/commandService";
+	import { CommandService } from "./services/commandService";
 	import { GridService } from "./services/gridService";
-	import { PaneService } from "./services/paneService";
-	const paneService = new PaneService();
-	const gridService = new GridService(paneService);
-	const commandService = new CommandService(paneService);
+	import { TreeNodeStore } from "./services/treeNodeStore";
+	import { UIService } from "./services/uiService";
 
+	const nodeStore = new TreeNodeStore();
+	const gridService = new GridService(nodeStore);
+	const commandService = new CommandService(nodeStore);
+	const uiService = new UIService(gridService, commandService);
 	$: update = {};
 </script>
 
-<main style={gridService.getGridStylesForContainer(update)}>
-	{#each paneService.panes as pane}
+<main style={uiService.getContainerGridStyles(update)}>
+	{#each nodeStore.nodes as pane}
 		<Pane
-			pane={pane}
-			style={gridService.getGridStylesForPane(pane, update)}
-			on:input={() => update = {}}
+			{pane}
+			style={uiService.getPaneGridStyles(pane, update)}
+			on:input={() => (update = {})}
 			on:splitHorizontal={() => {
-				paneService.splitPane(pane, SplitType.Horizontal);
+				nodeStore.split(pane, SplitType.Horizontal);
 				update = {};
 			}}
 			on:splitVertical={() => {
-				paneService.splitPane(pane, SplitType.Vertical);
+				nodeStore.split(pane, SplitType.Vertical);
 				update = {};
 			}}
 		/>
 	{/each}
 </main>
-<p>{commandService.getCommandText(update)}</p>
+<p>{uiService.getCommandText(update)}</p>
 
 <style>
 	main {
