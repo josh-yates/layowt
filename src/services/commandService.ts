@@ -26,7 +26,11 @@ export class CommandService {
                 break;
         }
 
-        const mainCommand = `powershell -NoExit "${node.content}" `;
+        const hasContent = node.content !== null &&
+            node.content !== undefined &&
+            node.content.trim().length;
+
+        const mainCommand = hasContent ? `powershell -NoExit "${node.content}" ` : '';
 
         const childrenCommands = node.children.map(c => this.printNode(c));
 

@@ -86,13 +86,18 @@ function setupScenario1(): void {
 beforeEach(() => {
     treeNodeStore = new TreeNodeStore();
     sut = new CommandService(treeNodeStore);
-    setupScenario1();
 });
 
 describe('CommandService', () => {
     describe('getCommand', () => {
         it('Gets the command correctly', () => {
+            setupScenario1();
             expect(sut.getCommand()).toBe('wt powershell -NoExit "Write-Host 1" `; sp -V powershell -NoExit "Write-Host 3" `; sp -H powershell -NoExit "Write-Host 5" `; mf up `; sp -V powershell -NoExit "Write-Host 4" `; mf left `; mf left `; sp -V powershell -NoExit "Write-Host 2" `; sp -H powershell -NoExit "Write-Host 6" `; sp -V powershell -NoExit "Write-Host 7" `; mf left `; mf up `; sp -H powershell -NoExit "Write-Host 8" `; mf up `; mf left');
+        });
+
+        it('Does not generate a pane command when pane has no content', () => {
+            treeNodeStore.split(treeNodeStore.getRootNode(), SplitType.Vertical);
+            expect(sut.getCommand()).toBe('wt `; sp -V `; mf left');
         });
     });
 });
