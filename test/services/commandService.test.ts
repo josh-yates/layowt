@@ -99,10 +99,5 @@ describe('CommandService', () => {
             treeNodeStore.split(treeNodeStore.getRootNode(), SplitType.Vertical);
             expect(sut.getCommand()).toBe('wt `; sp -V `; mf left');
         });
-
-        it('Escapes quotes correctly', () => {
-            // TODO
-            expect(true).toBe(false);
-        })
     });
 });
