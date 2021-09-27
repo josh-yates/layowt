@@ -219,7 +219,7 @@ describe('TreeNodeStore', () => {
             expectedResults.push({
                 key: node4,
                 stepsV: 2,
-                stepsH: 0
+                stepsH: 1
             });
             expectedResults.push({
                 key: node5,
@@ -253,7 +253,7 @@ describe('TreeNodeStore', () => {
             });
         });
     });
-    describe('getPriorSibilings', () => {
+    describe('getPriorSiblings', () => {
         it('Returns the prior siblings with the split type', () => {
             const topLevelParent = sut.nodes[0];
 

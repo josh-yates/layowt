@@ -23,7 +23,7 @@ export class TreeNodeStore {
             if (indexInParent >= 0) {
                 node.parent.children[indexInParent] = lastChild;
             }
-            
+
             lastChild.parent = node.parent;
 
             lastChild.children = [...node.children.filter(c => c !== lastChild), ...lastChild.children];
@@ -40,7 +40,9 @@ export class TreeNodeStore {
     public getStepsTo(node: TreeNode, split: SplitType): number {
         if (!node.parent) return 0;
 
-        return this.getStepsTo(node.parent, split) + (node.parentSplit === split ? node.parent.children.filter(n => n.parentSplit === split).indexOf(node) + 1 : 0);
+        return this.getStepsTo(node.parent, split) +
+            (node.parent.children.filter(n => n.parentSplit === split || n === node).indexOf(node)) +
+            (node.parentSplit === split ? 1 : 0);
     }
 
     public getPriorSiblings(node: TreeNode, split: SplitType): TreeNode[] {
