@@ -1,3 +1,13 @@
+:root {
+	--bg-colour: #FAF5EF;
+	--fg-colour: #4B1B30;
+	--bg-colour__secondary: #EDEFF8;
+}
+
+* {
+	box-sizing: border-box;
+}
+
 html, body {
 	position: relative;
 	width: 100%;
@@ -5,11 +15,16 @@ html, body {
 }
 
 body {
-	color: #333;
+	background-color: var(--bg-colour);
+	color: var(--fg-colour);
 	margin: 0;
 	padding: 8px;
 	box-sizing: border-box;
 	font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen-Sans, Ubuntu, Cantarell, "Helvetica Neue", sans-serif;
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	justify-content: space-between;
 }
 
 a {

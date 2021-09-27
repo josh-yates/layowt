@@ -30,12 +30,26 @@
 		/>
 	{/each}
 </main>
-<p>{uiService.getCommandText(update)}</p>
+<p class="command">{uiService.getCommandText(update)}</p>
 
 <style>
 	main {
-		max-width: 240px;
+		width: 80%;
+		flex-grow: 1;
+		flex-shrink: 0;
 		display: grid;
+	}
+
+	.command {
+		width: 80%;
+		flex-shrink: 0;
+		height: 3rem;
+		padding: 1rem 1rem;
+		background-color: var(--bg-colour__secondary);
+		display: flex;
+		flex-direction: row;
+		align-items: center;
+		justify-content: start;
 	}
 
 	@media (min-width: 640px) {
