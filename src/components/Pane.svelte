@@ -48,6 +48,9 @@
         border: none;
         background-color: transparent;
         outline: none;
+        font-size: 1rem;
+        font-weight: 900;
+        color: var(--fg-colour);
     }
 
     .command-input:focus {
