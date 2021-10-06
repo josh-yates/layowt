@@ -35,9 +35,18 @@
 <style>
 	main {
 		width: 80%;
+		margin-top: 1rem;
 		flex-grow: 1;
 		flex-shrink: 0;
 		display: grid;
+		background-color: var(--fg-colour);
+		column-gap: 2px;
+		row-gap: 2px;
+		border: 2px solid var(--fg-colour);
+		border-radius: 0.5rem;
+		overflow: hidden;
+		min-height: 0;
+		min-width: 0;
 	}
 
 	.command {
@@ -50,6 +59,11 @@
 		flex-direction: row;
 		align-items: center;
 		justify-content: start;
+		font-weight: 900;
+		margin: 1rem 0;
+		border-radius: 0.5rem;
+		overflow: hidden;
+		white-space: nowrap;
 	}
 
 	@media (min-width: 640px) {
