@@ -12,6 +12,8 @@
 <div class="pane" {style}>
     <div class="command-holder">
         <textarea
+            placeholder="Type your commands here. Use the buttons to the right and bottom to split panes."
+            spellcheck="false"
             class="command-input"
             bind:value={pane.content}
             on:input={input}

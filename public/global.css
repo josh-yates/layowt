@@ -33,3 +33,7 @@ button,
 a {
 	cursor: pointer;
 }
+
+::placeholder {
+	color: var(--fg-colour__secondary);
+}

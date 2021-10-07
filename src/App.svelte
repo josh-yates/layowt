@@ -135,7 +135,7 @@
 
 	.copy-button {
 		position: absolute;
-		right: 1rem;
+		right: 0.5rem;
 		padding: 0.5rem;
 		line-height: var(--command-font-size);
 		border-radius: 0.5rem;
