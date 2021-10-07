@@ -73,6 +73,8 @@
 		align-items: center;
 		justify-content: start;
 		padding: var(--header-padding) 0;
+		flex-shrink: 0;
+		flex-grow: 0;
 	}
 
 	header .title {
@@ -100,7 +102,7 @@
 	main {
 		width: var(--content-width);
 		flex-grow: 1;
-		flex-shrink: 0;
+		flex-shrink: 1;
 		display: grid;
 		background-color: var(--fg-colour);
 		column-gap: 2px;
@@ -115,6 +117,7 @@
 	.command {
 		width: var(--content-width);
 		flex-shrink: 0;
+		flex-grow: 0;
 		height: 3rem;
 		padding: 1rem 1rem;
 		background-color: var(--bg-colour__secondary);
