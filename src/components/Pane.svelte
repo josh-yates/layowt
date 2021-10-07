@@ -26,7 +26,7 @@
 <style>
     .pane {
         background-color: var(--bg-colour);
-        --button-thickness: 1rem;
+        --button-thickness: 1.25rem;
         display: grid;
         grid-template-columns: auto var(--button-thickness);
         grid-template-rows: auto var(--button-thickness);
