@@ -47,6 +47,10 @@
 				nodeStore.split(pane, SplitType.Vertical);
 				update = {};
 			}}
+			on:remove={() => {
+				nodeStore.remove(pane);
+				update = {};
+			}}
 		/>
 	{/each}
 </main>
