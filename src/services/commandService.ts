@@ -26,6 +26,18 @@ export class CommandService {
                 break;
         }
 
+        const hasDirectory = node.directory !== null &&
+            node.directory !== undefined &&
+            node.directory.trim().length;
+
+        const directoryParam = hasDirectory ? `-d "${node.directory}" ` : '';
+
+        const hasTitle = node.title !== null &&
+            node.title !== undefined &&
+            node.title.trim().length;
+
+        const titleParam = hasTitle ? `--title "${node.title}" ` : '';
+
         const hasContent = node.content !== null &&
             node.content !== undefined &&
             node.content.trim().length;
@@ -34,6 +46,6 @@ export class CommandService {
 
         const childrenCommands = node.children.map(c => this.printNode(c));
 
-        return splitCommand + mainCommand + (childrenCommands.length ? '`; ' + childrenCommands.join('`; ') : '') + returnCommand;
+        return splitCommand + directoryParam + titleParam + mainCommand + (childrenCommands.length ? '`; ' + childrenCommands.join('`; ') : '') + returnCommand;
     }
 }

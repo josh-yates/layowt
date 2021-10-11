@@ -3,6 +3,8 @@ import { SplitType } from './splitType';
 export class TreeNode {
     constructor() { }
     public content?: string;
+    public directory?: string;
+    public title?: string;
 
     public parentSplit?: SplitType;
     public children?: TreeNode[] = [];

@@ -3,6 +3,7 @@
     import type { TreeNode } from "../models/treeNode";
     export let pane: TreeNode;
     export let style: string;
+    export let index: number;
     const dispatch = createEventDispatcher();
     const splitVertical = () => dispatch("splitVertical");
     const splitHorizontal = () => dispatch("splitHorizontal");
@@ -22,13 +23,30 @@
             }}
         >
             <div class="form-content">
-                <label for="directory">Directory</label>
-                <input
-                    id="directory"
-                    name="directory"
-                    type="text"
-                    spellcheck="false"
-                />
+                <div class="form-row">
+                    <label for="title-{index}">Title</label>
+                    <input
+                        id="title-{index}"
+                        name="title-{index}"
+                        type="text"
+                        spellcheck="false"
+                        placeholder="eg. My awesome app"
+                        bind:value={pane.title}
+                        on:input={input}
+                    />
+                </div>
+                <div class="form-row">
+                    <label for="directory-{index}">Directory</label>
+                    <input
+                        id="directory-{index}"
+                        name="directory-{index}"
+                        type="text"
+                        spellcheck="false"
+                        placeholder="eg. C:\Windows\System32\WindowsPowerShell\v1.0"
+                        bind:value={pane.directory}
+                        on:input={input}
+                    />
+                </div>
             </div>
             <div class="form-buttons">
                 <button type="submit" class="form-button">OK</button>
@@ -187,5 +205,44 @@
 
     .form-button.remove {
         margin-left: auto;
+    }
+    .form-row {
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        justify-content: start;
+    }
+
+    .form-row:not(:first-child) {
+        margin-top: 0.5rem;
+    }
+
+    .form-row > * {
+        font-weight: 900;
+        font-size: 1rem;
+        line-height: 1rem;
+        font-family: monospace;
+    }
+
+    .form-row > label {
+        width: 30%;
+        display: inline-block;
+        flex-grow: 0;
+        flex-shrink: 0;
+    }
+
+    .form-row > input {
+        flex-grow: 1;
+        flex-shrink: 1;
+        padding: 0.5rem;
+        background-color: var(--bg-colour);
+        border: 2px solid var(--fg-colour);
+        border-radius: 0.5rem;
+        margin-left: 0.5rem;
+        min-width: 0;
+    }
+
+    .form-row > input:focus {
+        outline: none;
     }
 </style>

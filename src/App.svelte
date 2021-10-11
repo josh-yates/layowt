@@ -34,9 +34,10 @@
 	>
 </header>
 <main style={uiService.getContainerGridStyles(update)}>
-	{#each nodeStore.nodes as pane}
+	{#each nodeStore.nodes as pane, i}
 		<Pane
 			{pane}
+			index={i}
 			style={uiService.getPaneGridStyles(pane, update)}
 			on:input={() => (update = {})}
 			on:splitHorizontal={() => {
