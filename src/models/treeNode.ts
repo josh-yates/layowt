@@ -4,7 +4,9 @@ export class TreeNode {
     constructor() { }
     public content?: string;
     public directory?: string;
+    public colour?: string;
     public title?: string;
+    public persistTitle?: boolean = true;
 
     public parentSplit?: SplitType;
     public children?: TreeNode[] = [];

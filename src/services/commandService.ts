@@ -38,6 +38,16 @@ export class CommandService {
 
         const titleParam = hasTitle ? `--title "${node.title}" ` : '';
 
+        const persistTitleParam = hasTitle ?
+            (!!node.persistTitle ? '--suppressApplicationTitle ' : '--useApplicationTitle') :
+            '';
+
+        const hasTabColour = node.colour !== null &&
+            node.colour !== undefined &&
+            node.colour.trim().length;
+
+        const tabColourParam = hasTabColour ? `--tabColour ${node.colour} ` : '';
+
         const hasContent = node.content !== null &&
             node.content !== undefined &&
             node.content.trim().length;
@@ -46,6 +56,12 @@ export class CommandService {
 
         const childrenCommands = node.children.map(c => this.printNode(c));
 
-        return splitCommand + directoryParam + titleParam + mainCommand + (childrenCommands.length ? '`; ' + childrenCommands.join('`; ') : '') + returnCommand;
+        return splitCommand
+            + directoryParam
+            + titleParam
+            + persistTitleParam
+            + tabColourParam
+            + mainCommand
+            + (childrenCommands.length ? '`; ' + childrenCommands.join('`; ') : '') + returnCommand;
     }
 }

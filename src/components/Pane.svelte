@@ -24,6 +24,18 @@
         >
             <div class="form-content">
                 <div class="form-row">
+                    <label for="directory-{index}">Directory</label>
+                    <input
+                        id="directory-{index}"
+                        name="directory-{index}"
+                        type="text"
+                        spellcheck="false"
+                        placeholder="eg. C:\Windows\System32\WindowsPowerShell\v1.0"
+                        bind:value={pane.directory}
+                        on:input={input}
+                    />
+                </div>
+                <div class="form-row">
                     <label for="title-{index}">Title</label>
                     <input
                         id="title-{index}"
@@ -36,14 +48,27 @@
                     />
                 </div>
                 <div class="form-row">
-                    <label for="directory-{index}">Directory</label>
+                    <label for="persisttitle-{index}">Persist title</label>
+                    <div class="checkbox-container">
+                        <input
+                            id="persisttitle-{index}"
+                            name="persisttitle-{index}"
+                            type="checkbox"
+                            bind:checked={pane.persistTitle}
+                            on:change={input}
+                        />
+                        <label for="persisttitle-{index}" />
+                    </div>
+                </div>
+                <div class="form-row">
+                    <label for="colour-{index}">Tab colour</label>
                     <input
-                        id="directory-{index}"
-                        name="directory-{index}"
-                        type="text"
+                        id="colour-{index}"
+                        name="colour-{index}"
+                        type="color"
                         spellcheck="false"
-                        placeholder="eg. C:\Windows\System32\WindowsPowerShell\v1.0"
-                        bind:value={pane.directory}
+                        placeholder="eg. #48476a"
+                        bind:value={pane.colour}
                         on:input={input}
                     />
                 </div>
@@ -105,7 +130,7 @@
         display: flex;
         align-items: center;
         justify-content: center;
-        border: 2px solid var(--fg-colour);
+        border: 0.125rem solid var(--fg-colour);
         border-radius: 0.5rem;
         font-weight: 900;
         font-size: 1rem;
@@ -195,7 +220,7 @@
         display: flex;
         align-items: center;
         justify-content: center;
-        border: 2px solid var(--fg-colour);
+        border: 0.125rem solid var(--fg-colour);
         border-radius: 0.5rem;
         font-weight: 900;
         font-size: 1rem;
@@ -203,9 +228,10 @@
         font-family: monospace;
     }
 
-    .form-button.remove {
+    /* .form-button.remove {
         margin-left: auto;
-    }
+    } */
+
     .form-row {
         display: flex;
         flex-direction: row;
@@ -236,7 +262,7 @@
         flex-shrink: 1;
         padding: 0.5rem;
         background-color: var(--bg-colour);
-        border: 2px solid var(--fg-colour);
+        border: 0.125rem solid var(--fg-colour);
         border-radius: 0.5rem;
         margin-left: 0.5rem;
         min-width: 0;
@@ -244,5 +270,48 @@
 
     .form-row > input:focus {
         outline: none;
+    }
+
+    .form-row > .checkbox-container {
+        position: relative;
+        height: 2.4375rem;
+        width: 2.4375rem;
+        margin-right: auto;
+        margin-left: 0.5rem;
+    }
+
+    .checkbox-container > input[type=checkbox] {
+        position: absolute;
+        opacity: 0;
+        cursor: pointer;
+        height: 0;
+        width: 0;
+    }
+
+    .checkbox-container > label {
+        position: relative;
+        display: block;
+        height: 100%;
+        width: 100%;
+        background-color: var(--bg-colour);
+        border: 0.125rem solid var(--fg-colour);
+        border-radius: 0.5rem;
+        cursor: pointer;
+    }
+
+    .checkbox-container > input[type=checkbox]:checked + label::after {
+        content: "";
+        position: absolute;
+        height: calc(2.4375rem - 8px);
+        width: calc(2.4375rem - 8px);
+        background-color: var(--fg-colour);
+        border-radius: 0.25rem;
+        top: 0.125rem;
+        left: 0.125rem;
+    }
+
+    .form-row > input[type=color] {
+        height: 2.4375rem;
+        cursor: pointer;
     }
 </style>
