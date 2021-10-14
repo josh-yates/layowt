@@ -99,7 +99,7 @@
 		margin-left: auto;
 		height: var(--header-font-size);
 		width: var(--header-font-size);
-		background-image: url(/resources/github.svg);
+		background-image: url(./../resources/github.svg);
 		font-size: 0;
 		line-height: 0;
 	}
