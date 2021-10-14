@@ -4,7 +4,8 @@ export class TreeNode {
     constructor() { }
     public content?: string;
     public directory?: string;
-    public colour?: string;
+    public tabColour?: string;
+    public colourScheme?: string;
     public title?: string;
     public persistTitle?: boolean = true;
 

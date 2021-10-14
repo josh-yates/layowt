@@ -42,11 +42,17 @@ export class CommandService {
             (!!node.persistTitle ? '--suppressApplicationTitle ' : '--useApplicationTitle') :
             '';
 
-        const hasTabColour = node.colour !== null &&
-            node.colour !== undefined &&
-            node.colour.trim().length;
+        const hasTabColour = node.tabColour !== null &&
+            node.tabColour !== undefined &&
+            node.tabColour.trim().length;
 
-        const tabColourParam = hasTabColour ? `--tabColour ${node.colour} ` : '';
+        const tabColourParam = hasTabColour ? `--tabColor ${node.tabColour} ` : '';
+
+        const hasColourScheme = node.colourScheme !== null &&
+            node.colourScheme !== undefined &&
+            node.colourScheme.trim().length;
+
+        const colourSchemeParam = hasColourScheme ? `--colorScheme "${node.colourScheme}" ` : '';
 
         const hasContent = node.content !== null &&
             node.content !== undefined &&
@@ -60,6 +66,7 @@ export class CommandService {
             + directoryParam
             + titleParam
             + persistTitleParam
+            + colourSchemeParam
             + tabColourParam
             + mainCommand
             + (childrenCommands.length ? '`; ' + childrenCommands.join('`; ') : '') + returnCommand;

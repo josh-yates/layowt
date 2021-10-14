@@ -30,7 +30,7 @@
                         name="directory-{index}"
                         type="text"
                         spellcheck="false"
-                        placeholder="eg. C:\Windows\System32\WindowsPowerShell\v1.0"
+                        placeholder="eg. C:\Path\To\Your\App"
                         bind:value={pane.directory}
                         on:input={input}
                     />
@@ -61,17 +61,36 @@
                     </div>
                 </div>
                 <div class="form-row">
-                    <label for="colour-{index}">Tab colour</label>
+                    <label for="colourScheme-{index}">Colour scheme</label>
                     <input
-                        id="colour-{index}"
-                        name="colour-{index}"
-                        type="color"
+                        id="colourScheme-{index}"
+                        name="colourScheme-{index}"
+                        type="text"
                         spellcheck="false"
-                        placeholder="eg. #48476a"
-                        bind:value={pane.colour}
+                        placeholder="eg. Gruvbox Dark"
+                        bind:value={pane.colourScheme}
                         on:input={input}
                     />
                 </div>
+                <!-- TODO: Fix issues with Tab Colour?-->
+                <!-- <div class="form-row">
+                    <label for="colour-{index}">Tab colour</label>
+                    <div class="colour-container">
+                        <input
+                            id="colour-{index}"
+                            name="colour-{index}"
+                            type="color"
+                            spellcheck="false"
+                            placeholder="eg. #48476a"
+                            bind:value={pane.tabColour}
+                            on:input={input}
+                        />
+                        <label
+                            for="colour-{index}"
+                            style="--swatch-colour: {pane.tabColour}"
+                        />
+                    </div>
+                </div> -->
             </div>
             <div class="form-buttons">
                 <button type="submit" class="form-button">OK</button>
@@ -280,7 +299,7 @@
         margin-left: 0.5rem;
     }
 
-    .checkbox-container > input[type=checkbox] {
+    .checkbox-container > input[type="checkbox"] {
         position: absolute;
         opacity: 0;
         cursor: pointer;
@@ -299,19 +318,55 @@
         cursor: pointer;
     }
 
-    .checkbox-container > input[type=checkbox]:checked + label::after {
+    .checkbox-container > input[type="checkbox"]:checked + label::after {
         content: "";
         position: absolute;
-        height: calc(2.4375rem - 8px);
-        width: calc(2.4375rem - 8px);
+        height: 1.9375rem;
+        width: 1.9375rem;
         background-color: var(--fg-colour);
         border-radius: 0.25rem;
         top: 0.125rem;
         left: 0.125rem;
     }
 
-    .form-row > input[type=color] {
+    /* .form-row > .colour-container {
+        position: relative;
         height: 2.4375rem;
-        cursor: pointer;
+        width: 4.875rem;
+        margin-right: auto;
+        margin-left: 0.5rem;
     }
+
+    .colour-container > input[type="color"] {
+        position: absolute;
+        opacity: 0;
+        cursor: pointer;
+        height: 0;
+        width: 0;
+        bottom: 0;
+        left: 0;
+    }
+
+    .colour-container > label {
+        position: relative;
+        display: block;
+        height: 100%;
+        width: 100%;
+        background-color: var(--bg-colour);
+        border: 0.125rem solid var(--fg-colour);
+        border-radius: 0.5rem;
+        cursor: pointer;
+        --swatch-colour: var(--bg-colour);
+    }
+
+    .colour-container > label::after {
+        content: "";
+        position: absolute;
+        height: 1.9375rem;
+        width: 4.375rem;
+        background-color: var(--swatch-colour);
+        border-radius: 0.25rem;
+        top: 0.125rem;
+        left: 0.125rem;
+    } */
 </style>
