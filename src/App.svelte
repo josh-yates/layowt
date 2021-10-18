@@ -11,6 +11,7 @@
 	const commandService = new CommandService(nodeStore);
 	const uiService = new UIService(gridService, commandService);
 	$: update = {};
+	$: canRemove = !!update && nodeStore.nodes.length !== 1;
 
 	let showCopied = false;
 
@@ -37,6 +38,7 @@
 	{#each nodeStore.nodes as pane, i}
 		<Pane
 			{pane}
+			{canRemove}
 			index={i}
 			style={uiService.getPaneGridStyles(pane, update)}
 			on:input={() => (update = {})}
@@ -51,6 +53,7 @@
 			on:remove={() => {
 				nodeStore.remove(pane);
 				update = {};
+				nodeStore.nodes = nodeStore.nodes;
 			}}
 		/>
 	{/each}

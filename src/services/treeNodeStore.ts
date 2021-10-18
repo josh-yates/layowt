@@ -2,7 +2,7 @@ import type { SplitType } from "../models/splitType";
 import { TreeNode } from "../models/treeNode";
 
 export class TreeNodeStore {
-    public readonly nodes: TreeNode[] = [new TreeNode()]
+    public nodes: TreeNode[] = [new TreeNode()]
 
     public split(node: TreeNode, split: SplitType): void {
         const newChild = new TreeNode();
@@ -25,6 +25,7 @@ export class TreeNodeStore {
             }
 
             lastChild.parent = node.parent;
+            lastChild.parentSplit = node.parentSplit;
 
             lastChild.children = [...node.children.filter(c => c !== lastChild), ...lastChild.children];
             lastChild.children.forEach(c => c.parent = lastChild);

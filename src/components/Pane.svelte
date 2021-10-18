@@ -4,6 +4,7 @@
     export let pane: TreeNode;
     export let style: string;
     export let index: number;
+    export let canRemove: boolean;
     const dispatch = createEventDispatcher();
     const splitVertical = () => dispatch("splitVertical");
     const splitHorizontal = () => dispatch("splitHorizontal");
@@ -95,11 +96,13 @@
             <div class="form-buttons">
                 <button type="submit" class="form-button">OK</button>
                 <!--TODO: Fix issues with node removal-->
-                <!-- <button
-                    type="button"
-                    class="form-button remove"
-                    on:click={remove}>Remove</button
-                > -->
+                {#if canRemove}
+                    <button
+                        type="button"
+                        class="form-button remove"
+                        on:click={remove}>Remove</button
+                    >
+                {/if}
             </div>
         </form>
     {:else}
@@ -229,6 +232,7 @@
     .form-buttons {
         display: flex;
         flex-direction: row;
+        margin-top: 0.5rem;
     }
 
     .form-button {
@@ -247,9 +251,9 @@
         font-family: monospace;
     }
 
-    /* .form-button.remove {
+    .form-button.remove {
         margin-left: auto;
-    } */
+    }
 
     .form-row {
         display: flex;
