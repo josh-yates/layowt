@@ -27,7 +27,7 @@
 </script>
 
 <header>
-	<a class="title" href="/">layowt</a>
+	<h1 class="title">layowt</h1>
 	<a
 		class="github-link"
 		href="https://github.com/josh-yates/layowt"

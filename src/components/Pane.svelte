@@ -289,6 +289,9 @@
         border-radius: 0.5rem;
         margin-left: 0.5rem;
         min-width: 0;
+        font-size: 1rem;
+        font-weight: 900;
+        color: var(--fg-colour);
     }
 
     .form-row > input:focus {
