@@ -1,22 +1,22 @@
 import { SplitType } from '../../src/models/splitType';
 import { Tab } from '../../src/models/tab';
-import type { TreeNode } from '../../src/models/treeNode';
+import type { Pane } from '../../src/models/pane';
 import { CommandService } from '../../src/services/commandService';
-import { TreeNodeService } from '../../src/services/treeNodeService';
+import { PaneService } from '../../src/services/paneService';
 
-let treeNodeService: TreeNodeService;
+let paneService: PaneService;
 let sut: CommandService;
 
 let tab: Tab;
 
-let node1: TreeNode;
-let node2: TreeNode;
-let node3: TreeNode;
-let node4: TreeNode;
-let node5: TreeNode;
-let node6: TreeNode;
-let node7: TreeNode;
-let node8: TreeNode;
+let node1: Pane;
+let node2: Pane;
+let node3: Pane;
+let node4: Pane;
+let node5: Pane;
+let node6: Pane;
+let node7: Pane;
+let node8: Pane;
 
 function setupScenario1(): void {
     // -----------------
@@ -52,8 +52,8 @@ function setupScenario1(): void {
     node1 = tab.panes[0];
     node1.content = "Write-Host 1";
 
-    treeNodeService.split(node1, SplitType.Vertical);
-    treeNodeService.split(node1, SplitType.Vertical);
+    paneService.split(node1, SplitType.Vertical);
+    paneService.split(node1, SplitType.Vertical);
 
     node3 = node1.children[0];
     node3.content = "Write-Host 3";
@@ -61,8 +61,8 @@ function setupScenario1(): void {
     node2 = node1.children[1];
     node2.content = "Write-Host 2";
 
-    treeNodeService.split(node3, SplitType.Horizontal);
-    treeNodeService.split(node3, SplitType.Vertical);
+    paneService.split(node3, SplitType.Horizontal);
+    paneService.split(node3, SplitType.Vertical);
 
     node5 = node3.children[0];
     node5.content = "Write-Host 5";
@@ -70,8 +70,8 @@ function setupScenario1(): void {
     node4 = node3.children[1];
     node4.content = "Write-Host 4";
 
-    treeNodeService.split(node2, SplitType.Horizontal);
-    treeNodeService.split(node2, SplitType.Horizontal);
+    paneService.split(node2, SplitType.Horizontal);
+    paneService.split(node2, SplitType.Horizontal);
 
     node6 = node2.children[0];
     node6.content = "Write-Host 6";
@@ -79,15 +79,15 @@ function setupScenario1(): void {
     node8 = node2.children[1];
     node8.content = "Write-Host 8";
 
-    treeNodeService.split(node6, SplitType.Vertical);
+    paneService.split(node6, SplitType.Vertical);
 
     node7 = node6.children[0];
     node7.content = "Write-Host 7";
 };
 
 beforeEach(() => {
-    treeNodeService = new TreeNodeService();
-    sut = new CommandService(treeNodeService);
+    paneService = new PaneService();
+    sut = new CommandService(paneService);
 
     tab = new Tab();
 });
@@ -100,7 +100,7 @@ describe('CommandService', () => {
         });
 
         it('Does not generate a pane command when pane has no content', () => {
-            treeNodeService.split(treeNodeService.getRootNode(tab), SplitType.Vertical);
+            paneService.split(paneService.getRootNode(tab), SplitType.Vertical);
             expect(sut.getCommand(tab)).toBe('wt `; sp -V `; mf left');
         });
     });

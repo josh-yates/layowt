@@ -3,15 +3,15 @@
 	import { SplitType } from "./models/splitType";
 	import { CommandService } from "./services/commandService";
 	import { GridService } from "./services/gridService";
-	import { TreeNodeService } from "./services/treeNodeService";
+	import { PaneService } from "./services/paneService";
 	import { UIService } from "./services/uiService";
 
-	const nodeStore = new TreeNodeService();
-	const gridService = new GridService(nodeStore);
-	const commandService = new CommandService(nodeStore);
+	const paneService = new PaneService();
+	const gridService = new GridService(paneService);
+	const commandService = new CommandService(paneService);
 	const uiService = new UIService(gridService, commandService);
 	$: update = {};
-	$: canRemove = !!update && nodeStore.nodes.length !== 1;
+	$: canRemove = !!update && paneService.nodes.length !== 1;
 
 	let showCopied = false;
 
@@ -35,7 +35,7 @@
 	>
 </header>
 <main style={uiService.getContainerGridStyles(update)}>
-	{#each nodeStore.nodes as pane, i}
+	{#each paneService.nodes as pane, i}
 		<Pane
 			{pane}
 			{canRemove}
@@ -43,17 +43,17 @@
 			style={uiService.getPaneGridStyles(pane, update)}
 			on:input={() => (update = {})}
 			on:splitHorizontal={() => {
-				nodeStore.split(pane, SplitType.Horizontal);
+				paneService.split(pane, SplitType.Horizontal);
 				update = {};
 			}}
 			on:splitVertical={() => {
-				nodeStore.split(pane, SplitType.Vertical);
+				paneService.split(pane, SplitType.Vertical);
 				update = {};
 			}}
 			on:remove={() => {
-				nodeStore.remove(pane);
+				paneService.remove(pane);
 				update = {};
-				nodeStore.nodes = nodeStore.nodes;
+				paneService.nodes = paneService.nodes;
 			}}
 		/>
 	{/each}

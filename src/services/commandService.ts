@@ -1,16 +1,16 @@
 import { SplitType } from "../models/splitType";
 import type { Tab } from "../models/tab";
-import type { TreeNode } from "../models/treeNode";
-import type { TreeNodeService } from "./treeNodeService";
+import type { Pane } from "../models/pane";
+import type { PaneService } from "./paneService";
 
 export class CommandService {
-    constructor(private readonly _treeNodeService: TreeNodeService) { }
+    constructor(private readonly _paneService: PaneService) { }
 
     public getCommand(tab: Tab): string {
-        return 'wt ' + this.printNode(this._treeNodeService.getRootNode(tab)).trim();
+        return 'wt ' + this.printNode(this._paneService.getRootNode(tab)).trim();
     }
 
-    private printNode(node: TreeNode): string {
+    private printNode(node: Pane): string {
         let splitCommand = '';
         let returnCommand = '';
 

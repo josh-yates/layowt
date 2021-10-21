@@ -1,20 +1,20 @@
 import { SplitType } from '../../src/models/splitType';
 import { Tab } from '../../src/models/tab';
-import type { TreeNode } from '../../src/models/treeNode';
-import { TreeNodeService } from '../../src/services/treeNodeService';
+import type { Pane } from '../../src/models/pane';
+import { PaneService } from '../../src/services/paneService';
 
-let sut: TreeNodeService;
+let sut: PaneService;
 
 let tab: Tab;
 
-let node1: TreeNode;
-let node2: TreeNode;
-let node3: TreeNode;
-let node4: TreeNode;
-let node5: TreeNode;
-let node6: TreeNode;
-let node7: TreeNode;
-let node8: TreeNode;
+let node1: Pane;
+let node2: Pane;
+let node3: Pane;
+let node4: Pane;
+let node5: Pane;
+let node6: Pane;
+let node7: Pane;
+let node8: Pane;
 
 function setupScenario1(): void {
     // -----------------
@@ -84,11 +84,11 @@ function setupScenario1(): void {
 };
 
 beforeEach(() => {
-    sut = new TreeNodeService();
+    sut = new PaneService();
     tab = new Tab();
 });
 
-describe('TreeNodeService', () => {
+describe('PaneService', () => {
     describe('getRootNode', () => {
         it('Gets the root node', () => {
             const rootNode = tab.panes[0];
@@ -202,7 +202,7 @@ describe('TreeNodeService', () => {
         it('Calculates steps correctly', () => {
             setupScenario1();
 
-            const expectedResults: { key: TreeNode, stepsV: number, stepsH: number }[] = [];
+            const expectedResults: { key: Pane, stepsV: number, stepsH: number }[] = [];
 
             expectedResults.push({
                 key: node1,

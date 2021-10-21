@@ -1,8 +1,8 @@
-import { TreeNode } from "./treeNode";
+import { Pane } from "./pane";
 
 export class Tab {
     constructor() { }
 
-    public panes: TreeNode[] = [new TreeNode(this)];
+    public panes: Pane[] = [new Pane(this)];
     public title?: string;
 }

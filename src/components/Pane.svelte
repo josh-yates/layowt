@@ -1,7 +1,7 @@
 <script lang="ts">
     import { createEventDispatcher } from "svelte";
-    import type { TreeNode } from "../models/treeNode";
-    export let pane: TreeNode;
+    import type { Pane } from "../models/pane";
+    export let pane: Pane;
     export let style: string;
     export let index: number;
     export let canRemove: boolean;
