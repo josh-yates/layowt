@@ -2,8 +2,6 @@ import type { SplitType } from "../models/splitType";
 import { TreeNode } from "../models/treeNode";
 
 export class TreeNodeService {
-    public nodes: TreeNode[] = [new TreeNode()]
-
     public split(node: TreeNode, split: SplitType): void {
         const newChild = new TreeNode();
         newChild.parentSplit = split;

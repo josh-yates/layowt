@@ -1,7 +1,8 @@
 import { SplitType } from './splitType';
+import type { Tab } from './tab';
 
 export class TreeNode {
-    constructor() { }
+    constructor(public tab: Tab) { }
     public content?: string;
     public directory?: string;
     public tabColour?: string;

@@ -6,7 +6,7 @@ beforeEach(() => sut = new TabStore());
 
 describe('TabStore', () => {
     describe('constructor', () => {
-        it('Creates a single tab', () => expect(sut.tabs.length).toBe(1))
+        it('Creates a single tab', () => expect(sut.tabs.length).toBe(1));
     });
 
     describe('add', () => {

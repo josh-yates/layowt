@@ -1,8 +1,11 @@
 import { SplitType } from '../../src/models/splitType';
-import type { TreeNode } from '../../src/models/treeNode';
+import { Tab } from '../../src/models/tab';
+import { TreeNode } from '../../src/models/treeNode';
 import { TreeNodeService } from '../../src/services/treeNodeService';
 
 let sut: TreeNodeService;
+
+let tab: Tab;
 
 let node1: TreeNode;
 let node2: TreeNode;
@@ -80,7 +83,10 @@ function setupScenario1(): void {
     node7.content = "7";
 };
 
-beforeEach(() => sut = new TreeNodeService());
+beforeEach(() => {
+    sut = new TreeNodeService();
+    tab = new Tab();
+});
 
 describe('TreeNodeService', () => {
     describe('constructor', () => {
