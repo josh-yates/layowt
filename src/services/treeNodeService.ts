@@ -1,18 +1,19 @@
 import type { SplitType } from "../models/splitType";
+import type { Tab } from "../models/tab";
 import { TreeNode } from "../models/treeNode";
 
 export class TreeNodeService {
     public split(node: TreeNode, split: SplitType): void {
-        const newChild = new TreeNode();
+        const newChild = new TreeNode(node.tab);
         newChild.parentSplit = split;
         newChild.parent = node;
         node.children.push(newChild);
 
-        this.nodes.push(newChild);
+        node.tab.panes.push(newChild);
     }
 
     public remove(node: TreeNode): void {
-        if (this.nodes.length === 1 && this.nodes[0] === node) throw new Error('Cannot remove final node in store');
+        if (node.tab.panes.length === 1 && node.tab.panes[0] === node) throw new Error('Cannot remove final node in store');
 
         const lastChild = node.children[node.children.length - 1];
         const indexInParent = node.parent ? node.parent.children.indexOf(node) : -1;
@@ -33,7 +34,7 @@ export class TreeNodeService {
             node.parent.children.splice(indexInParent, 1);
         }
 
-        this.nodes.splice(this.nodes.indexOf(node), 1);
+        node.tab.panes.splice(node.tab.panes.indexOf(node), 1);
     }
 
     public getStepsTo(node: TreeNode, split: SplitType): number {
@@ -48,7 +49,7 @@ export class TreeNodeService {
         return node?.parent?.children?.slice(0, node?.parent?.children?.indexOf(node)).filter(n => n.parentSplit === split) ?? [];
     }
 
-    public getRootNode(): TreeNode {
-        return this.nodes.filter(n => !n.parent)[0];
+    public getRootNode(tab: Tab): TreeNode {
+        return tab.panes.filter(n => !n.parent)[0];
     }
 }

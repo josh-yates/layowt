@@ -1,12 +1,13 @@
 import { SplitType } from "../models/splitType";
+import type { Tab } from "../models/tab";
 import type { TreeNode } from "../models/treeNode";
 import type { TreeNodeService } from "./treeNodeService";
 
 export class CommandService {
     constructor(private readonly _treeNodeService: TreeNodeService) { }
 
-    public getCommand(): string {
-        return 'wt ' + this.printNode(this._treeNodeService.getRootNode()).trim();
+    public getCommand(tab: Tab): string {
+        return 'wt ' + this.printNode(this._treeNodeService.getRootNode(tab)).trim();
     }
 
     private printNode(node: TreeNode): string {

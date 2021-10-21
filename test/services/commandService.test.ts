@@ -1,10 +1,13 @@
 import { SplitType } from '../../src/models/splitType';
+import { Tab } from '../../src/models/tab';
 import type { TreeNode } from '../../src/models/treeNode';
 import { CommandService } from '../../src/services/commandService';
 import { TreeNodeService } from '../../src/services/treeNodeService';
 
 let treeNodeService: TreeNodeService;
 let sut: CommandService;
+
+let tab: Tab;
 
 let node1: TreeNode;
 let node2: TreeNode;
@@ -46,8 +49,7 @@ function setupScenario1(): void {
     // 7 | 3 | 2 | 1 | 2
     // 8 | 2 | 1 | 2 | 1
 
-    // TODO: add commands here
-    node1 = treeNodeService.nodes[0];
+    node1 = tab.panes[0];
     node1.content = "Write-Host 1";
 
     treeNodeService.split(node1, SplitType.Vertical);
@@ -86,18 +88,20 @@ function setupScenario1(): void {
 beforeEach(() => {
     treeNodeService = new TreeNodeService();
     sut = new CommandService(treeNodeService);
+
+    tab = new Tab();
 });
 
 describe('CommandService', () => {
     describe('getCommand', () => {
         it('Gets the command correctly', () => {
             setupScenario1();
-            expect(sut.getCommand()).toBe('wt powershell -NoExit "Write-Host 1" `; sp -V powershell -NoExit "Write-Host 3" `; sp -H powershell -NoExit "Write-Host 5" `; mf up `; sp -V powershell -NoExit "Write-Host 4" `; mf left `; mf left `; sp -V powershell -NoExit "Write-Host 2" `; sp -H powershell -NoExit "Write-Host 6" `; sp -V powershell -NoExit "Write-Host 7" `; mf left `; mf up `; sp -H powershell -NoExit "Write-Host 8" `; mf up `; mf left');
+            expect(sut.getCommand(tab)).toBe('wt powershell -NoExit "Write-Host 1" `; sp -V powershell -NoExit "Write-Host 3" `; sp -H powershell -NoExit "Write-Host 5" `; mf up `; sp -V powershell -NoExit "Write-Host 4" `; mf left `; mf left `; sp -V powershell -NoExit "Write-Host 2" `; sp -H powershell -NoExit "Write-Host 6" `; sp -V powershell -NoExit "Write-Host 7" `; mf left `; mf up `; sp -H powershell -NoExit "Write-Host 8" `; mf up `; mf left');
         });
 
         it('Does not generate a pane command when pane has no content', () => {
-            treeNodeService.split(treeNodeService.getRootNode(), SplitType.Vertical);
-            expect(sut.getCommand()).toBe('wt `; sp -V `; mf left');
+            treeNodeService.split(treeNodeService.getRootNode(tab), SplitType.Vertical);
+            expect(sut.getCommand(tab)).toBe('wt `; sp -V `; mf left');
         });
     });
 });

@@ -1,6 +1,6 @@
 import { SplitType } from '../../src/models/splitType';
 import { Tab } from '../../src/models/tab';
-import { TreeNode } from '../../src/models/treeNode';
+import type { TreeNode } from '../../src/models/treeNode';
 import { TreeNodeService } from '../../src/services/treeNodeService';
 
 let sut: TreeNodeService;
@@ -47,7 +47,7 @@ function setupScenario1(): void {
     // 7 |    3    |    1
     // 8 |    2    |    2
 
-    node1 = sut.nodes[0];
+    node1 = tab.panes[0];
     node1.content = "1";
 
     sut.split(node1, SplitType.Vertical);
@@ -89,76 +89,73 @@ beforeEach(() => {
 });
 
 describe('TreeNodeService', () => {
-    describe('constructor', () => {
-        it('Creates a single node', () => expect(sut.nodes.length).toBe(1))
-    });
     describe('getRootNode', () => {
         it('Gets the root node', () => {
-            const rootNode = sut.nodes[0];
+            const rootNode = tab.panes[0];
 
             sut.split(rootNode, SplitType.Horizontal);
             sut.split(rootNode, SplitType.Horizontal);
             sut.split(rootNode, SplitType.Horizontal);
 
-            expect(sut.getRootNode()).toBe(rootNode);
+            expect(sut.getRootNode(tab)).toBe(rootNode);
         });
     });
     describe('split', () => {
         it('Creates a new node in the store', () => {
-            sut.split(sut.nodes[0], SplitType.Horizontal);
+            sut.split(tab.panes[0], SplitType.Horizontal);
 
-            expect(sut.nodes.length).toBe(2);
+            expect(tab.panes.length).toBe(2);
         });
         it('Adds the new node to the original node\'s children', () => {
-            const originalNode = sut.nodes[0];
+            const originalNode = tab.panes[0];
             sut.split(originalNode, SplitType.Horizontal);
 
-            const newNode = sut.nodes[1];
+            const newNode = tab.panes[1];
 
             expect(originalNode.children).toContain(newNode);
         });
         it('Adds the original node as the new node\'s parent', () => {
-            const originalNode = sut.nodes[0];
+            const originalNode = tab.panes[0];
             sut.split(originalNode, SplitType.Horizontal);
 
-            const newNode = sut.nodes[1];
+            const newNode = tab.panes[1];
 
             expect(newNode.parent).toBe(originalNode);
         });
         it('Sets the split type on the new node', () => {
-            sut.split(sut.nodes[0], SplitType.Vertical);
+            sut.split(tab.panes[0], SplitType.Vertical);
 
-            const newNode = sut.nodes[1];
+            const newNode = tab.panes[1];
 
             expect(newNode.parentSplit).toBe(SplitType.Vertical);
         });
     });
     describe('remove', () => {
         it('Removes the node from the store', () => {
-            sut.split(sut.nodes[0], SplitType.Horizontal);
+            sut.split(tab.panes[0], SplitType.Horizontal);
 
-            const nodeToRemove = sut.nodes[1];
+            const nodeToRemove = tab.panes[1];
 
             sut.remove(nodeToRemove);
 
-            expect(sut.nodes.includes(nodeToRemove)).toBe(false);
+            expect(tab.panes.includes(nodeToRemove)).toBe(false);
         });
         it('Does not allow the last node to be removed', () => {
-            expect(() => sut.remove(sut.nodes[0])).toThrow();
+            expect(() => sut.remove(tab.panes[0])).toThrow();
         });
         it('Removes the node from its parent\'s children', () => {
-            const parentNode = sut.nodes[0];
+            const parentNode = tab.panes[0];
 
-            sut.split(sut.nodes[0], SplitType.Horizontal);
+            sut.split(tab.panes[0], SplitType.Horizontal);
 
-            const childNode = sut.nodes[0];
+            const childNode = tab.panes[0];
 
             sut.remove(childNode);
 
             expect(parentNode.children).not.toContain(childNode);
         });
         it('Replaces itself with last child when it has children (without parent)', () => {
-            const nodeToRemove = sut.nodes[0];
+            const nodeToRemove = tab.panes[0];
 
             sut.split(nodeToRemove, SplitType.Horizontal);
             sut.split(nodeToRemove, SplitType.Horizontal);
@@ -178,11 +175,11 @@ describe('TreeNodeService', () => {
         });
 
         it('Replaces itself with last child when it has children (with parent)', () => {
-            const topLevelParent = sut.nodes[0];
+            const topLevelParent = tab.panes[0];
 
             sut.split(topLevelParent, SplitType.Horizontal);
 
-            const nodeToRemove = sut.nodes[1];
+            const nodeToRemove = tab.panes[1];
 
             sut.split(nodeToRemove, SplitType.Horizontal);
             sut.split(nodeToRemove, SplitType.Horizontal);
@@ -248,7 +245,7 @@ describe('TreeNodeService', () => {
                 stepsH: 2
             });
 
-            sut.nodes.forEach(n => {
+            tab.panes.forEach(n => {
                 const stepsV = sut.getStepsTo(n, SplitType.Vertical);
                 const stepsH = sut.getStepsTo(n, SplitType.Horizontal);
 
@@ -261,7 +258,7 @@ describe('TreeNodeService', () => {
     });
     describe('getPriorSiblings', () => {
         it('Returns the prior siblings with the split type', () => {
-            const topLevelParent = sut.nodes[0];
+            const topLevelParent = tab.panes[0];
 
             sut.split(topLevelParent, SplitType.Horizontal); // 1
             sut.split(topLevelParent, SplitType.Vertical); // 2
@@ -269,13 +266,13 @@ describe('TreeNodeService', () => {
             sut.split(topLevelParent, SplitType.Vertical); // 4
             sut.split(topLevelParent, SplitType.Horizontal); // 5
 
-            const testNode = sut.nodes[4];
+            const testNode = tab.panes[4];
 
             const priorSiblings = sut.getPriorSiblings(testNode, SplitType.Horizontal);
 
             expect(priorSiblings.length).toBe(2);
-            expect(priorSiblings[0] === sut.nodes[1]).toBe(true);
-            expect(priorSiblings[1] === sut.nodes[3]).toBe(true);
+            expect(priorSiblings[0] === tab.panes[1]).toBe(true);
+            expect(priorSiblings[1] === tab.panes[3]).toBe(true);
         });
     });
 })

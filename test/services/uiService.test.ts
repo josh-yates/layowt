@@ -1,4 +1,5 @@
 import { SplitType } from "../../src/models/splitType";
+import { Tab } from "../../src/models/tab";
 import type { TreeNode } from "../../src/models/treeNode";
 import { CommandService } from "../../src/services/commandService";
 import { GridService } from "../../src/services/gridService";
@@ -9,6 +10,8 @@ let treeNodeService: TreeNodeService;
 let commandService: CommandService;
 let gridService: GridService;
 let sut: UIService;
+
+let tab: Tab;
 
 let node1: TreeNode;
 let node2: TreeNode;
@@ -50,8 +53,7 @@ function setupScenario1(): void {
     // 7 | 3 | 2 | 1 | 2
     // 8 | 2 | 1 | 2 | 1
 
-    // TODO: add commands here
-    node1 = treeNodeService.nodes[0];
+    node1 = tab.panes[0];
     node1.content = "Write-Host 1";
 
     treeNodeService.split(node1, SplitType.Vertical);
@@ -94,13 +96,15 @@ beforeEach(() => {
 
     sut = new UIService(gridService, commandService);
 
+    tab = new Tab();
+
     setupScenario1();
 });
 
 describe('UIService', () => {
     describe('getContainerGridStyles', () => {
         it('Gets the container grid styles correctly', () => {
-            expect(sut.getContainerGridStyles({})).toBe('grid-template-columns: repeat(8, 1fr); grid-template-rows: repeat(4, 1fr);');
+            expect(sut.getContainerGridStyles(tab, {})).toBe('grid-template-columns: repeat(8, 1fr); grid-template-rows: repeat(4, 1fr);');
         });
     });
     describe('getPaneGridStyles', () => {
@@ -140,7 +144,7 @@ describe('UIService', () => {
                 styles: 'grid-column: 3 / span 2; grid-row: 2 / span 1;'
             });
 
-            treeNodeService.nodes.forEach(n => {
+            tab.panes.forEach(n => {
                 const style = sut.getPaneGridStyles(n, {});
 
                 const expected = expectedResults.filter(r => r.key === n)[0];

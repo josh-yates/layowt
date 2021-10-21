@@ -98,7 +98,6 @@
             </div>
             <div class="form-buttons">
                 <button type="submit" class="form-button">OK</button>
-                <!--TODO: Fix issues with node removal-->
                 {#if canRemove}
                     <button
                         type="button"

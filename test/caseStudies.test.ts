@@ -1,4 +1,5 @@
 import { SplitType } from "../src/models/splitType";
+import { Tab } from "../src/models/tab";
 import { CommandService } from "../src/services/commandService";
 import { GridService } from "../src/services/gridService";
 import { TreeNodeService } from "../src/services/treeNodeService";
@@ -11,7 +12,9 @@ describe('Case studies', () => {
         const commandService = new CommandService(treeNodeService);
         const uiService = new UIService(gridService, commandService);
 
-        const firstNode = treeNodeService.nodes[0];
+        const tab = new Tab();
+
+        const firstNode = tab.panes[0];
 
         treeNodeService.split(firstNode, SplitType.Horizontal);
 
@@ -19,8 +22,8 @@ describe('Case studies', () => {
 
         treeNodeService.remove(firstNode);
 
-        expect(uiService.getCommandText(null).trim()).toBe('wt');
-        expect(uiService.getContainerGridStyles(null)).toBe('grid-template-columns: repeat(1, 1fr); grid-template-rows: repeat(1, 1fr);');
+        expect(uiService.getCommandText(tab, null).trim()).toBe('wt');
+        expect(uiService.getContainerGridStyles(tab, null)).toBe('grid-template-columns: repeat(1, 1fr); grid-template-rows: repeat(1, 1fr);');
         expect(uiService.getPaneGridStyles(secondNode, null)).toBe('grid-column: 1 / span 1; grid-row: 1 / span 1;');
     });
 
@@ -30,7 +33,10 @@ describe('Case studies', () => {
         const commandService = new CommandService(treeNodeService);
         const uiService = new UIService(gridService, commandService);
 
-        const firstNode = treeNodeService.nodes[0];
+        const tab = new Tab();
+
+        const firstNode = tab.panes[0];
+
         firstNode.content = 'First content';
 
         treeNodeService.split(firstNode, SplitType.Horizontal);
@@ -40,8 +46,8 @@ describe('Case studies', () => {
 
         treeNodeService.remove(firstNode);
 
-        expect(uiService.getCommandText(null).trim()).toBe('wt powershell -NoExit "Second content"');
-        expect(uiService.getContainerGridStyles(null)).toBe('grid-template-columns: repeat(1, 1fr); grid-template-rows: repeat(1, 1fr);');
+        expect(uiService.getCommandText(tab, null).trim()).toBe('wt powershell -NoExit "Second content"');
+        expect(uiService.getContainerGridStyles(tab, null)).toBe('grid-template-columns: repeat(1, 1fr); grid-template-rows: repeat(1, 1fr);');
         expect(uiService.getPaneGridStyles(secondNode, null)).toBe('grid-column: 1 / span 1; grid-row: 1 / span 1;');
     });
 });

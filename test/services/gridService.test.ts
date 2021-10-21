@@ -1,10 +1,13 @@
 import { SplitType } from '../../src/models/splitType';
+import { Tab } from '../../src/models/tab';
 import type { TreeNode } from '../../src/models/treeNode';
 import { GridService } from '../../src/services/gridService';
 import { TreeNodeService } from '../../src/services/treeNodeService';
 
 let treeNodeService: TreeNodeService;
 let sut: GridService;
+
+let tab: Tab;
 
 let node1: TreeNode;
 let node2: TreeNode;
@@ -46,7 +49,7 @@ function setupScenario1(): void {
     // 7 | 3 | 2 | 1 | 2
     // 8 | 2 | 1 | 2 | 1
 
-    node1 = treeNodeService.nodes[0];
+    node1 = tab.panes[0];
     node1.content = "1";
 
     treeNodeService.split(node1, SplitType.Vertical);
@@ -85,18 +88,21 @@ function setupScenario1(): void {
 beforeEach(() => {
     treeNodeService = new TreeNodeService();
     sut = new GridService(treeNodeService);
+
+    tab = new Tab();
+
     setupScenario1();
 });
 
 describe('GridService', () => {
     describe('getGridColumns', () => {
         it('Gets the column count correctly', () => {
-            expect(sut.getGridColumns()).toBe(8);
+            expect(sut.getGridColumns(tab)).toBe(8);
         });
     });
     describe('getGridRows', () => {
         it('Gets the row count correctly', () => {
-            expect(sut.getGridRows()).toBe(4);
+            expect(sut.getGridRows(tab)).toBe(4);
         });
     });
     describe('getIndex', () => {
@@ -144,7 +150,7 @@ describe('GridService', () => {
                 y: 1
             });
 
-            treeNodeService.nodes.forEach(n => {
+            tab.panes.forEach(n => {
                 const x = sut.getIndex(n, SplitType.Vertical);
                 const y = sut.getIndex(n, SplitType.Horizontal);
 
@@ -200,7 +206,7 @@ describe('GridService', () => {
                 rows: 1
             });
 
-            treeNodeService.nodes.forEach(n => {
+            tab.panes.forEach(n => {
                 const cols = sut.getSpan(n, SplitType.Vertical);
                 const rows = sut.getSpan(n, SplitType.Horizontal);
 
