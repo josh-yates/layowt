@@ -4,19 +4,25 @@
 	import { CommandService } from "./services/commandService";
 	import { GridService } from "./services/gridService";
 	import { PaneService } from "./services/paneService";
+	import { TabStore } from "./services/tabStore";
 	import { UIService } from "./services/uiService";
 
 	const paneService = new PaneService();
 	const gridService = new GridService(paneService);
 	const commandService = new CommandService(paneService);
 	const uiService = new UIService(gridService, commandService);
+
+	const tabStore = new TabStore();
+
+	let currentTab = tabStore.tabs[0];
+
 	$: update = {};
-	$: canRemove = !!update && paneService.nodes.length !== 1;
+	$: canRemove = !!update && currentTab.panes.length !== 1;
 
 	let showCopied = false;
 
 	const copyCommand = () => {
-		const command = uiService.getCommandText(null);
+		const command = uiService.getCommandText(currentTab, null);
 
 		navigator.clipboard.writeText(command);
 
@@ -34,8 +40,8 @@
 		target="_blank">View GitHub repository</a
 	>
 </header>
-<main style={uiService.getContainerGridStyles(update)}>
-	{#each paneService.nodes as pane, i}
+<main style={uiService.getContainerGridStyles(currentTab, update)}>
+	{#each currentTab.panes as pane, i}
 		<Pane
 			{pane}
 			{canRemove}
@@ -53,13 +59,13 @@
 			on:remove={() => {
 				paneService.remove(pane);
 				update = {};
-				paneService.nodes = paneService.nodes;
+				currentTab.panes = currentTab.panes;
 			}}
 		/>
 	{/each}
 </main>
 <p class="command">
-	{uiService.getCommandText(update)}<button
+	{uiService.getCommandText(currentTab, update)}<button
 		class="copy-button"
 		on:click={copyCommand}>{showCopied ? "Copied!" : "Copy"}</button
 	>
