@@ -19,7 +19,7 @@ export class UIService {
             `grid-row: ${this._gridService.getIndex(pane, SplitType.Horizontal) + 1} / span ${this._gridService.getSpan(pane, SplitType.Horizontal)};`;
     }
 
-    public getCommandText(tab: Tab, update: any): string {
-        return this._commandService.getCommand(tab);
+    public getCommandText(update: any): string {
+        return this._commandService.getCommand();
     }
 }

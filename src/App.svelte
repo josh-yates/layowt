@@ -9,10 +9,9 @@
 
 	const paneService = new PaneService();
 	const gridService = new GridService(paneService);
-	const commandService = new CommandService(paneService);
-	const uiService = new UIService(gridService, commandService);
-
 	const tabStore = new TabStore();
+	const commandService = new CommandService(tabStore, paneService);
+	const uiService = new UIService(gridService, commandService);
 
 	let currentTab = tabStore.tabs[0];
 
@@ -22,7 +21,7 @@
 	let showCopied = false;
 
 	const copyCommand = () => {
-		const command = uiService.getCommandText(currentTab, null);
+		const command = uiService.getCommandText(null);
 
 		navigator.clipboard.writeText(command);
 
@@ -40,6 +39,16 @@
 		target="_blank">View GitHub repository</a
 	>
 </header>
+<aside class="tabs">
+	{#each tabStore.tabs as tab, i}
+	<button on:click={() => currentTab = tab}>{`${tab.title} (${i})`}</button>
+	{/each}
+	<button on:click={() => {
+		tabStore.add();
+		update = {};
+		tabStore.tabs = tabStore.tabs;
+	}}>Add</button>
+</aside>
 <main style={uiService.getContainerGridStyles(currentTab, update)}>
 	{#each currentTab.panes as pane, i}
 		<Pane
@@ -65,7 +74,7 @@
 	{/each}
 </main>
 <p class="command">
-	{uiService.getCommandText(currentTab, update)}<button
+	{uiService.getCommandText(update)}<button
 		class="copy-button"
 		on:click={copyCommand}>{showCopied ? "Copied!" : "Copy"}</button
 	>

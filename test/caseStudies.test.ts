@@ -3,16 +3,18 @@ import { Tab } from "../src/models/tab";
 import { CommandService } from "../src/services/commandService";
 import { GridService } from "../src/services/gridService";
 import { PaneService } from "../src/services/paneService";
+import { TabStore } from "../src/services/tabStore";
 import { UIService } from "../src/services/uiService";
 
 describe('Case studies', () => {
     it('Should support splitting horizontally then removing first node', () => {
         const paneService = new PaneService();
         const gridService = new GridService(paneService);
-        const commandService = new CommandService(paneService);
+        const tabStore = new TabStore();
+        const commandService = new CommandService(tabStore, paneService);
         const uiService = new UIService(gridService, commandService);
 
-        const tab = new Tab();
+        const tab = tabStore.tabs[0];
 
         const firstNode = tab.panes[0];
 
@@ -22,7 +24,7 @@ describe('Case studies', () => {
 
         paneService.remove(firstNode);
 
-        expect(uiService.getCommandText(tab, null).trim()).toBe('wt');
+        expect(uiService.getCommandText(null).trim()).toBe('wt');
         expect(uiService.getContainerGridStyles(tab, null)).toBe('grid-template-columns: repeat(1, 1fr); grid-template-rows: repeat(1, 1fr);');
         expect(uiService.getPaneGridStyles(secondNode, null)).toBe('grid-column: 1 / span 1; grid-row: 1 / span 1;');
     });
@@ -30,10 +32,11 @@ describe('Case studies', () => {
     it('Should support splitting horizontally then removing first node, with text', () => {
         const paneService = new PaneService();
         const gridService = new GridService(paneService);
-        const commandService = new CommandService(paneService);
+        const tabStore = new TabStore();
+        const commandService = new CommandService(tabStore, paneService);
         const uiService = new UIService(gridService, commandService);
 
-        const tab = new Tab();
+        const tab = tabStore.tabs[0];
 
         const firstNode = tab.panes[0];
 
@@ -46,7 +49,7 @@ describe('Case studies', () => {
 
         paneService.remove(firstNode);
 
-        expect(uiService.getCommandText(tab, null).trim()).toBe('wt powershell -NoExit "Second content"');
+        expect(uiService.getCommandText(null).trim()).toBe('wt powershell -NoExit "Second content"');
         expect(uiService.getContainerGridStyles(tab, null)).toBe('grid-template-columns: repeat(1, 1fr); grid-template-rows: repeat(1, 1fr);');
         expect(uiService.getPaneGridStyles(secondNode, null)).toBe('grid-column: 1 / span 1; grid-row: 1 / span 1;');
     });

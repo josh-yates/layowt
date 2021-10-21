@@ -1,8 +1,8 @@
-import { Pane } from "./pane";
+import { Pane } from './pane';
 
 export class Tab {
     constructor() { }
 
     public panes: Pane[] = [new Pane(this)];
-    public title?: string;
+    public title?: string = 'New tab';
 }

@@ -1,13 +1,12 @@
 import { SplitType } from '../../src/models/splitType';
-import { Tab } from '../../src/models/tab';
 import type { Pane } from '../../src/models/pane';
 import { CommandService } from '../../src/services/commandService';
 import { PaneService } from '../../src/services/paneService';
+import { TabStore } from '../../src/services/tabStore';
 
 let paneService: PaneService;
 let sut: CommandService;
-
-let tab: Tab;
+let tabStore: TabStore;
 
 let node1: Pane;
 let node2: Pane;
@@ -49,7 +48,7 @@ function setupScenario1(): void {
     // 7 | 3 | 2 | 1 | 2
     // 8 | 2 | 1 | 2 | 1
 
-    node1 = tab.panes[0];
+    node1 = tabStore.tabs[0].panes[0];
     node1.content = "Write-Host 1";
 
     paneService.split(node1, SplitType.Vertical);
@@ -85,23 +84,88 @@ function setupScenario1(): void {
     node7.content = "Write-Host 7";
 };
 
+function setupScenario2(): void {
+    // Tab 1
+    // wt powershell -NoExit "Tab1Pane1" `; sp -V powershell -NoExit "Tab1Pane2" `; sp -H powershell -NoExit "Tab1pane3" `; mf up `; mf left
+    // -------
+    // |1 |2 |
+    // |  |--|
+    // |  |3 |
+    // -------
+    const tab1 = tabStore.tabs[0];
+
+    const tab1Pane1 = tab1.panes[0];
+    paneService.split(tab1Pane1, SplitType.Vertical);
+
+    const tab1Pane2 = tab1Pane1.children[0];
+    paneService.split(tab1Pane2, SplitType.Horizontal);
+
+    const tab1Pane3 = tab1Pane2.children[0];
+
+    tab1Pane1.content = 'Tab1Pane1';
+    tab1Pane2.content = 'Tab1Pane2';
+    tab1Pane3.content = 'Tab1Pane3';
+
+    // Tab 2
+    // wt powershell -NoExit "Tab2Pane1" `; sp -V powershell -NoExit "Tab2Pane2" `; mf left `; sp -H powershell -NoExit "Tab2Pane3" `; mf up
+    // -------
+    // |1 |2 |
+    // |--|  |
+    // |3 |  |
+    // -------
+    tabStore.add();
+    const tab2 = tabStore.tabs[1];
+
+    const tab2Pane1 = tab2.panes[0];
+    paneService.split(tab2Pane1, SplitType.Vertical);
+
+    const tab2Pane2 = tab2Pane1.children[0];
+
+    paneService.split(tab2Pane1, SplitType.Horizontal);
+
+    const tab2Pane3 = tab2Pane1.children[1];
+
+    tab2Pane1.content = 'Tab2Pane1';
+    tab2Pane2.content = 'Tab2Pane2';
+    tab2Pane3.content = 'Tab2Pane3';
+
+    // Tab 3
+    // wt powershell -NoExit "Tab3Pane1"
+    // -------
+    // |1    |
+    // |     |
+    // |     |
+    // -------
+    tabStore.add();
+    const tab3 = tabStore.tabs[2];
+
+    const tab3pane1 = tab3.panes[0];
+
+    tab3pane1.content = 'Tab3Pane1';
+}
+
 beforeEach(() => {
     paneService = new PaneService();
-    sut = new CommandService(paneService);
-
-    tab = new Tab();
+    tabStore = new TabStore();
+    sut = new CommandService(tabStore, paneService);
 });
 
 describe('CommandService', () => {
     describe('getCommand', () => {
         it('Gets the command correctly', () => {
             setupScenario1();
-            expect(sut.getCommand(tab)).toBe('wt powershell -NoExit "Write-Host 1" `; sp -V powershell -NoExit "Write-Host 3" `; sp -H powershell -NoExit "Write-Host 5" `; mf up `; sp -V powershell -NoExit "Write-Host 4" `; mf left `; mf left `; sp -V powershell -NoExit "Write-Host 2" `; sp -H powershell -NoExit "Write-Host 6" `; sp -V powershell -NoExit "Write-Host 7" `; mf left `; mf up `; sp -H powershell -NoExit "Write-Host 8" `; mf up `; mf left');
+            expect(sut.getCommand()).toBe('wt powershell -NoExit "Write-Host 1" `; sp -V powershell -NoExit "Write-Host 3" `; sp -H powershell -NoExit "Write-Host 5" `; mf up `; sp -V powershell -NoExit "Write-Host 4" `; mf left `; mf left `; sp -V powershell -NoExit "Write-Host 2" `; sp -H powershell -NoExit "Write-Host 6" `; sp -V powershell -NoExit "Write-Host 7" `; mf left `; mf up `; sp -H powershell -NoExit "Write-Host 8" `; mf up `; mf left');
         });
 
         it('Does not generate a pane command when pane has no content', () => {
-            paneService.split(paneService.getRootNode(tab), SplitType.Vertical);
-            expect(sut.getCommand(tab)).toBe('wt `; sp -V `; mf left');
+            paneService.split(paneService.getRootNode(tabStore.tabs[0]), SplitType.Vertical);
+            expect(sut.getCommand()).toBe('wt `; sp -V `; mf left');
         });
+
+        it('Supports multiple tabs', () => {
+            // TODO Construct expected command for scenario 2
+            setupScenario2();
+            expect(true).toBe(false);
+        })
     });
 });
