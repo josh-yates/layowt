@@ -9,7 +9,10 @@
     const splitVertical = () => dispatch("splitVertical");
     const splitHorizontal = () => dispatch("splitHorizontal");
     const input = () => dispatch("input");
-    const remove = () => dispatch("remove");
+    const remove = () => {
+        showOptions = false;
+        dispatch("remove");
+    };
 
     let showOptions = false;
 </script>
