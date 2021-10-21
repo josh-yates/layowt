@@ -3,10 +3,10 @@
 	import { SplitType } from "./models/splitType";
 	import { CommandService } from "./services/commandService";
 	import { GridService } from "./services/gridService";
-	import { TreeNodeStore } from "./services/treeNodeStore";
+	import { TreeNodeService } from "./services/treeNodeService";
 	import { UIService } from "./services/uiService";
 
-	const nodeStore = new TreeNodeStore();
+	const nodeStore = new TreeNodeService();
 	const gridService = new GridService(nodeStore);
 	const commandService = new CommandService(nodeStore);
 	const uiService = new UIService(gridService, commandService);

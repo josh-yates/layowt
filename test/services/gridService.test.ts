@@ -1,9 +1,9 @@
 import { SplitType } from '../../src/models/splitType';
 import type { TreeNode } from '../../src/models/treeNode';
 import { GridService } from '../../src/services/gridService';
-import { TreeNodeStore } from '../../src/services/treeNodeStore';
+import { TreeNodeService } from '../../src/services/treeNodeService';
 
-let treeNodeStore: TreeNodeStore;
+let treeNodeService: TreeNodeService;
 let sut: GridService;
 
 let node1: TreeNode;
@@ -46,11 +46,11 @@ function setupScenario1(): void {
     // 7 | 3 | 2 | 1 | 2
     // 8 | 2 | 1 | 2 | 1
 
-    node1 = treeNodeStore.nodes[0];
+    node1 = treeNodeService.nodes[0];
     node1.content = "1";
 
-    treeNodeStore.split(node1, SplitType.Vertical);
-    treeNodeStore.split(node1, SplitType.Vertical);
+    treeNodeService.split(node1, SplitType.Vertical);
+    treeNodeService.split(node1, SplitType.Vertical);
 
     node3 = node1.children[0];
     node3.content = "3";
@@ -58,8 +58,8 @@ function setupScenario1(): void {
     node2 = node1.children[1];
     node2.content = "2";
 
-    treeNodeStore.split(node3, SplitType.Horizontal);
-    treeNodeStore.split(node3, SplitType.Vertical);
+    treeNodeService.split(node3, SplitType.Horizontal);
+    treeNodeService.split(node3, SplitType.Vertical);
 
     node5 = node3.children[0];
     node5.content = "5";
@@ -67,8 +67,8 @@ function setupScenario1(): void {
     node4 = node3.children[1];
     node4.content = "4";
 
-    treeNodeStore.split(node2, SplitType.Horizontal);
-    treeNodeStore.split(node2, SplitType.Horizontal);
+    treeNodeService.split(node2, SplitType.Horizontal);
+    treeNodeService.split(node2, SplitType.Horizontal);
 
     node6 = node2.children[0];
     node6.content = "6";
@@ -76,15 +76,15 @@ function setupScenario1(): void {
     node8 = node2.children[1];
     node8.content = "8";
 
-    treeNodeStore.split(node6, SplitType.Vertical);
+    treeNodeService.split(node6, SplitType.Vertical);
 
     node7 = node6.children[0];
     node7.content = "7";
 };
 
 beforeEach(() => {
-    treeNodeStore = new TreeNodeStore();
-    sut = new GridService(treeNodeStore);
+    treeNodeService = new TreeNodeService();
+    sut = new GridService(treeNodeService);
     setupScenario1();
 });
 
@@ -144,7 +144,7 @@ describe('GridService', () => {
                 y: 1
             });
 
-            treeNodeStore.nodes.forEach(n => {
+            treeNodeService.nodes.forEach(n => {
                 const x = sut.getIndex(n, SplitType.Vertical);
                 const y = sut.getIndex(n, SplitType.Horizontal);
 
@@ -200,7 +200,7 @@ describe('GridService', () => {
                 rows: 1
             });
 
-            treeNodeStore.nodes.forEach(n => {
+            treeNodeService.nodes.forEach(n => {
                 const cols = sut.getSpan(n, SplitType.Vertical);
                 const rows = sut.getSpan(n, SplitType.Horizontal);
 

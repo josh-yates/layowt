@@ -1,18 +1,18 @@
 import { SplitType } from '../models/splitType';
 import type { TreeNode } from '../models/treeNode';
-import type { TreeNodeStore } from './treeNodeStore';
+import type { TreeNodeService } from './treeNodeService';
 
 export class GridService {
     constructor(
-        private readonly _treeNodeStore: TreeNodeStore) { }
+        private readonly _treeNodeService: TreeNodeService) { }
 
     public getGridColumns(): number {
-        const mostVerticalSteps = Math.max(...this._treeNodeStore.nodes.map(n => this._treeNodeStore.getStepsTo(n, SplitType.Vertical)));
+        const mostVerticalSteps = Math.max(...this._treeNodeService.nodes.map(n => this._treeNodeService.getStepsTo(n, SplitType.Vertical)));
         return Math.pow(2, mostVerticalSteps);
     }
 
     public getGridRows(): number {
-        const mostHorizontalSteps = Math.max(...this._treeNodeStore.nodes.map(n => this._treeNodeStore.getStepsTo(n, SplitType.Horizontal)));
+        const mostHorizontalSteps = Math.max(...this._treeNodeService.nodes.map(n => this._treeNodeService.getStepsTo(n, SplitType.Horizontal)));
         return Math.pow(2, mostHorizontalSteps);
     }
 

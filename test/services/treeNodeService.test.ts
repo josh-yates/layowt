@@ -1,8 +1,8 @@
 import { SplitType } from '../../src/models/splitType';
 import type { TreeNode } from '../../src/models/treeNode';
-import { TreeNodeStore } from '../../src/services/treeNodeStore';
+import { TreeNodeService } from '../../src/services/treeNodeService';
 
-let sut: TreeNodeStore;
+let sut: TreeNodeService;
 
 let node1: TreeNode;
 let node2: TreeNode;
@@ -80,9 +80,9 @@ function setupScenario1(): void {
     node7.content = "7";
 };
 
-beforeEach(() => sut = new TreeNodeStore());
+beforeEach(() => sut = new TreeNodeService());
 
-describe('TreeNodeStore', () => {
+describe('TreeNodeService', () => {
     describe('constructor', () => {
         it('Creates a single node', () => expect(sut.nodes.length).toBe(1))
     });

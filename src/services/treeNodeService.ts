@@ -1,7 +1,7 @@
 import type { SplitType } from "../models/splitType";
 import { TreeNode } from "../models/treeNode";
 
-export class TreeNodeStore {
+export class TreeNodeService {
     public nodes: TreeNode[] = [new TreeNode()]
 
     public split(node: TreeNode, split: SplitType): void {

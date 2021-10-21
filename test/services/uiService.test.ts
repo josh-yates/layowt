@@ -2,10 +2,10 @@ import { SplitType } from "../../src/models/splitType";
 import type { TreeNode } from "../../src/models/treeNode";
 import { CommandService } from "../../src/services/commandService";
 import { GridService } from "../../src/services/gridService";
-import { TreeNodeStore } from "../../src/services/treeNodeStore";
+import { TreeNodeService } from "../../src/services/treeNodeService";
 import { UIService } from "../../src/services/uiService";
 
-let treeNodeStore: TreeNodeStore;
+let treeNodeService: TreeNodeService;
 let commandService: CommandService;
 let gridService: GridService;
 let sut: UIService;
@@ -51,11 +51,11 @@ function setupScenario1(): void {
     // 8 | 2 | 1 | 2 | 1
 
     // TODO: add commands here
-    node1 = treeNodeStore.nodes[0];
+    node1 = treeNodeService.nodes[0];
     node1.content = "Write-Host 1";
 
-    treeNodeStore.split(node1, SplitType.Vertical);
-    treeNodeStore.split(node1, SplitType.Vertical);
+    treeNodeService.split(node1, SplitType.Vertical);
+    treeNodeService.split(node1, SplitType.Vertical);
 
     node3 = node1.children[0];
     node3.content = "Write-Host 3";
@@ -63,8 +63,8 @@ function setupScenario1(): void {
     node2 = node1.children[1];
     node2.content = "Write-Host 2";
 
-    treeNodeStore.split(node3, SplitType.Horizontal);
-    treeNodeStore.split(node3, SplitType.Vertical);
+    treeNodeService.split(node3, SplitType.Horizontal);
+    treeNodeService.split(node3, SplitType.Vertical);
 
     node5 = node3.children[0];
     node5.content = "Write-Host 5";
@@ -72,8 +72,8 @@ function setupScenario1(): void {
     node4 = node3.children[1];
     node4.content = "Write-Host 4";
 
-    treeNodeStore.split(node2, SplitType.Horizontal);
-    treeNodeStore.split(node2, SplitType.Horizontal);
+    treeNodeService.split(node2, SplitType.Horizontal);
+    treeNodeService.split(node2, SplitType.Horizontal);
 
     node6 = node2.children[0];
     node6.content = "Write-Host 6";
@@ -81,16 +81,16 @@ function setupScenario1(): void {
     node8 = node2.children[1];
     node8.content = "Write-Host 8";
 
-    treeNodeStore.split(node6, SplitType.Vertical);
+    treeNodeService.split(node6, SplitType.Vertical);
 
     node7 = node6.children[0];
     node7.content = "Write-Host 7";
 };
 
 beforeEach(() => {
-    treeNodeStore = new TreeNodeStore();
-    gridService = new GridService(treeNodeStore);
-    commandService = new CommandService(treeNodeStore);
+    treeNodeService = new TreeNodeService();
+    gridService = new GridService(treeNodeService);
+    commandService = new CommandService(treeNodeService);
 
     sut = new UIService(gridService, commandService);
 
@@ -140,7 +140,7 @@ describe('UIService', () => {
                 styles: 'grid-column: 3 / span 2; grid-row: 2 / span 1;'
             });
 
-            treeNodeStore.nodes.forEach(n => {
+            treeNodeService.nodes.forEach(n => {
                 const style = sut.getPaneGridStyles(n, {});
 
                 const expected = expectedResults.filter(r => r.key === n)[0];
