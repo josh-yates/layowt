@@ -41,13 +41,22 @@
 </header>
 <aside class="tabs">
 	{#each tabStore.tabs as tab, i}
-	<button on:click={() => currentTab = tab}>{`${tab.title} (${i})`}</button>
+		<button
+			title={`${tab.title} (${i})`}
+			class="tab"
+			data-selected={currentTab === tab}
+			on:click={() => (currentTab = tab)}>{`${tab.title} (${i})`}</button
+		>
 	{/each}
-	<button on:click={() => {
-		tabStore.add();
-		update = {};
-		tabStore.tabs = tabStore.tabs;
-	}}>Add</button>
+	<button
+		class="tab add"
+		on:click={() => {
+			tabStore.add();
+			update = {};
+			tabStore.tabs = tabStore.tabs;
+			currentTab = tabStore.tabs[tabStore.tabs.length - 1];
+		}}>Add</button
+	>
 </aside>
 <main style={uiService.getContainerGridStyles(currentTab, update)}>
 	{#each currentTab.panes as pane, i}
@@ -156,19 +165,65 @@
 		position: relative;
 	}
 
-	.copy-button {
-		position: absolute;
-		right: 0.5rem;
+	.copy-button,
+	.tab {
 		padding: 0.5rem;
 		line-height: var(--command-font-size);
 		border-radius: 0.5rem;
-		background-color: var(--bg-colour__secondary);
 		border: 2px solid var(--fg-colour);
 		font-size: var(--command-font-size);
 		font-weight: 900;
 		font-family: monospace;
 		color: var(--fg-colour);
+	}
+
+	.copy-button {
+		background-color: var(--bg-colour__secondary);
+		position: absolute;
+		right: 0.5rem;
 		box-shadow: 0px 0px 1rem 2rem var(--bg-colour__secondary);
+	}
+
+	.tabs {
+		padding: 0 1rem;
+		width: var(--content-width);
+		display: flex;
+		align-items: center;
+		justify-content: start;
+		margin-bottom: -2px;
+		z-index: 1;
+		overflow-x: auto;
+	}
+
+	.tab {
+		background-color: var(--bg-colour);
+		position: relative;
+		border-bottom-left-radius: 0;
+		border-bottom-right-radius: 0;
+		flex-shrink: 1;
+		flex-grow: 0;
+		overflow: hidden;
+		white-space: nowrap;
+		text-overflow: ellipsis;
+	}
+
+	.tab:not(:first-child) {
+		margin-left: -2px;
+	}
+
+	.tab.add {
+		flex-shrink: 0;
+		margin-left: auto;
+	}
+
+	.tab[data-selected="true"],
+	.tab.add {
+		border-bottom-color: var(--bg-colour);
+		z-index: 1;
+	}
+
+	.tab[data-selected="false"] {
+		background-color: var(--bg-colour__secondary);
 	}
 
 	@media (min-width: 640px) {
