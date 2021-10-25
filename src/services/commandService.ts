@@ -9,7 +9,9 @@ export class CommandService {
         private readonly _paneService: PaneService) { }
 
     public getCommand(): string {
-        return 'wt ' + this._tabStore.tabs.map(tab => this.printNode(this._paneService.getRootNode(tab)).trim()).join('`; ');
+        return 'wt ' +
+            this._tabStore.tabs.map(tab => this.printNode(this._paneService.getRootNode(tab)).trim()).join(' `; new-tab ') +
+            (this._tabStore.tabs.length > 1 ? ' `; ft -t 0' : '');
     }
 
     private printNode(node: Pane): string {

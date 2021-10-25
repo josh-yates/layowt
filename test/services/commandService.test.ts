@@ -86,7 +86,7 @@ function setupScenario1(): void {
 
 function setupScenario2(): void {
     // Tab 1
-    // wt powershell -NoExit "Tab1Pane1" `; sp -V powershell -NoExit "Tab1Pane2" `; sp -H powershell -NoExit "Tab1pane3" `; mf up `; mf left
+    // wt powershell -NoExit "Tab1Pane1" `; sp -V powershell -NoExit "Tab1Pane2" `; sp -H powershell -NoExit "Tab1Pane3" `; mf up `; mf left
     // -------
     // |1 |2 |
     // |  |--|
@@ -163,9 +163,8 @@ describe('CommandService', () => {
         });
 
         it('Supports multiple tabs', () => {
-            // TODO Construct expected command for scenario 2
             setupScenario2();
-            expect(true).toBe(false);
+            expect(sut.getCommand()).toBe('wt powershell -NoExit "Tab1Pane1" `; sp -V powershell -NoExit "Tab1Pane2" `; sp -H powershell -NoExit "Tab1Pane3" `; mf up `; mf left `; new-tab powershell -NoExit "Tab2Pane1" `; sp -V powershell -NoExit "Tab2Pane2" `; mf left `; sp -H powershell -NoExit "Tab2Pane3" `; mf up `; new-tab powershell -NoExit "Tab3Pane1" `; ft -t 0');
         })
     });
 });
