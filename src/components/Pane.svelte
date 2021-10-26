@@ -137,7 +137,7 @@
         position: relative;
         grid-template-columns: auto var(--button-thickness);
         grid-template-rows: auto var(--button-thickness);
-        overflow: auto;
+        overflow: overlay;
         min-height: 0;
         min-width: 0;
     }

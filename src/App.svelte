@@ -192,7 +192,7 @@
 		justify-content: start;
 		margin-bottom: -2px;
 		z-index: 1;
-		overflow-x: auto;
+		overflow-x: overlay;
 		flex-shrink: 0;
 		flex-grow: 0;
 	}
@@ -215,6 +215,8 @@
 
 	.tab.add {
 		margin-left: auto;
+		position: sticky;
+		right: 0;
 	}
 
 	.tab:nth-last-child(2) {
