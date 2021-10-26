@@ -1,19 +1,21 @@
 import { SplitType } from '../../src/models/splitType';
-import type { TreeNode } from '../../src/models/treeNode';
+import type { Pane } from '../../src/models/pane';
 import { CommandService } from '../../src/services/commandService';
-import { TreeNodeStore } from '../../src/services/treeNodeStore';
+import { PaneService } from '../../src/services/paneService';
+import { TabStore } from '../../src/services/tabStore';
 
-let treeNodeStore: TreeNodeStore;
+let paneService: PaneService;
 let sut: CommandService;
+let tabStore: TabStore;
 
-let node1: TreeNode;
-let node2: TreeNode;
-let node3: TreeNode;
-let node4: TreeNode;
-let node5: TreeNode;
-let node6: TreeNode;
-let node7: TreeNode;
-let node8: TreeNode;
+let node1: Pane;
+let node2: Pane;
+let node3: Pane;
+let node4: Pane;
+let node5: Pane;
+let node6: Pane;
+let node7: Pane;
+let node8: Pane;
 
 function setupScenario1(): void {
     // -----------------
@@ -46,12 +48,11 @@ function setupScenario1(): void {
     // 7 | 3 | 2 | 1 | 2
     // 8 | 2 | 1 | 2 | 1
 
-    // TODO: add commands here
-    node1 = treeNodeStore.nodes[0];
+    node1 = tabStore.tabs[0].panes[0];
     node1.content = "Write-Host 1";
 
-    treeNodeStore.split(node1, SplitType.Vertical);
-    treeNodeStore.split(node1, SplitType.Vertical);
+    paneService.split(node1, SplitType.Vertical);
+    paneService.split(node1, SplitType.Vertical);
 
     node3 = node1.children[0];
     node3.content = "Write-Host 3";
@@ -59,8 +60,8 @@ function setupScenario1(): void {
     node2 = node1.children[1];
     node2.content = "Write-Host 2";
 
-    treeNodeStore.split(node3, SplitType.Horizontal);
-    treeNodeStore.split(node3, SplitType.Vertical);
+    paneService.split(node3, SplitType.Horizontal);
+    paneService.split(node3, SplitType.Vertical);
 
     node5 = node3.children[0];
     node5.content = "Write-Host 5";
@@ -68,8 +69,8 @@ function setupScenario1(): void {
     node4 = node3.children[1];
     node4.content = "Write-Host 4";
 
-    treeNodeStore.split(node2, SplitType.Horizontal);
-    treeNodeStore.split(node2, SplitType.Horizontal);
+    paneService.split(node2, SplitType.Horizontal);
+    paneService.split(node2, SplitType.Horizontal);
 
     node6 = node2.children[0];
     node6.content = "Write-Host 6";
@@ -77,15 +78,76 @@ function setupScenario1(): void {
     node8 = node2.children[1];
     node8.content = "Write-Host 8";
 
-    treeNodeStore.split(node6, SplitType.Vertical);
+    paneService.split(node6, SplitType.Vertical);
 
     node7 = node6.children[0];
     node7.content = "Write-Host 7";
 };
 
+function setupScenario2(): void {
+    // Tab 1
+    // wt powershell -NoExit "Tab1Pane1" `; sp -V powershell -NoExit "Tab1Pane2" `; sp -H powershell -NoExit "Tab1Pane3" `; mf up `; mf left
+    // -------
+    // |1 |2 |
+    // |  |--|
+    // |  |3 |
+    // -------
+    const tab1 = tabStore.tabs[0];
+
+    const tab1Pane1 = tab1.panes[0];
+    paneService.split(tab1Pane1, SplitType.Vertical);
+
+    const tab1Pane2 = tab1Pane1.children[0];
+    paneService.split(tab1Pane2, SplitType.Horizontal);
+
+    const tab1Pane3 = tab1Pane2.children[0];
+
+    tab1Pane1.content = 'Tab1Pane1';
+    tab1Pane2.content = 'Tab1Pane2';
+    tab1Pane3.content = 'Tab1Pane3';
+
+    // Tab 2
+    // wt powershell -NoExit "Tab2Pane1" `; sp -V powershell -NoExit "Tab2Pane2" `; mf left `; sp -H powershell -NoExit "Tab2Pane3" `; mf up
+    // -------
+    // |1 |2 |
+    // |--|  |
+    // |3 |  |
+    // -------
+    tabStore.add();
+    const tab2 = tabStore.tabs[1];
+
+    const tab2Pane1 = tab2.panes[0];
+    paneService.split(tab2Pane1, SplitType.Vertical);
+
+    const tab2Pane2 = tab2Pane1.children[0];
+
+    paneService.split(tab2Pane1, SplitType.Horizontal);
+
+    const tab2Pane3 = tab2Pane1.children[1];
+
+    tab2Pane1.content = 'Tab2Pane1';
+    tab2Pane2.content = 'Tab2Pane2';
+    tab2Pane3.content = 'Tab2Pane3';
+
+    // Tab 3
+    // wt powershell -NoExit "Tab3Pane1"
+    // -------
+    // |1    |
+    // |     |
+    // |     |
+    // -------
+    tabStore.add();
+    const tab3 = tabStore.tabs[2];
+
+    const tab3pane1 = tab3.panes[0];
+
+    tab3pane1.content = 'Tab3Pane1';
+}
+
 beforeEach(() => {
-    treeNodeStore = new TreeNodeStore();
-    sut = new CommandService(treeNodeStore);
+    paneService = new PaneService();
+    tabStore = new TabStore();
+    sut = new CommandService(tabStore, paneService);
 });
 
 describe('CommandService', () => {
@@ -96,8 +158,13 @@ describe('CommandService', () => {
         });
 
         it('Does not generate a pane command when pane has no content', () => {
-            treeNodeStore.split(treeNodeStore.getRootNode(), SplitType.Vertical);
+            paneService.split(paneService.getRootNode(tabStore.tabs[0]), SplitType.Vertical);
             expect(sut.getCommand()).toBe('wt `; sp -V `; mf left');
         });
+
+        it('Supports multiple tabs', () => {
+            setupScenario2();
+            expect(sut.getCommand()).toBe('wt powershell -NoExit "Tab1Pane1" `; sp -V powershell -NoExit "Tab1Pane2" `; sp -H powershell -NoExit "Tab1Pane3" `; mf up `; mf left `; new-tab powershell -NoExit "Tab2Pane1" `; sp -V powershell -NoExit "Tab2Pane2" `; mf left `; sp -H powershell -NoExit "Tab2Pane3" `; mf up `; new-tab powershell -NoExit "Tab3Pane1" `; ft -t 0');
+        })
     });
 });

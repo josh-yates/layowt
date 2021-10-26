@@ -1,7 +1,7 @@
 <script lang="ts">
     import { createEventDispatcher } from "svelte";
-    import type { TreeNode } from "../models/treeNode";
-    export let pane: TreeNode;
+    import type { Pane } from "../models/pane";
+    export let pane: Pane;
     export let style: string;
     export let index: number;
     export let canRemove: boolean;
@@ -98,7 +98,6 @@
             </div>
             <div class="form-buttons">
                 <button type="submit" class="form-button">OK</button>
-                <!--TODO: Fix issues with node removal-->
                 {#if canRemove}
                     <button
                         type="button"

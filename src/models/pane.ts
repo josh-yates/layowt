@@ -1,7 +1,8 @@
 import { SplitType } from './splitType';
+import type { Tab } from './tab';
 
-export class TreeNode {
-    constructor() { }
+export class Pane {
+    constructor(public tab: Tab) { }
     public content?: string;
     public directory?: string;
     public tabColour?: string;
@@ -10,8 +11,8 @@ export class TreeNode {
     public persistTitle?: boolean = true;
 
     public parentSplit?: SplitType;
-    public children?: TreeNode[] = [];
-    public parent?: TreeNode;
+    public children?: Pane[] = [];
+    public parent?: Pane;
 
     // May need to reintroduce horizontal and vertical splits by looking at whether any children have that desired split type
     public get rightDepth(): number {

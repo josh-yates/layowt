@@ -1,15 +1,20 @@
 import { SplitType } from "../models/splitType";
-import type { TreeNode } from "../models/treeNode";
-import type { TreeNodeStore } from "./treeNodeStore";
+import type { Pane } from "../models/pane";
+import type { PaneService } from "./paneService";
+import type { TabStore } from "./tabStore";
 
 export class CommandService {
-    constructor(private readonly _treeNodeStore: TreeNodeStore) { }
+    constructor(
+        private readonly _tabStore: TabStore,
+        private readonly _paneService: PaneService) { }
 
     public getCommand(): string {
-        return 'wt ' + this.printNode(this._treeNodeStore.getRootNode()).trim();
+        return 'wt ' +
+            this._tabStore.tabs.map(tab => this.printNode(this._paneService.getRootNode(tab)).trim()).join(' `; new-tab ') +
+            (this._tabStore.tabs.length > 1 ? ' `; ft -t 0' : '');
     }
 
-    private printNode(node: TreeNode): string {
+    private printNode(node: Pane): string {
         let splitCommand = '';
         let returnCommand = '';
 

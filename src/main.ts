@@ -1,5 +1,5 @@
 import App from './App.svelte';
-import { TreeNode } from './models/treeNode';
+import { Pane } from './models/pane';
 
 const app = new App({
 	target: document.body,
