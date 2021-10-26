@@ -193,6 +193,8 @@
 		margin-bottom: -2px;
 		z-index: 1;
 		overflow-x: auto;
+		flex-shrink: 0;
+		flex-grow: 0;
 	}
 
 	.tab {
@@ -212,14 +214,19 @@
 	}
 
 	.tab.add {
-		flex-shrink: 0;
 		margin-left: auto;
+	}
+
+	.tab:nth-last-child(2) {
+		margin-right: 0.5rem;
 	}
 
 	.tab[data-selected="true"],
 	.tab.add {
+		flex-shrink: 0;
 		border-bottom-color: var(--bg-colour);
 		z-index: 1;
+		overflow: visible;
 	}
 
 	.tab[data-selected="false"] {
