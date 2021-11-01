@@ -1,19 +1,22 @@
 <script lang="ts">
 	import Pane from "./components/Pane.svelte";
+	import { Layout } from "./models/layout";
 	import { SplitType } from "./models/splitType";
 	import { CommandService } from "./services/commandService";
 	import { GridService } from "./services/gridService";
 	import { PaneService } from "./services/paneService";
-	import { TabStore } from "./services/tabStore";
+	import { TabService } from "./services/tabService";
 	import { UIService } from "./services/uiService";
 
 	const paneService = new PaneService();
 	const gridService = new GridService(paneService);
-	const tabStore = new TabStore();
-	const commandService = new CommandService(tabStore, paneService);
+	const tabService = new TabService();
+	const commandService = new CommandService(paneService);
 	const uiService = new UIService(gridService, commandService);
 
-	let currentTab = tabStore.tabs[0];
+	const layout = new Layout();
+
+	let currentTab = layout.tabs[0];
 
 	$: update = {};
 	$: canRemove = !!update && currentTab.panes.length !== 1;
@@ -21,7 +24,7 @@
 	let showCopied = false;
 
 	const copyCommand = () => {
-		const command = uiService.getCommandText(null);
+		const command = uiService.getCommandText(layout, null);
 
 		navigator.clipboard.writeText(command);
 
@@ -40,7 +43,7 @@
 	>
 </header>
 <aside class="tabs">
-	{#each tabStore.tabs as tab, i}
+	{#each layout.tabs as tab, i}
 		<button
 			title={`${tab.title} (${i})`}
 			class="tab"
@@ -51,10 +54,10 @@
 	<button
 		class="tab add"
 		on:click={() => {
-			tabStore.add();
+			tabService.add(layout);
 			update = {};
-			tabStore.tabs = tabStore.tabs;
-			currentTab = tabStore.tabs[tabStore.tabs.length - 1];
+			layout.tabs = layout.tabs;
+			currentTab = layout.tabs[layout.tabs.length - 1];
 		}}>Add</button
 	>
 </aside>
@@ -83,7 +86,7 @@
 	{/each}
 </main>
 <p class="command">
-	{uiService.getCommandText(update)}<button
+	{uiService.getCommandText(layout, update)}<button
 		class="copy-button"
 		on:click={copyCommand}>{showCopied ? "Copied!" : "Copy"}</button
 	>
