@@ -1,12 +1,14 @@
 import { SplitType } from '../../src/models/splitType';
-import { Tab } from '../../src/models/tab';
+import type { Tab } from '../../src/models/tab';
 import type { Pane } from '../../src/models/pane';
 import { GridService } from '../../src/services/gridService';
 import { PaneService } from '../../src/services/paneService';
+import { Layout } from '../../src/models/layout';
 
 let paneService: PaneService;
 let sut: GridService;
 
+let layout: Layout;
 let tab: Tab;
 
 let node1: Pane;
@@ -89,7 +91,8 @@ beforeEach(() => {
     paneService = new PaneService();
     sut = new GridService(paneService);
 
-    tab = new Tab();
+    layout = new Layout();
+    tab = layout.tabs[0];
 
     setupScenario1();
 });

@@ -1,17 +1,16 @@
 import { SplitType } from "../models/splitType";
 import type { Pane } from "../models/pane";
 import type { PaneService } from "./paneService";
-import type { TabStore } from "./tabStore";
+import type { Layout } from "../models/layout";
 
 export class CommandService {
     constructor(
-        private readonly _tabStore: TabStore,
         private readonly _paneService: PaneService) { }
 
-    public getCommand(): string {
+    public getCommand(layout: Layout): string {
         return 'wt ' +
-            this._tabStore.tabs.map(tab => this.printNode(this._paneService.getRootNode(tab)).trim()).join(' `; new-tab ') +
-            (this._tabStore.tabs.length > 1 ? ' `; ft -t 0' : '');
+            layout.tabs.map(tab => this.printNode(this._paneService.getRootNode(tab)).trim()).join(' `; new-tab ') +
+            (layout.tabs.length > 1 ? ' `; ft -t 0' : '');
     }
 
     private printNode(node: Pane): string {
