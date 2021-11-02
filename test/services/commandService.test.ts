@@ -2,11 +2,14 @@ import { SplitType } from '../../src/models/splitType';
 import type { Pane } from '../../src/models/pane';
 import { CommandService } from '../../src/services/commandService';
 import { PaneService } from '../../src/services/paneService';
-import { TabStore } from '../../src/services/tabStore';
+import { TabService } from '../../src/services/tabService';
+import { Layout } from '../../src/models/layout';
 
 let paneService: PaneService;
 let sut: CommandService;
-let tabStore: TabStore;
+let tabService: TabService;
+
+let layout: Layout;
 
 let node1: Pane;
 let node2: Pane;
@@ -48,7 +51,7 @@ function setupScenario1(): void {
     // 7 | 3 | 2 | 1 | 2
     // 8 | 2 | 1 | 2 | 1
 
-    node1 = tabStore.tabs[0].panes[0];
+    node1 = layout.tabs[0].panes[0];
     node1.content = "Write-Host 1";
 
     paneService.split(node1, SplitType.Vertical);
@@ -92,7 +95,7 @@ function setupScenario2(): void {
     // |  |--|
     // |  |3 |
     // -------
-    const tab1 = tabStore.tabs[0];
+    const tab1 = layout.tabs[0];
 
     const tab1Pane1 = tab1.panes[0];
     paneService.split(tab1Pane1, SplitType.Vertical);
@@ -113,8 +116,8 @@ function setupScenario2(): void {
     // |--|  |
     // |3 |  |
     // -------
-    tabStore.add();
-    const tab2 = tabStore.tabs[1];
+    tabService.add(layout);
+    const tab2 = layout.tabs[1];
 
     const tab2Pane1 = tab2.panes[0];
     paneService.split(tab2Pane1, SplitType.Vertical);
@@ -136,8 +139,8 @@ function setupScenario2(): void {
     // |     |
     // |     |
     // -------
-    tabStore.add();
-    const tab3 = tabStore.tabs[2];
+    tabService.add(layout);
+    const tab3 = layout.tabs[2];
 
     const tab3pane1 = tab3.panes[0];
 
@@ -146,25 +149,28 @@ function setupScenario2(): void {
 
 beforeEach(() => {
     paneService = new PaneService();
-    tabStore = new TabStore();
-    sut = new CommandService(tabStore, paneService);
+    tabService = new TabService();
+
+    layout = new Layout();
+
+    sut = new CommandService(paneService);
 });
 
 describe('CommandService', () => {
     describe('getCommand', () => {
         it('Gets the command correctly', () => {
             setupScenario1();
-            expect(sut.getCommand()).toBe('wt powershell -NoExit "Write-Host 1" `; sp -V powershell -NoExit "Write-Host 3" `; sp -H powershell -NoExit "Write-Host 5" `; mf up `; sp -V powershell -NoExit "Write-Host 4" `; mf left `; mf left `; sp -V powershell -NoExit "Write-Host 2" `; sp -H powershell -NoExit "Write-Host 6" `; sp -V powershell -NoExit "Write-Host 7" `; mf left `; mf up `; sp -H powershell -NoExit "Write-Host 8" `; mf up `; mf left');
+            expect(sut.getCommand(layout)).toBe('wt powershell -NoExit "Write-Host 1" `; sp -V powershell -NoExit "Write-Host 3" `; sp -H powershell -NoExit "Write-Host 5" `; mf up `; sp -V powershell -NoExit "Write-Host 4" `; mf left `; mf left `; sp -V powershell -NoExit "Write-Host 2" `; sp -H powershell -NoExit "Write-Host 6" `; sp -V powershell -NoExit "Write-Host 7" `; mf left `; mf up `; sp -H powershell -NoExit "Write-Host 8" `; mf up `; mf left');
         });
 
         it('Does not generate a pane command when pane has no content', () => {
-            paneService.split(paneService.getRootNode(tabStore.tabs[0]), SplitType.Vertical);
-            expect(sut.getCommand()).toBe('wt `; sp -V `; mf left');
+            paneService.split(paneService.getRootNode(layout.tabs[0]), SplitType.Vertical);
+            expect(sut.getCommand(layout)).toBe('wt `; sp -V `; mf left');
         });
 
         it('Supports multiple tabs', () => {
             setupScenario2();
-            expect(sut.getCommand()).toBe('wt powershell -NoExit "Tab1Pane1" `; sp -V powershell -NoExit "Tab1Pane2" `; sp -H powershell -NoExit "Tab1Pane3" `; mf up `; mf left `; new-tab powershell -NoExit "Tab2Pane1" `; sp -V powershell -NoExit "Tab2Pane2" `; mf left `; sp -H powershell -NoExit "Tab2Pane3" `; mf up `; new-tab powershell -NoExit "Tab3Pane1" `; ft -t 0');
+            expect(sut.getCommand(layout)).toBe('wt powershell -NoExit "Tab1Pane1" `; sp -V powershell -NoExit "Tab1Pane2" `; sp -H powershell -NoExit "Tab1Pane3" `; mf up `; mf left `; new-tab powershell -NoExit "Tab2Pane1" `; sp -V powershell -NoExit "Tab2Pane2" `; mf left `; sp -H powershell -NoExit "Tab2Pane3" `; mf up `; new-tab powershell -NoExit "Tab3Pane1" `; ft -t 0');
         })
     });
 });

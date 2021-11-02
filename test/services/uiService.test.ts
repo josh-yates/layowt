@@ -5,13 +5,14 @@ import { CommandService } from "../../src/services/commandService";
 import { GridService } from "../../src/services/gridService";
 import { PaneService } from "../../src/services/paneService";
 import { UIService } from "../../src/services/uiService";
-import { TabStore } from "../../src/services/tabStore";
+import { Layout } from "../../src/models/layout";
 
 let paneService: PaneService;
 let commandService: CommandService;
 let gridService: GridService;
-let tabStore: TabStore;
 let sut: UIService;
+
+let layout: Layout;
 
 let node1: Pane;
 let node2: Pane;
@@ -53,7 +54,7 @@ function setupScenario1(): void {
     // 7 | 3 | 2 | 1 | 2
     // 8 | 2 | 1 | 2 | 1
 
-    node1 = tabStore.tabs[0].panes[0];
+    node1 = layout.tabs[0].panes[0];
     node1.content = "Write-Host 1";
 
     paneService.split(node1, SplitType.Vertical);
@@ -92,8 +93,9 @@ function setupScenario1(): void {
 beforeEach(() => {
     paneService = new PaneService();
     gridService = new GridService(paneService);
-    tabStore = new TabStore();
-    commandService = new CommandService(tabStore, paneService);
+    commandService = new CommandService(paneService);
+
+    layout = new Layout();
 
     sut = new UIService(gridService, commandService);
 
@@ -103,7 +105,7 @@ beforeEach(() => {
 describe('UIService', () => {
     describe('getContainerGridStyles', () => {
         it('Gets the container grid styles correctly', () => {
-            expect(sut.getContainerGridStyles(tabStore.tabs[0], {})).toBe('grid-template-columns: repeat(8, 1fr); grid-template-rows: repeat(4, 1fr);');
+            expect(sut.getContainerGridStyles(layout.tabs[0], {})).toBe('grid-template-columns: repeat(8, 1fr); grid-template-rows: repeat(4, 1fr);');
         });
     });
     describe('getPaneGridStyles', () => {
@@ -143,7 +145,7 @@ describe('UIService', () => {
                 styles: 'grid-column: 3 / span 2; grid-row: 2 / span 1;'
             });
 
-            tabStore.tabs[0].panes.forEach(n => {
+            layout.tabs[0].panes.forEach(n => {
                 const style = sut.getPaneGridStyles(n, {});
 
                 const expected = expectedResults.filter(r => r.key === n)[0];

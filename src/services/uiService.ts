@@ -3,6 +3,7 @@ import type { Tab } from "../models/tab";
 import type { Pane } from "../models/pane";
 import type { CommandService } from "./commandService";
 import type { GridService } from "./gridService";
+import type { Layout } from "../models/layout";
 
 export class UIService {
     constructor(
@@ -19,7 +20,7 @@ export class UIService {
             `grid-row: ${this._gridService.getIndex(pane, SplitType.Horizontal) + 1} / span ${this._gridService.getSpan(pane, SplitType.Horizontal)};`;
     }
 
-    public getCommandText(update: any): string {
-        return this._commandService.getCommand();
+    public getCommandText(layout: Layout, update: any): string {
+        return this._commandService.getCommand(layout);
     }
 }
