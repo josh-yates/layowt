@@ -4,6 +4,7 @@
 	import { SplitType } from "./models/splitType";
 	import { CommandService } from "./services/commandService";
 	import { GridService } from "./services/gridService";
+	import { LocalStorageService } from "./services/localStorageService";
 	import { PaneService } from "./services/paneService";
 	import { TabService } from "./services/tabService";
 	import { UIService } from "./services/uiService";
@@ -13,13 +14,18 @@
 	const tabService = new TabService();
 	const commandService = new CommandService(paneService);
 	const uiService = new UIService(gridService, commandService);
+	const localStorageService = new LocalStorageService(paneService);
 
-	const layout = new Layout();
+	const layout = localStorageService.retrieveLayout() ?? new Layout();
 
 	let currentTab = layout.tabs[0];
 
 	$: update = {};
 	$: canRemove = !!update && currentTab.panes.length !== 1;
+	$: {
+		update;
+		localStorageService.saveLayout(layout);
+	}
 
 	let showCopied = false;
 
