@@ -21,7 +21,8 @@
 	let currentTab = layout.tabs[0];
 
 	$: update = {};
-	$: canRemove = !!update && currentTab.panes.length !== 1;
+	$: canRemovePane = !!update && currentTab.panes.length !== 1;
+	$: canRemoveTab = !!update && layout.tabs.length !== 1;
 	$: {
 		update;
 		localStorageService.saveLayout(layout);
@@ -57,6 +58,21 @@
 			on:click={() => (currentTab = tab)}>{`${tab.title} (${i})`}</button
 		>
 	{/each}
+	{#if canRemoveTab}
+		<button
+			class="tab remove"
+			on:click={() => {
+				const newCurrentTab =
+					layout.tabs[
+						Math.max(layout.tabs.indexOf(currentTab) - 1, 0)
+					];
+				tabService.remove(currentTab);
+				update = {};
+				currentTab = newCurrentTab;
+				layout.tabs = layout.tabs;
+				currentTab.panes = currentTab.panes;
+			}}>Remove</button
+		>{/if}
 	<button
 		class="tab add"
 		on:click={() => {
@@ -71,7 +87,7 @@
 	{#each currentTab.panes as pane, i}
 		<Pane
 			{pane}
-			{canRemove}
+			canRemove={canRemovePane}
 			index={i}
 			style={uiService.getPaneGridStyles(pane, update)}
 			on:input={() => (update = {})}
@@ -223,9 +239,19 @@
 	}
 
 	.tab.add {
-		margin-left: auto;
 		position: sticky;
 		right: 0;
+		margin-left: auto;
+	}
+
+	.tab.remove {
+		margin-left: auto;
+		position: sticky;
+		right: 1rem;
+	}
+
+	.tab.remove + .tab.add {
+		margin-left: unset;
 	}
 
 	.tab:nth-last-child(2) {
@@ -233,7 +259,8 @@
 	}
 
 	.tab[data-selected="true"],
-	.tab.add {
+	.tab.add,
+	.tab.remove {
 		flex-shrink: 0;
 		border-bottom-color: var(--bg-colour);
 		z-index: 1;
