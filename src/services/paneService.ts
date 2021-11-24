@@ -28,9 +28,7 @@ export class PaneService {
 
             lastChild.children = [...node.children.filter(c => c !== lastChild), ...lastChild.children];
             lastChild.children.forEach(c => c.parent = lastChild);
-        }
-
-        if (indexInParent >= 0) {
+        } else if (indexInParent >= 0) {
             node.parent.children.splice(indexInParent, 1);
         }
 
