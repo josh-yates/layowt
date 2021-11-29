@@ -62,12 +62,13 @@
 		<button
 			class="tab remove"
 			on:click={() => {
-				const newCurrentTab =
-					layout.tabs[
-						Math.max(layout.tabs.indexOf(currentTab) - 1, 0)
-					];
+				const indexOfOldCurrentTab = layout.tabs.indexOf(currentTab);
 				tabService.remove(currentTab);
 				update = {};
+				const newCurrentTab =
+					layout.tabs[
+						Math.min(indexOfOldCurrentTab, layout.tabs.length - 1)
+					];
 				currentTab = newCurrentTab;
 				layout.tabs = layout.tabs;
 				currentTab.panes = currentTab.panes;
