@@ -132,6 +132,27 @@ describe('PaneService', () => {
 
             expect(newNode.parentSplit).toBe(SplitType.Vertical);
         });
+        it('Clones a pane\'s contents and settings if specified', () => {
+            const originalNode = tab.panes[0];
+
+            originalNode.title = 'Title';
+            originalNode.content = 'Content';
+            originalNode.colourScheme = 'Colour scheme';
+            originalNode.directory = 'Directory';
+            originalNode.persistTitle = false;
+            originalNode.cloneOnSplit = true;
+
+            sut.split(originalNode, SplitType.Horizontal);
+
+            const newNode = originalNode.children[0];
+
+            expect(newNode.title).toBe('Title');
+            expect(newNode.content).toBe('Content');
+            expect(newNode.colourScheme).toBe('Colour scheme');
+            expect(newNode.directory).toBe('Directory');
+            expect(newNode.persistTitle).toBe(false);
+            expect(newNode.cloneOnSplit).toBe(true);
+        });
     });
     describe('remove', () => {
         it('Removes the node from the store', () => {

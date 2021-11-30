@@ -9,6 +9,7 @@ export class Pane {
     public colourScheme?: string;
     public title?: string;
     public persistTitle?: boolean = true;
+    public cloneOnSplit?: boolean = false;
 
     public parentSplit?: SplitType;
     public children?: Pane[] = [];

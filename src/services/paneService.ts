@@ -7,8 +7,17 @@ export class PaneService {
         const newChild = new Pane(node.tab);
         newChild.parentSplit = split;
         newChild.parent = node;
-        node.children.push(newChild);
 
+        if (node.cloneOnSplit) {
+            newChild.cloneOnSplit = node.cloneOnSplit;
+            newChild.colourScheme = node.colourScheme;
+            newChild.content = node.content;
+            newChild.directory = node.directory;
+            newChild.persistTitle = node.persistTitle;
+            newChild.title = node.title;
+        }
+
+        node.children.push(newChild);
         node.tab.panes.push(newChild);
     }
 
