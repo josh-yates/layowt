@@ -76,6 +76,22 @@
                         on:input={input}
                     />
                 </div>
+                <details class="form-row advanced-settings">
+                    <summary>Advanced settings</summary>
+                    <div class="form-row">
+                        <label for="cloneOnSplit-{index}">Clone on split</label>
+                        <div class="checkbox-container">
+                            <input
+                                id="cloneOnSplit-{index}"
+                                name="cloneOnSplit-{index}"
+                                type="checkbox"
+                                bind:checked={pane.cloneOnSplit}
+                                on:change={input}
+                            />
+                            <label for="cloneOnSplit-{index}" />
+                        </div>
+                    </div>
+                </details>
                 <!-- TODO: Fix issues with Tab Colour?-->
                 <!-- <div class="form-row">
                     <label for="colour-{index}">Tab colour</label>
@@ -306,6 +322,11 @@
         width: 2.4375rem;
         margin-right: auto;
         margin-left: 0.5rem;
+    }
+
+    .advanced-settings > summary {
+        cursor: pointer;
+        line-height: 2.4375rem;
     }
 
     .checkbox-container > input[type="checkbox"] {
