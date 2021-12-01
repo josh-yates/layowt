@@ -1,5 +1,6 @@
 <script lang="ts">
 	import Pane from "./components/Pane.svelte";
+	import { Layout } from "./models/layout";
 	import { SplitType } from "./models/splitType";
 	import { CommandService } from "./services/commandService";
 	import { GridService } from "./services/gridService";
@@ -19,6 +20,8 @@
 
 	let currentLayout = layouts[0];
 	let currentTab = currentLayout.tabs[0];
+
+	let showLayoutListing = false;
 
 	$: update = {};
 	$: canRemovePane = !!update && currentTab.panes.length !== 1;
@@ -43,91 +46,140 @@
 
 <header>
 	<h1 class="title">layowt</h1>
-	<input
-		id="layout-title"
-		name="layout-title"
-		type="text"
-		spellcheck="false"
-		placeholder="No title"
-		bind:value={currentLayout.title}
-		on:input={() => (update = {})}
-	/>
-	<button id="more-layouts">More</button>
+	{#if !showLayoutListing}
+		<input
+			id="layout-title"
+			name="layout-title"
+			type="text"
+			spellcheck="false"
+			placeholder="No title"
+			bind:value={currentLayout.title}
+			on:input={() => (update = {})}
+		/>
+		<button id="more-layouts" on:click={() => (showLayoutListing = true)}
+			>More</button
+		>
+	{/if}
 	<a
 		class="github-link"
+		data-with-title={!showLayoutListing}
 		href="https://github.com/josh-yates/layowt"
 		target="_blank">View GitHub repository</a
 	>
 </header>
-<aside class="tabs">
-	{#each currentLayout.tabs as tab, i}
+{#if showLayoutListing}
+	<main class="layout-listing">
+		<ul>
+			{#each layouts as layout}
+				<li data-no-title={!layout.title}>
+					{!!layout.title ? layout.title : "No title"}
+					<button
+						on:click={() => {
+							currentLayout = layout;
+							currentLayout.tabs = currentLayout.tabs;
+							currentTab = currentLayout.tabs[0];
+							showLayoutListing = false;
+						}}>Open</button
+					>
+					<button
+						on:click={() => {
+							layouts.splice(layouts.indexOf(layout), 1);
+							update = {};
+							if (!layouts.length) {
+								layouts.push(new Layout());
+								currentLayout = layouts[0];
+								currentTab = currentLayout.tabs[0];
+								showLayoutListing = false;
+							}
+						}}>Remove</button
+					>
+				</li>
+			{/each}
+		</ul>
 		<button
-			title={`${tab.title} (${i})`}
-			class="tab"
-			data-selected={currentTab === tab}
-			on:click={() => (currentTab = tab)}>{`${tab.title} (${i})`}</button
-		>
-	{/each}
-	{#if canRemoveTab}
-		<button
-			class="tab remove"
 			on:click={() => {
-				const indexOfOldCurrentTab =
-					currentLayout.tabs.indexOf(currentTab);
-				tabService.remove(currentTab);
-				update = {};
-				const newCurrentTab =
-					currentLayout.tabs[
-						Math.min(
-							indexOfOldCurrentTab,
-							currentLayout.tabs.length - 1
-						)
-					];
-				currentTab = newCurrentTab;
+				const newLayout = new Layout();
+				layouts.push(newLayout);
+				update = update;
+				currentLayout = newLayout;
 				currentLayout.tabs = currentLayout.tabs;
-				currentTab.panes = currentTab.panes;
-			}}>Remove</button
-		>{/if}
-	<button
-		class="tab add"
-		on:click={() => {
-			tabService.add(currentLayout);
-			update = {};
-			currentLayout.tabs = currentLayout.tabs;
-			currentTab = currentLayout.tabs[currentLayout.tabs.length - 1];
-		}}>Add</button
-	>
-</aside>
-<main style={uiService.getContainerGridStyles(currentTab, update)}>
-	{#each currentTab.panes as pane, i}
-		<Pane
-			{pane}
-			canRemove={canRemovePane}
-			index={i}
-			style={uiService.getPaneGridStyles(pane, update)}
-			on:input={() => (update = {})}
-			on:splitHorizontal={() => {
-				paneService.split(pane, SplitType.Horizontal);
+				currentTab = currentLayout.tabs[0];
+				showLayoutListing = false;
+			}}>New layout</button
+		>
+	</main>
+{:else}
+	<aside class="tabs">
+		{#each currentLayout.tabs as tab, i}
+			<button
+				title={`${tab.title} (${i})`}
+				class="tab"
+				data-selected={currentTab === tab}
+				on:click={() => (currentTab = tab)}
+				>{`${tab.title} (${i})`}</button
+			>
+		{/each}
+		{#if canRemoveTab}
+			<button
+				class="tab remove"
+				on:click={() => {
+					const indexOfOldCurrentTab =
+						currentLayout.tabs.indexOf(currentTab);
+					tabService.remove(currentTab);
+					update = {};
+					const newCurrentTab =
+						currentLayout.tabs[
+							Math.min(
+								indexOfOldCurrentTab,
+								currentLayout.tabs.length - 1
+							)
+						];
+					currentTab = newCurrentTab;
+					currentLayout.tabs = currentLayout.tabs;
+					currentTab.panes = currentTab.panes;
+				}}>Remove</button
+			>{/if}
+		<button
+			class="tab add"
+			on:click={() => {
+				tabService.add(currentLayout);
 				update = {};
-			}}
-			on:splitVertical={() => {
-				paneService.split(pane, SplitType.Vertical);
-				update = {};
-			}}
-			on:remove={() => {
-				paneService.remove(pane);
-				update = {};
-				currentTab.panes = currentTab.panes;
-			}}
-		/>
-	{/each}
-</main>
-<p class="command">
-	{uiService.getCommandText(currentLayout, update)}<button
-		class="copy-button"
-		on:click={copyCommand}>{showCopied ? "Copied!" : "Copy"}</button
-	>
-</p>
+				currentLayout.tabs = currentLayout.tabs;
+				currentTab = currentLayout.tabs[currentLayout.tabs.length - 1];
+			}}>Add</button
+		>
+	</aside>
+	<main style={uiService.getContainerGridStyles(currentTab, update)}>
+		{#each currentTab.panes as pane, i}
+			<Pane
+				{pane}
+				canRemove={canRemovePane}
+				index={i}
+				style={uiService.getPaneGridStyles(pane, update)}
+				on:input={() => (update = {})}
+				on:splitHorizontal={() => {
+					paneService.split(pane, SplitType.Horizontal);
+					update = {};
+				}}
+				on:splitVertical={() => {
+					paneService.split(pane, SplitType.Vertical);
+					update = {};
+				}}
+				on:remove={() => {
+					paneService.remove(pane);
+					update = {};
+					currentTab.panes = currentTab.panes;
+				}}
+			/>
+		{/each}
+	</main>
+	<p class="command">
+		{uiService.getCommandText(currentLayout, update)}<button
+			class="copy-button"
+			on:click={copyCommand}>{showCopied ? "Copied!" : "Copy"}</button
+		>
+	</p>
+{/if}
 
 <style>
 	:root {
@@ -174,6 +226,10 @@
 		margin-left: 0.5rem;
 	}
 
+	.github-link[data-with-title="false"] {
+		margin-left: auto;
+	}
+
 	main {
 		width: var(--content-width);
 		flex-grow: 1;
@@ -187,6 +243,17 @@
 		overflow: hidden;
 		min-height: 0;
 		min-width: 0;
+	}
+
+	.layout-listing {
+		background-color: var(--bg-colour);
+		border: none;
+		display: flex;
+		flex-direction: column;
+		align-items: center;
+		font-size: 1rem;
+		font-family: monospace;
+		font-weight: 900;
 	}
 
 	.command {
