@@ -1,6 +1,5 @@
 <script lang="ts">
 	import Pane from "./components/Pane.svelte";
-	import { Layout } from "./models/layout";
 	import { SplitType } from "./models/splitType";
 	import { CommandService } from "./services/commandService";
 	import { GridService } from "./services/gridService";
@@ -44,6 +43,16 @@
 
 <header>
 	<h1 class="title">layowt</h1>
+	<input
+		id="layout-title"
+		name="layout-title"
+		type="text"
+		spellcheck="false"
+		placeholder="No title"
+		bind:value={currentLayout.title}
+		on:input={() => (update = {})}
+	/>
+	<button id="more-layouts">More</button>
 	<a
 		class="github-link"
 		href="https://github.com/josh-yates/layowt"
@@ -146,6 +155,7 @@
 		line-height: var(--header-font-size);
 		font-weight: 900;
 		text-decoration: none;
+		margin-right: 0.5rem;
 	}
 
 	header .title:visited {
@@ -154,12 +164,14 @@
 	}
 
 	header .github-link {
-		margin-left: auto;
 		height: var(--header-font-size);
 		width: var(--header-font-size);
 		background-image: url(./../resources/github.svg);
 		font-size: 0;
 		line-height: 0;
+		flex-shrink: 0;
+		flex-grow: 0;
+		margin-left: 0.5rem;
 	}
 
 	main {
@@ -197,7 +209,8 @@
 	}
 
 	.copy-button,
-	.tab {
+	.tab,
+	#more-layouts {
 		padding: 0.5rem;
 		line-height: var(--command-font-size);
 		border-radius: 0.5rem;
@@ -275,6 +288,37 @@
 
 	.tab[data-selected="false"] {
 		background-color: var(--bg-colour__secondary);
+	}
+
+	#layout-title {
+		margin-left: auto;
+		margin-right: 0.5rem;
+		flex-shrink: 1;
+		flex-grow: 1;
+		min-width: 0;
+		max-width: 20rem;
+	}
+
+	#more-layouts {
+		flex-grow: 0;
+		flex-shrink: 0;
+		margin-right: auto;
+	}
+
+	input[type="text"] {
+		font-weight: 900;
+		font-size: 1rem;
+		line-height: 1rem;
+		font-family: monospace;
+		padding: 0.5rem;
+		background-color: var(--bg-colour);
+		border: 0.125rem solid var(--fg-colour);
+		border-radius: 0.5rem;
+		color: var(--fg-colour);
+	}
+
+	input[type="text"]:focus {
+		outline: none;
 	}
 
 	@media (min-width: 640px) {

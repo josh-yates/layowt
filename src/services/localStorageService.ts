@@ -12,6 +12,8 @@ export class LocalStorageService {
         const layoutsToSave = layouts.map(l => {
             const layoutToSave = new Layout();
 
+            layoutToSave.title = l.title;
+
             layoutToSave.tabs = l.tabs.map(t => {
                 const tab = new Tab(null);
 
