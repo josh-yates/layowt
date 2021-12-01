@@ -16,22 +16,23 @@
 	const uiService = new UIService(gridService, commandService);
 	const localStorageService = new LocalStorageService(paneService);
 
-	const layout = localStorageService.retrieveLayout() ?? new Layout();
+	const layouts = localStorageService.retrieveLayouts();
 
-	let currentTab = layout.tabs[0];
+	let currentLayout = layouts[0];
+	let currentTab = currentLayout.tabs[0];
 
 	$: update = {};
 	$: canRemovePane = !!update && currentTab.panes.length !== 1;
-	$: canRemoveTab = !!update && layout.tabs.length !== 1;
+	$: canRemoveTab = !!update && currentLayout.tabs.length !== 1;
 	$: {
 		update;
-		localStorageService.saveLayout(layout);
+		localStorageService.saveLayouts(layouts);
 	}
 
 	let showCopied = false;
 
 	const copyCommand = () => {
-		const command = uiService.getCommandText(layout, null);
+		const command = uiService.getCommandText(currentLayout, null);
 
 		navigator.clipboard.writeText(command);
 
@@ -50,7 +51,7 @@
 	>
 </header>
 <aside class="tabs">
-	{#each layout.tabs as tab, i}
+	{#each currentLayout.tabs as tab, i}
 		<button
 			title={`${tab.title} (${i})`}
 			class="tab"
@@ -62,25 +63,29 @@
 		<button
 			class="tab remove"
 			on:click={() => {
-				const indexOfOldCurrentTab = layout.tabs.indexOf(currentTab);
+				const indexOfOldCurrentTab =
+					currentLayout.tabs.indexOf(currentTab);
 				tabService.remove(currentTab);
 				update = {};
 				const newCurrentTab =
-					layout.tabs[
-						Math.min(indexOfOldCurrentTab, layout.tabs.length - 1)
+					currentLayout.tabs[
+						Math.min(
+							indexOfOldCurrentTab,
+							currentLayout.tabs.length - 1
+						)
 					];
 				currentTab = newCurrentTab;
-				layout.tabs = layout.tabs;
+				currentLayout.tabs = currentLayout.tabs;
 				currentTab.panes = currentTab.panes;
 			}}>Remove</button
 		>{/if}
 	<button
 		class="tab add"
 		on:click={() => {
-			tabService.add(layout);
+			tabService.add(currentLayout);
 			update = {};
-			layout.tabs = layout.tabs;
-			currentTab = layout.tabs[layout.tabs.length - 1];
+			currentLayout.tabs = currentLayout.tabs;
+			currentTab = currentLayout.tabs[currentLayout.tabs.length - 1];
 		}}>Add</button
 	>
 </aside>
@@ -109,7 +114,7 @@
 	{/each}
 </main>
 <p class="command">
-	{uiService.getCommandText(layout, update)}<button
+	{uiService.getCommandText(currentLayout, update)}<button
 		class="copy-button"
 		on:click={copyCommand}>{showCopied ? "Copied!" : "Copy"}</button
 	>
