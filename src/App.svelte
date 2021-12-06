@@ -16,22 +16,25 @@
 	const uiService = new UIService(gridService, commandService);
 	const localStorageService = new LocalStorageService(paneService);
 
-	const layout = localStorageService.retrieveLayout() ?? new Layout();
+	let layouts = localStorageService.retrieveLayouts();
 
-	let currentTab = layout.tabs[0];
+	let currentLayout = layouts[0];
+	let currentTab = currentLayout.tabs[0];
+
+	let showLayoutListing = false;
 
 	$: update = {};
 	$: canRemovePane = !!update && currentTab.panes.length !== 1;
-	$: canRemoveTab = !!update && layout.tabs.length !== 1;
+	$: canRemoveTab = !!update && currentLayout.tabs.length !== 1;
 	$: {
 		update;
-		localStorageService.saveLayout(layout);
+		localStorageService.saveLayouts(layouts);
 	}
 
 	let showCopied = false;
 
 	const copyCommand = () => {
-		const command = uiService.getCommandText(layout, null);
+		const command = uiService.getCommandText(currentLayout, null);
 
 		navigator.clipboard.writeText(command);
 
@@ -43,77 +46,144 @@
 
 <header>
 	<h1 class="title">layowt</h1>
+	{#if !showLayoutListing}
+		<input
+			id="layout-title"
+			name="layout-title"
+			type="text"
+			spellcheck="false"
+			placeholder="No title"
+			bind:value={currentLayout.title}
+			on:input={() => (update = {})}
+		/>
+		<button id="more-layouts" on:click={() => (showLayoutListing = true)}
+			>More</button
+		>
+	{/if}
 	<a
 		class="github-link"
+		data-with-title={!showLayoutListing}
 		href="https://github.com/josh-yates/layowt"
 		target="_blank">View GitHub repository</a
 	>
 </header>
-<aside class="tabs">
-	{#each layout.tabs as tab, i}
+{#if showLayoutListing}
+	<main class="layout-listing">
+		<h2>Your layowts</h2>
+		<ul>
+			{#each layouts as layout}
+				<li data-no-title={!layout.title}>
+					<button
+						class="layout-open"
+						on:click={() => {
+							currentLayout = layout;
+							currentLayout.tabs = currentLayout.tabs;
+							currentTab = currentLayout.tabs[0];
+							showLayoutListing = false;
+						}}>{!!layout.title ? layout.title : "No title"}</button
+					>
+					<button
+						class="layout-remove"
+						on:click={() => {
+							layouts.splice(layouts.indexOf(layout), 1);
+							update = {};
+							if (!layouts.length) {
+								layouts.push(new Layout());
+								currentLayout = layouts[0];
+								currentTab = currentLayout.tabs[0];
+								showLayoutListing = false;
+							}
+							layouts = layouts;
+						}}>Remove</button
+					>
+				</li>
+			{/each}
+		</ul>
 		<button
-			title={`${tab.title} (${i})`}
-			class="tab"
-			data-selected={currentTab === tab}
-			on:click={() => (currentTab = tab)}>{`${tab.title} (${i})`}</button
-		>
-	{/each}
-	{#if canRemoveTab}
-		<button
-			class="tab remove"
+			id="layout-new"
 			on:click={() => {
-				const indexOfOldCurrentTab = layout.tabs.indexOf(currentTab);
-				tabService.remove(currentTab);
+				const newLayout = new Layout();
+				layouts.push(newLayout);
+				update = update;
+				currentLayout = newLayout;
+				currentLayout.tabs = currentLayout.tabs;
+				currentTab = currentLayout.tabs[0];
+				showLayoutListing = false;
+			}}>New layowt</button
+		>
+	</main>
+{:else}
+	<aside class="tabs">
+		{#each currentLayout.tabs as tab, i}
+			<button
+				title={`${tab.title} (${i})`}
+				class="tab"
+				data-selected={currentTab === tab}
+				on:click={() => (currentTab = tab)}
+				>{`${tab.title} (${i})`}</button
+			>
+		{/each}
+		{#if canRemoveTab}
+			<button
+				class="tab remove"
+				on:click={() => {
+					const indexOfOldCurrentTab =
+						currentLayout.tabs.indexOf(currentTab);
+					tabService.remove(currentTab);
+					update = {};
+					const newCurrentTab =
+						currentLayout.tabs[
+							Math.min(
+								indexOfOldCurrentTab,
+								currentLayout.tabs.length - 1
+							)
+						];
+					currentTab = newCurrentTab;
+					currentLayout.tabs = currentLayout.tabs;
+					currentTab.panes = currentTab.panes;
+				}}>Remove</button
+			>{/if}
+		<button
+			class="tab add"
+			on:click={() => {
+				tabService.add(currentLayout);
 				update = {};
-				const newCurrentTab =
-					layout.tabs[
-						Math.min(indexOfOldCurrentTab, layout.tabs.length - 1)
-					];
-				currentTab = newCurrentTab;
-				layout.tabs = layout.tabs;
-				currentTab.panes = currentTab.panes;
-			}}>Remove</button
-		>{/if}
-	<button
-		class="tab add"
-		on:click={() => {
-			tabService.add(layout);
-			update = {};
-			layout.tabs = layout.tabs;
-			currentTab = layout.tabs[layout.tabs.length - 1];
-		}}>Add</button
-	>
-</aside>
-<main style={uiService.getContainerGridStyles(currentTab, update)}>
-	{#each currentTab.panes as pane, i}
-		<Pane
-			{pane}
-			canRemove={canRemovePane}
-			index={i}
-			style={uiService.getPaneGridStyles(pane, update)}
-			on:input={() => (update = {})}
-			on:splitHorizontal={() => {
-				paneService.split(pane, SplitType.Horizontal);
-				update = {};
-			}}
-			on:splitVertical={() => {
-				paneService.split(pane, SplitType.Vertical);
-				update = {};
-			}}
-			on:remove={() => {
-				paneService.remove(pane);
-				update = {};
-				currentTab.panes = currentTab.panes;
-			}}
-		/>
-	{/each}
-</main>
-<p class="command">
-	{uiService.getCommandText(layout, update)}<button
-		class="copy-button"
-		on:click={copyCommand}>{showCopied ? "Copied!" : "Copy"}</button
-	>
-</p>
+				currentLayout.tabs = currentLayout.tabs;
+				currentTab = currentLayout.tabs[currentLayout.tabs.length - 1];
+			}}>Add</button
+		>
+	</aside>
+	<main style={uiService.getContainerGridStyles(currentTab, update)}>
+		{#each currentTab.panes as pane, i}
+			<Pane
+				{pane}
+				canRemove={canRemovePane}
+				index={i}
+				style={uiService.getPaneGridStyles(pane, update)}
+				on:input={() => (update = {})}
+				on:splitHorizontal={() => {
+					paneService.split(pane, SplitType.Horizontal);
+					update = {};
+				}}
+				on:splitVertical={() => {
+					paneService.split(pane, SplitType.Vertical);
+					update = {};
+				}}
+				on:remove={() => {
+					paneService.remove(pane);
+					update = {};
+					currentTab.panes = currentTab.panes;
+				}}
+			/>
+		{/each}
+	</main>
+	<p class="command">
+		{uiService.getCommandText(currentLayout, update)}<button
+			class="copy-button"
+			on:click={copyCommand}>{showCopied ? "Copied!" : "Copy"}</button
+		>
+	</p>
+{/if}
 
 <style>
 	:root {
@@ -141,6 +211,7 @@
 		line-height: var(--header-font-size);
 		font-weight: 900;
 		text-decoration: none;
+		margin-right: 0.5rem;
 	}
 
 	header .title:visited {
@@ -149,12 +220,18 @@
 	}
 
 	header .github-link {
-		margin-left: auto;
 		height: var(--header-font-size);
 		width: var(--header-font-size);
 		background-image: url(./../resources/github.svg);
 		font-size: 0;
 		line-height: 0;
+		flex-shrink: 0;
+		flex-grow: 0;
+		margin-left: 0.5rem;
+	}
+
+	.github-link[data-with-title="false"] {
+		margin-left: auto;
 	}
 
 	main {
@@ -170,6 +247,96 @@
 		overflow: hidden;
 		min-height: 0;
 		min-width: 0;
+	}
+
+	.layout-listing {
+		background-color: var(--bg-colour);
+		border: none;
+		display: flex;
+		flex-direction: column;
+		align-items: center;
+		width: 100%;
+		font-size: 1rem;
+		font-family: monospace;
+		font-weight: 900;
+	}
+
+	.layout-listing > ul {
+		width: 80%;
+		max-width: 30rem;
+		display: flex;
+		flex-direction: column;
+		align-items: stretch;
+		justify-content: start;
+		padding: 0;
+		margin: 0;
+	}
+
+	.layout-listing > ul > li {
+		list-style-type: none;
+		margin: 0;
+		border: 2px solid var(--fg-colour);
+		border-bottom: none;
+		padding: 0;
+		overflow: hidden;
+		position: relative;
+		height: 3.25rem;
+		display: flex;
+		align-items: center;
+	}
+
+	.layout-listing > ul > li:first-child {
+		border-top-left-radius: 0.5rem;
+		border-top-right-radius: 0.5rem;
+	}
+
+	.layout-listing > ul > li:last-child {
+		border-bottom-left-radius: 0.5rem;
+		border-bottom-right-radius: 0.5rem;
+		border-bottom: 2px solid var(--fg-colour);
+	}
+
+	.layout-listing li > .layout-open {
+		width: 100%;
+		height: 100%;
+		display: flex;
+		align-items: center;
+		justify-content: start;
+		font-size: 1rem;
+		font-weight: 900;
+		line-height: 1rem;
+		font-family: monospace;
+		color: var(--fg-colour);
+		background: var(--bg-colour);
+		border: none;
+		padding: 0.5rem;
+	}
+
+	.layout-listing li[data-no-title="true"] > .layout-open {
+		color: var(--fg-colour__secondary);
+	}
+
+	.layout-listing li > .layout-remove {
+		position: absolute;
+		background-color: var(--bg-colour);
+		position: absolute;
+		right: unset;
+		left: 100%;
+		box-shadow: 0px 0px 1rem 2rem var(--bg-colour);
+		padding: 0.5rem;
+		line-height: var(--command-font-size);
+		border-radius: 0.5rem;
+		border: 2px solid var(--fg-colour);
+		font-size: var(--command-font-size);
+		font-weight: 900;
+		font-family: monospace;
+		color: var(--fg-colour);
+	}
+
+	.layout-listing > ul > li:hover > .layout-remove,
+	.layout-listing > ul > li:focus-within > .layout-remove {
+		left: unset;
+		right: 0.5rem;
 	}
 
 	.command {
@@ -192,7 +359,9 @@
 	}
 
 	.copy-button,
-	.tab {
+	.tab,
+	#layout-new,
+	#more-layouts {
 		padding: 0.5rem;
 		line-height: var(--command-font-size);
 		border-radius: 0.5rem;
@@ -201,6 +370,10 @@
 		font-weight: 900;
 		font-family: monospace;
 		color: var(--fg-colour);
+	}
+
+	#layout-new {
+		margin-top: 0.5rem;
 	}
 
 	.copy-button {
@@ -270,6 +443,37 @@
 
 	.tab[data-selected="false"] {
 		background-color: var(--bg-colour__secondary);
+	}
+
+	#layout-title {
+		margin-left: auto;
+		margin-right: 0.5rem;
+		flex-shrink: 1;
+		flex-grow: 1;
+		min-width: 0;
+		max-width: 20rem;
+	}
+
+	#more-layouts {
+		flex-grow: 0;
+		flex-shrink: 0;
+		margin-right: auto;
+	}
+
+	input[type="text"] {
+		font-weight: 900;
+		font-size: 1rem;
+		line-height: 1rem;
+		font-family: monospace;
+		padding: 0.5rem;
+		background-color: var(--bg-colour);
+		border: 0.125rem solid var(--fg-colour);
+		border-radius: 0.5rem;
+		color: var(--fg-colour);
+	}
+
+	input[type="text"]:focus {
+		outline: none;
 	}
 
 	@media (min-width: 640px) {

@@ -6,42 +6,69 @@ import type { PaneService } from "./paneService";
 export class LocalStorageService {
     public constructor(private readonly _paneService: PaneService) { }
 
-    public saveLayout(layout: Layout): void {
-        if (!layout) return;
+    public saveLayouts(layouts: Layout[]): void {
+        if (!layouts || !layouts.length) return;
 
-        const layoutToSave = new Layout();
+        const layoutsToSave = layouts.map(l => {
+            const layoutToSave = new Layout();
 
-        layoutToSave.tabs = layout.tabs.map(t => {
-            const tab = new Tab(null);
+            layoutToSave.title = l.title;
 
-            tab.title = t.title;
+            layoutToSave.tabs = l.tabs.map(t => {
+                const tab = new Tab(null);
 
-            const rootPane = this._paneService.getRootNode(t);
+                tab.title = t.title;
 
-            tab.panes = [this.mapPaneForSaving(rootPane)];
+                const rootPane = this._paneService.getRootNode(t);
 
-            return tab;
+                tab.panes = [this.mapPaneForSaving(rootPane)];
+
+                return tab;
+            });
+
+            return layoutToSave;
         });
 
-        window.localStorage.setItem('layout', JSON.stringify(layoutToSave));
+        window.localStorage.setItem('layouts', JSON.stringify(layoutsToSave));
     }
 
-    public retrieveLayout(): Layout {
-        const layoutJSON = window.localStorage.getItem('layout');
+    public retrieveLayouts(): Layout[] {
+        let layouts = [new Layout()];
 
-        if (!layoutJSON) return null;
+        const layoutsJSON = window.localStorage.getItem('layouts');
 
-        const layout = JSON.parse(layoutJSON) as Layout;
+        if (layoutsJSON) {
+            layouts = JSON.parse(layoutsJSON) as Layout[];
 
-        layout.tabs.forEach(t => {
-            t.layout = layout;
+            layouts.forEach(l => l.tabs.forEach(t => {
+                t.layout = l;
 
-            this.hydratePane(t.panes[0], null);
-            t.panes = this.collectPanes(t.panes[0]);
-            t.panes.forEach(p => p.tab = t);
-        });
+                this.hydratePane(t.panes[0], null);
+                t.panes = this.collectPanes(t.panes[0]);
+                t.panes.forEach(p => p.tab = t);
+            }));
+        }
 
-        return layout;
+        // Legacy support - move old 'single layout' to new multi layout
+        const legacyLayoutJSON = window.localStorage.getItem('layout');
+
+        if (legacyLayoutJSON) {
+            const legacyLayout = JSON.parse(legacyLayoutJSON) as Layout;
+
+            legacyLayout.tabs.forEach(t => {
+                t.layout = legacyLayout;
+
+                this.hydratePane(t.panes[0], null);
+                t.panes = this.collectPanes(t.panes[0]);
+                t.panes.forEach(p => p.tab = t);
+            });
+
+            layouts = [legacyLayout, ...layouts];
+
+            localStorage.removeItem('layout');
+        }
+
+        return layouts;
     }
 
     private hydratePane(pane: Pane, parentPane: Pane) {
