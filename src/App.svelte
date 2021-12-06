@@ -16,7 +16,7 @@
 	const uiService = new UIService(gridService, commandService);
 	const localStorageService = new LocalStorageService(paneService);
 
-	const layouts = localStorageService.retrieveLayouts();
+	let layouts = localStorageService.retrieveLayouts();
 
 	let currentLayout = layouts[0];
 	let currentTab = currentLayout.tabs[0];
@@ -93,6 +93,7 @@
 								currentTab = currentLayout.tabs[0];
 								showLayoutListing = false;
 							}
+							layouts = layouts;
 						}}>Remove</button
 					>
 				</li>
