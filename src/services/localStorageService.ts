@@ -33,19 +33,40 @@ export class LocalStorageService {
     }
 
     public retrieveLayouts(): Layout[] {
+        let layouts = [new Layout()];
+
         const layoutsJSON = window.localStorage.getItem('layouts');
 
-        if (!layoutsJSON) return [new Layout()];
+        if (layoutsJSON) {
+            layouts = JSON.parse(layoutsJSON) as Layout[];
 
-        const layouts = JSON.parse(layoutsJSON) as Layout[];
+            layouts.forEach(l => l.tabs.forEach(t => {
+                t.layout = l;
 
-        layouts.forEach(l => l.tabs.forEach(t => {
-            t.layout = l;
+                this.hydratePane(t.panes[0], null);
+                t.panes = this.collectPanes(t.panes[0]);
+                t.panes.forEach(p => p.tab = t);
+            }));
+        }
 
-            this.hydratePane(t.panes[0], null);
-            t.panes = this.collectPanes(t.panes[0]);
-            t.panes.forEach(p => p.tab = t);
-        }));
+        // Legacy support - move old 'single layout' to new multi layout
+        const legacyLayoutJSON = window.localStorage.getItem('layout');
+
+        if (legacyLayoutJSON) {
+            const legacyLayout = JSON.parse(legacyLayoutJSON) as Layout;
+
+            legacyLayout.tabs.forEach(t => {
+                t.layout = legacyLayout;
+
+                this.hydratePane(t.panes[0], null);
+                t.panes = this.collectPanes(t.panes[0]);
+                t.panes.forEach(p => p.tab = t);
+            });
+
+            layouts = [legacyLayout, ...layouts];
+
+            localStorage.removeItem('layout');
+        }
 
         return layouts;
     }
