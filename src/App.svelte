@@ -69,19 +69,21 @@
 </header>
 {#if showLayoutListing}
 	<main class="layout-listing">
+		<h2>Your layowts</h2>
 		<ul>
 			{#each layouts as layout}
 				<li data-no-title={!layout.title}>
-					{!!layout.title ? layout.title : "No title"}
 					<button
+						class="layout-open"
 						on:click={() => {
 							currentLayout = layout;
 							currentLayout.tabs = currentLayout.tabs;
 							currentTab = currentLayout.tabs[0];
 							showLayoutListing = false;
-						}}>Open</button
+						}}>{!!layout.title ? layout.title : "No title"}</button
 					>
 					<button
+						class="layout-remove"
 						on:click={() => {
 							layouts.splice(layouts.indexOf(layout), 1);
 							update = {};
@@ -97,6 +99,7 @@
 			{/each}
 		</ul>
 		<button
+			id="layout-new"
 			on:click={() => {
 				const newLayout = new Layout();
 				layouts.push(newLayout);
@@ -105,7 +108,7 @@
 				currentLayout.tabs = currentLayout.tabs;
 				currentTab = currentLayout.tabs[0];
 				showLayoutListing = false;
-			}}>New layout</button
+			}}>New layowt</button
 		>
 	</main>
 {:else}
@@ -251,9 +254,88 @@
 		display: flex;
 		flex-direction: column;
 		align-items: center;
+		width: 100%;
 		font-size: 1rem;
 		font-family: monospace;
 		font-weight: 900;
+	}
+
+	.layout-listing > ul {
+		width: 80%;
+		max-width: 30rem;
+		display: flex;
+		flex-direction: column;
+		align-items: stretch;
+		justify-content: start;
+		padding: 0;
+		margin: 0;
+	}
+
+	.layout-listing > ul > li {
+		list-style-type: none;
+		margin: 0;
+		border: 2px solid var(--fg-colour);
+		border-bottom: none;
+		padding: 0;
+		overflow: hidden;
+		position: relative;
+		height: 3.25rem;
+		display: flex;
+		align-items: center;
+	}
+
+	.layout-listing > ul > li:first-child {
+		border-top-left-radius: 0.5rem;
+		border-top-right-radius: 0.5rem;
+	}
+
+	.layout-listing > ul > li:last-child {
+		border-bottom-left-radius: 0.5rem;
+		border-bottom-right-radius: 0.5rem;
+		border-bottom: 2px solid var(--fg-colour);
+	}
+
+	.layout-listing li > .layout-open {
+		width: 100%;
+		height: 100%;
+		display: flex;
+		align-items: center;
+		justify-content: start;
+		font-size: 1rem;
+		font-weight: 900;
+		line-height: 1rem;
+		font-family: monospace;
+		color: var(--fg-colour);
+		background: var(--bg-colour);
+		border: none;
+		padding: 0.5rem;
+	}
+
+	.layout-listing li[data-no-title="true"] > .layout-open {
+		color: var(--fg-colour__secondary);
+	}
+
+	.layout-listing li > .layout-remove {
+		position: absolute;
+		background-color: var(--bg-colour);
+		position: absolute;
+		right: unset;
+		left: 100%;
+		box-shadow: 0px 0px 1rem 2rem var(--bg-colour);
+		padding: 0.5rem;
+		line-height: var(--command-font-size);
+		border-radius: 0.5rem;
+		border: 2px solid var(--fg-colour);
+		font-size: var(--command-font-size);
+		font-weight: 900;
+		font-family: monospace;
+		color: var(--fg-colour);
+	}
+
+	.layout-listing > ul > li:hover > .layout-remove,
+	.layout-listing > ul > li:focus-within > .layout-remove {
+		left: unset;
+		right: 0.5rem;
 	}
 
 	.command {
@@ -277,6 +359,7 @@
 
 	.copy-button,
 	.tab,
+	#layout-new,
 	#more-layouts {
 		padding: 0.5rem;
 		line-height: var(--command-font-size);
@@ -286,6 +369,10 @@
 		font-weight: 900;
 		font-family: monospace;
 		color: var(--fg-colour);
+	}
+
+	#layout-new {
+		margin-top: 0.5rem;
 	}
 
 	.copy-button {
