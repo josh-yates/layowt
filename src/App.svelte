@@ -259,6 +259,11 @@
 		font-size: 1rem;
 		font-family: monospace;
 		font-weight: 900;
+		overflow-y: auto;
+	}
+
+	.layout-listing > h2 {
+		margin: 0;
 	}
 
 	.layout-listing > ul {
@@ -269,7 +274,7 @@
 		align-items: stretch;
 		justify-content: start;
 		padding: 0;
-		margin: 0;
+		margin: 1rem 0 0 0;
 	}
 
 	.layout-listing > ul > li {
@@ -373,7 +378,10 @@
 	}
 
 	#layout-new {
-		margin-top: 0.5rem;
+		margin: 1rem 0 0.5rem 0;
+		position: sticky;
+		bottom: 0.5rem;
+		box-shadow: 0px 0px 1rem 0.5rem var(--bg-colour);
 	}
 
 	.copy-button {
