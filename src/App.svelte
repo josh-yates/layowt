@@ -147,7 +147,7 @@
 				>
 			{/if}
 			{#if layouts.filter((l) => l.selected).length}
-				<button>Clone</button>
+				<!-- <button>Clone</button> -->
 				<button
 					on:click={() => {
 						layouts
