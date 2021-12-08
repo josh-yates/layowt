@@ -21,7 +21,7 @@
 	let currentLayout = layouts[0];
 	let currentTab = currentLayout.tabs[0];
 
-	let showLayoutListing = false;
+	$: showLayoutListing = false;
 
 	$: update = {};
 	$: canRemovePane = !!update && currentTab.panes.length !== 1;
@@ -29,6 +29,13 @@
 	$: {
 		update;
 		localStorageService.saveLayouts(layouts);
+	}
+
+	$: {
+		if (!showLayoutListing) {
+			layouts.forEach((l) => (l.selected = false));
+			update = {};
+		}
 	}
 
 	let showCopied = false;
@@ -71,7 +78,7 @@
 	<main class="layout-listing">
 		<h2>Your layowts</h2>
 		<ul>
-			{#each layouts as layout}
+			{#each layouts as layout, i}
 				<li data-no-title={!layout.title}>
 					<button
 						class="layout-open"
@@ -82,35 +89,85 @@
 							showLayoutListing = false;
 						}}>{!!layout.title ? layout.title : "No title"}</button
 					>
-					<button
-						class="layout-remove"
-						on:click={() => {
-							layouts.splice(layouts.indexOf(layout), 1);
-							update = {};
-							if (!layouts.length) {
-								layouts.push(new Layout());
-								currentLayout = layouts[0];
-								currentTab = currentLayout.tabs[0];
-								showLayoutListing = false;
-							}
-							layouts = layouts;
-						}}>Remove</button
+					<div
+						class="checkbox-container"
+						data-checked={layout.selected}
 					>
+						<input
+							id="layowtSelect-{i}"
+							name="layowtSelect-{i}"
+							type="checkbox"
+							bind:checked={layout.selected}
+							on:change={() => (update = {})}
+						/>
+						<label for="layowtSelect-{i}" />
+					</div>
 				</li>
 			{/each}
 		</ul>
-		<button
-			id="layout-new"
-			on:click={() => {
-				const newLayout = new Layout();
-				layouts.push(newLayout);
-				update = update;
-				currentLayout = newLayout;
-				currentLayout.tabs = currentLayout.tabs;
-				currentTab = currentLayout.tabs[0];
-				showLayoutListing = false;
-			}}>New layowt</button
-		>
+		<div class="layout-buttons">
+			<button
+				on:click={() => {
+					const newLayout = new Layout();
+					layouts.push(newLayout);
+					update = update;
+					currentLayout = newLayout;
+					currentLayout.tabs = currentLayout.tabs;
+					currentTab = currentLayout.tabs[0];
+					showLayoutListing = false;
+				}}>New layowt</button
+			>
+			{#if layouts.filter((l) => l.selected).length > 1}
+				<button
+					on:click={() => {
+						const layoutsToMerge = layouts.filter(
+							(l) => l.selected
+						);
+
+						const primaryLayout = layoutsToMerge.shift();
+
+						layoutsToMerge.forEach((l) => {
+							l.tabs.forEach((t) => (t.layout = primaryLayout));
+							primaryLayout.tabs.push(...l.tabs);
+							layouts.splice(layouts.indexOf(l), 1);
+						});
+
+						primaryLayout.title = [
+							primaryLayout.title,
+							...layoutsToMerge.map((l) => l.title),
+						]
+							.filter((t) => !!t)
+							.join(" / ");
+
+						layouts.forEach((l) => (l.selected = false));
+
+						update = {};
+						layouts = layouts;
+					}}>Merge</button
+				>
+			{/if}
+			{#if layouts.filter((l) => l.selected).length}
+				<!-- <button>Clone</button> -->
+				<button
+					on:click={() => {
+						layouts
+							.filter((l) => l.selected)
+							.forEach((l) =>
+								layouts.splice(layouts.indexOf(l), 1)
+							);
+
+						update = {};
+						if (!layouts.length) {
+							layouts.push(new Layout());
+							currentLayout = layouts[0];
+							currentTab = currentLayout.tabs[0];
+							showLayoutListing = false;
+						}
+						layouts = layouts;
+					}}>Remove</button
+				>
+			{/if}
+		</div>
 	</main>
 {:else}
 	<aside class="tabs">
@@ -321,25 +378,49 @@
 		color: var(--fg-colour__secondary);
 	}
 
-	.layout-listing li > .layout-remove {
+	.layout-listing li > .checkbox-container {
 		position: absolute;
-		background-color: var(--bg-colour);
-		position: absolute;
+		height: 2.4375rem;
+		width: 2.4375rem;
+		margin: 0;
 		right: unset;
 		left: 100%;
 		box-shadow: 0px 0px 1rem 2rem var(--bg-colour);
-		padding: 0.5rem;
-		line-height: var(--command-font-size);
-		border-radius: 0.5rem;
-		border: 2px solid var(--fg-colour);
-		font-size: var(--command-font-size);
-		font-weight: 900;
-		font-family: monospace;
-		color: var(--fg-colour);
 	}
 
-	.layout-listing > ul > li:hover > .layout-remove,
-	.layout-listing > ul > li:focus-within > .layout-remove {
+	.checkbox-container > input[type="checkbox"] {
+		position: absolute;
+		opacity: 0;
+		cursor: pointer;
+		height: 0;
+		width: 0;
+	}
+
+	.checkbox-container > label {
+		position: relative;
+		display: block;
+		height: 100%;
+		width: 100%;
+		background-color: var(--bg-colour);
+		border: 0.125rem solid var(--fg-colour);
+		border-radius: 0.5rem;
+		cursor: pointer;
+	}
+
+	.checkbox-container > input[type="checkbox"]:checked + label::after {
+		content: "";
+		position: absolute;
+		height: 1.9375rem;
+		width: 1.9375rem;
+		background-color: var(--fg-colour);
+		border-radius: 0.25rem;
+		top: 0.125rem;
+		left: 0.125rem;
+	}
+
+	.layout-listing > ul > li:hover > .checkbox-container,
+	.layout-listing > ul > li:focus-within > .checkbox-container,
+	.layout-listing li > .checkbox-container[data-checked="true"] {
 		left: unset;
 		right: 0.5rem;
 	}
@@ -365,7 +446,7 @@
 
 	.copy-button,
 	.tab,
-	#layout-new,
+	.layout-buttons > button,
 	#more-layouts {
 		padding: 0.5rem;
 		line-height: var(--command-font-size);
@@ -377,11 +458,32 @@
 		color: var(--fg-colour);
 	}
 
-	#layout-new {
+	.layout-buttons {
+		display: flex;
+		align-items: center;
+		justify-content: start;
 		margin: 1rem 0 0.5rem 0;
 		position: sticky;
 		bottom: 0.5rem;
+		width: 80%;
+		max-width: 30rem;
+		overflow-x: auto;
 		box-shadow: 0px 0px 1rem 0.5rem var(--bg-colour);
+		background-color: var(--bg-colour);
+		flex-shrink: 0;
+	}
+
+	.layout-buttons > button {
+		flex-shrink: 0;
+		flex-grow: 0;
+	}
+
+	.layout-buttons > :not(:last-child) {
+		margin-right: 0.5rem;
+	}
+
+	.layout-buttons > :nth-child(2) {
+		margin-left: auto;
 	}
 
 	.copy-button {
