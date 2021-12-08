@@ -118,7 +118,33 @@
 				}}>New layowt</button
 			>
 			{#if layouts.filter((l) => l.selected).length > 1}
-				<button>Merge</button>
+				<button
+					on:click={() => {
+						const layoutsToMerge = layouts.filter(
+							(l) => l.selected
+						);
+
+						const primaryLayout = layoutsToMerge.shift();
+
+						layoutsToMerge.forEach((l) => {
+							l.tabs.forEach((t) => (t.layout = primaryLayout));
+							primaryLayout.tabs.push(...l.tabs);
+							layouts.splice(layouts.indexOf(l), 1);
+						});
+
+						primaryLayout.title = [
+							primaryLayout.title,
+							...layoutsToMerge.map((l) => l.title),
+						]
+							.filter((t) => !!t)
+							.join(" / ");
+
+						layouts.forEach((l) => (l.selected = false));
+
+						update = {};
+						layouts = layouts;
+					}}>Merge</button
+				>
 			{/if}
 			{#if layouts.filter((l) => l.selected).length}
 				<button>Clone</button>
