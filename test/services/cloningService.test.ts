@@ -1,7 +1,7 @@
 import { Layout } from '../../src/models/layout';
-import { Pane } from '../../src/models/pane';
+import type { Pane } from '../../src/models/pane';
 import { SplitType } from '../../src/models/splitType';
-import { Tab } from '../../src/models/tab';
+import type { Tab } from '../../src/models/tab';
 import { CloningService } from '../../src/services/cloningService';
 import { PaneService } from '../../src/services/paneService';
 import { TabService } from '../../src/services/tabService';
