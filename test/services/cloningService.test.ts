@@ -96,15 +96,15 @@ describe('CloningService', () => {
             const clonedTab2pane3 = clonedTab2pane1.children[1];
 
             // Ensure all new objects
-            expect(clonedLayout).not.toStrictEqual(layout);
-            expect(clonedTab1).not.toStrictEqual(tab1);
-            expect(clonedTab1pane1).not.toStrictEqual(tab1pane1);
-            expect(clonedTab1pane2).not.toStrictEqual(tab1pane2);
-            expect(clonedTab1pane3).not.toStrictEqual(tab1pane3);
-            expect(clonedTab2).not.toStrictEqual(tab2);
-            expect(clonedTab2pane1).not.toStrictEqual(tab2pane1);
-            expect(clonedTab2pane2).not.toStrictEqual(tab2pane2);
-            expect(clonedTab2pane3).not.toStrictEqual(tab2pane3);
+            expect(clonedLayout).not.toBe(layout);
+            expect(clonedTab1).not.toBe(tab1);
+            expect(clonedTab1pane1).not.toBe(tab1pane1);
+            expect(clonedTab1pane2).not.toBe(tab1pane2);
+            expect(clonedTab1pane3).not.toBe(tab1pane3);
+            expect(clonedTab2).not.toBe(tab2);
+            expect(clonedTab2pane1).not.toBe(tab2pane1);
+            expect(clonedTab2pane2).not.toBe(tab2pane2);
+            expect(clonedTab2pane3).not.toBe(tab2pane3);
 
             // Check relationships
             expect(clonedTab1.layout).toBe(clonedLayout);
@@ -140,16 +140,17 @@ describe('CloningService', () => {
             const clonedTab1pane3 = clonedTab1pane2.children[0];
 
             // Ensure all new objects
-            expect(clonedTab1).not.toStrictEqual(tab1);
-            expect(clonedTab1pane1).not.toStrictEqual(tab1pane1);
-            expect(clonedTab1pane2).not.toStrictEqual(tab1pane2);
-            expect(clonedTab1pane3).not.toStrictEqual(tab1pane3);
+            expect(clonedTab1).not.toBe(tab1);
+            expect(clonedTab1pane1).not.toBe(tab1pane1);
+            expect(clonedTab1pane2).not.toBe(tab1pane2);
+            expect(clonedTab1pane3).not.toBe(tab1pane3);
 
             // Check relationships
             expect(clonedTab1.layout).toBe(layout);
             expect(clonedTab1pane1.tab).toBe(clonedTab1);
             expect(clonedTab1pane2.tab).toBe(clonedTab1);
             expect(clonedTab1pane3.tab).toBe(clonedTab1);
+
             // Check content
             expect(clonedTab1pane1.content).toBe('Tab 1 pane 1');
             expect(clonedTab1pane2.content).toBe('Tab 1 pane 2');
@@ -160,6 +161,26 @@ describe('CloningService', () => {
             expect(clonedTab1pane1.colourScheme).toBe('Tab 1 pane 1 colour scheme');
             expect(clonedTab1pane1.cloneOnSplit).toBe(true);
             expect(clonedTab1pane1.persistTitle).toBe(false);
+        });
+    });
+    describe('clonePane', () => {
+        it('Exactly clones a pane', () => {
+            const clonedPane = sut.clonePane(tab1pane1);
+
+            // Ensure new object
+            expect(clonedPane).not.toBe(tab1pane1);
+
+            // Check relationship
+            expect(clonedPane.tab).toBe(tab1);
+
+            // Check content
+            expect(clonedPane.content).toBe('Tab 1 pane 1');
+
+            // Check settings
+            expect(clonedPane.directory).toBe('Tab 1 pane 1 directory')
+            expect(clonedPane.colourScheme).toBe('Tab 1 pane 1 colour scheme');
+            expect(clonedPane.cloneOnSplit).toBe(true);
+            expect(clonedPane.persistTitle).toBe(false);
         });
     });
 });
