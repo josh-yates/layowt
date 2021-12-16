@@ -2,6 +2,7 @@
 	import Pane from "./components/Pane.svelte";
 	import { Layout } from "./models/layout";
 	import { SplitType } from "./models/splitType";
+	import { CloningService } from "./services/cloningService";
 	import { CommandService } from "./services/commandService";
 	import { GridService } from "./services/gridService";
 	import { LocalStorageService } from "./services/localStorageService";
@@ -9,7 +10,8 @@
 	import { TabService } from "./services/tabService";
 	import { UIService } from "./services/uiService";
 
-	const paneService = new PaneService();
+	const cloningService = new CloningService();
+	const paneService = new PaneService(cloningService);
 	const gridService = new GridService(paneService);
 	const tabService = new TabService();
 	const commandService = new CommandService(paneService);

@@ -4,7 +4,9 @@ import { CommandService } from '../../src/services/commandService';
 import { PaneService } from '../../src/services/paneService';
 import { TabService } from '../../src/services/tabService';
 import { Layout } from '../../src/models/layout';
+import { CloningService } from '../../src/services/cloningService';
 
+let cloningService: CloningService;
 let paneService: PaneService;
 let sut: CommandService;
 let tabService: TabService;
@@ -148,7 +150,8 @@ function setupScenario2(): void {
 }
 
 beforeEach(() => {
-    paneService = new PaneService();
+    cloningService = new CloningService();
+    paneService = new PaneService(cloningService);
     tabService = new TabService();
 
     layout = new Layout();

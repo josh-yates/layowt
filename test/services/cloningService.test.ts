@@ -72,10 +72,10 @@ function setupScenario1(): void {
 };
 
 beforeEach(() => {
-    paneService = new PaneService();
-    tabService = new TabService();
-
     sut = new CloningService();
+
+    paneService = new PaneService(sut);
+    tabService = new TabService();
 
     setupScenario1();
 });

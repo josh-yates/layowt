@@ -6,7 +6,9 @@ import { GridService } from "../../src/services/gridService";
 import { PaneService } from "../../src/services/paneService";
 import { UIService } from "../../src/services/uiService";
 import { Layout } from "../../src/models/layout";
+import { CloningService } from "../../src/services/cloningService";
 
+let cloningService: CloningService;
 let paneService: PaneService;
 let commandService: CommandService;
 let gridService: GridService;
@@ -91,7 +93,8 @@ function setupScenario1(): void {
 };
 
 beforeEach(() => {
-    paneService = new PaneService();
+    cloningService = new CloningService();
+    paneService = new PaneService(cloningService);
     gridService = new GridService(paneService);
     commandService = new CommandService(paneService);
 

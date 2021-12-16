@@ -1,5 +1,5 @@
 import type { Layout } from "../models/layout";
-import type { Pane } from "../models/pane";
+import { Pane } from "../models/pane";
 import type { Tab } from "../models/tab";
 
 export class CloningService {
@@ -12,6 +12,15 @@ export class CloningService {
     }
 
     public clonePane(pane: Pane): Pane {
-        return null;
+        const newPane = new Pane(pane.tab);
+
+        newPane.cloneOnSplit = pane.cloneOnSplit;
+        newPane.colourScheme = pane.colourScheme;
+        newPane.content = pane.content;
+        newPane.directory = pane.directory;
+        newPane.persistTitle = pane.persistTitle;
+        newPane.title = pane.title;
+
+        return newPane;
     }
 }

@@ -4,7 +4,9 @@ import type { Pane } from '../../src/models/pane';
 import { GridService } from '../../src/services/gridService';
 import { PaneService } from '../../src/services/paneService';
 import { Layout } from '../../src/models/layout';
+import { CloningService } from '../../src/services/cloningService';
 
+let cloningService: CloningService;
 let paneService: PaneService;
 let sut: GridService;
 
@@ -88,7 +90,8 @@ function setupScenario1(): void {
 };
 
 beforeEach(() => {
-    paneService = new PaneService();
+    cloningService = new CloningService();
+    paneService = new PaneService(cloningService);
     sut = new GridService(paneService);
 
     layout = new Layout();
