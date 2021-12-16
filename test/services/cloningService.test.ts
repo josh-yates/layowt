@@ -112,9 +112,21 @@ describe('CloningService', () => {
             expect(clonedTab1pane1.tab).toBe(clonedTab1);
             expect(clonedTab1pane2.tab).toBe(clonedTab1);
             expect(clonedTab1pane3.tab).toBe(clonedTab1);
+            expect(clonedTab1pane1.parent).toBeNull();
+            expect(clonedTab1pane2.parent).toBe(clonedTab1pane1);
+            expect(clonedTab1pane3.parent).toBe(clonedTab1pane2);
+            expect(clonedTab1pane1.parentSplit === null || clonedTab1pane1.parentSplit === undefined).toBe(true);
+            expect(clonedTab1pane2.parentSplit).toBe(SplitType.Vertical);
+            expect(clonedTab1pane3.parentSplit).toBe(SplitType.Horizontal);
             expect(clonedTab2pane1.tab).toBe(clonedTab2);
             expect(clonedTab2pane2.tab).toBe(clonedTab2);
             expect(clonedTab2pane3.tab).toBe(clonedTab2);
+            expect(clonedTab2pane1.parent).toBeNull();
+            expect(clonedTab2pane2.parent).toBe(clonedTab2pane1);
+            expect(clonedTab2pane3.parent).toBe(clonedTab2pane1);
+            expect(clonedTab2pane1.parentSplit === null || clonedTab2pane1.parentSplit === undefined).toBe(true);
+            expect(clonedTab2pane2.parentSplit).toBe(SplitType.Horizontal);
+            expect(clonedTab2pane3.parentSplit).toBe(SplitType.Vertical);
 
             // Check content
             expect(clonedTab1pane1.content).toBe('Tab 1 pane 1');
@@ -150,6 +162,12 @@ describe('CloningService', () => {
             expect(clonedTab1pane1.tab).toBe(clonedTab1);
             expect(clonedTab1pane2.tab).toBe(clonedTab1);
             expect(clonedTab1pane3.tab).toBe(clonedTab1);
+            expect(clonedTab1pane1.parent).toBeNull();
+            expect(clonedTab1pane2.parent).toBe(clonedTab1pane1);
+            expect(clonedTab1pane3.parent).toBe(clonedTab1pane2);
+            expect(clonedTab1pane1.parentSplit === null || clonedTab1pane1.parentSplit === undefined).toBe(true);
+            expect(clonedTab1pane2.parentSplit).toBe(SplitType.Vertical);
+            expect(clonedTab1pane3.parentSplit).toBe(SplitType.Horizontal);
 
             // Check content
             expect(clonedTab1pane1.content).toBe('Tab 1 pane 1');

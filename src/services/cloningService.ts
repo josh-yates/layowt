@@ -1,14 +1,38 @@
 import type { Layout } from "../models/layout";
 import { Pane } from "../models/pane";
-import type { Tab } from "../models/tab";
+import { Tab } from "../models/tab";
 
 export class CloningService {
-    public cloneTab(tab: Tab): Tab {
+    public cloneLayout(layout: Layout): Layout {
         return null;
     }
 
-    public cloneLayout(layout: Layout): Layout {
-        return null;
+    public cloneTab(tab: Tab): Tab {
+        const newTab = new Tab(tab.layout);
+
+        newTab.title = tab.title;
+
+        newTab.panes = tab.panes.map(p => {
+            const newPane = this.clonePane(p);
+
+            newPane.tab = newTab;
+            newPane.parentSplit = p.parentSplit;
+
+            return newPane;
+        });
+
+        newTab.panes.forEach((p, i) => {
+            const oldPane = tab.panes[i];
+
+            p.parent = oldPane.parent ? newTab.panes[tab.panes.indexOf(oldPane.parent)] : null;
+
+            p.children = oldPane
+                .children
+                .map(c => tab.panes.indexOf(c))
+                .map(i => newTab.panes[i]);
+        });
+
+        return newTab;
     }
 
     public clonePane(pane: Pane): Pane {
