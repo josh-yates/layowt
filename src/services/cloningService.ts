@@ -1,10 +1,22 @@
-import type { Layout } from "../models/layout";
+import { Layout } from "../models/layout";
 import { Pane } from "../models/pane";
 import { Tab } from "../models/tab";
 
 export class CloningService {
     public cloneLayout(layout: Layout): Layout {
-        return null;
+        const newLayout = new Layout();
+
+        newLayout.title = layout.title + ' (clone)';
+
+        newLayout.tabs = layout.tabs.map(t => {
+            const newTab = this.cloneTab(t);
+
+            newTab.layout = newLayout;
+
+            return newTab;
+        });
+
+        return newLayout;
     }
 
     public cloneTab(tab: Tab): Tab {

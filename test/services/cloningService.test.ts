@@ -31,6 +31,8 @@ function setupScenario1(): void {
 
     layout = new Layout();
 
+    layout.title = 'Layowt';
+
     tab1 = layout.tabs[0];
 
     tab1pane1 = tab1.panes[0];
@@ -90,7 +92,7 @@ describe('CloningService', () => {
             const clonedTab1pane2 = clonedTab1pane1.children[0];
             const clonedTab1pane3 = clonedTab1pane2.children[0];
 
-            const clonedTab2 = clonedLayout.tabs[0];
+            const clonedTab2 = clonedLayout.tabs[1];
             const clonedTab2pane1 = clonedTab2.panes[0];
             const clonedTab2pane2 = clonedTab2pane1.children[0];
             const clonedTab2pane3 = clonedTab2pane1.children[1];
@@ -129,6 +131,7 @@ describe('CloningService', () => {
             expect(clonedTab2pane3.parentSplit).toBe(SplitType.Vertical);
 
             // Check content
+            expect(clonedLayout).toBe('Layowt (clone)');
             expect(clonedTab1pane1.content).toBe('Tab 1 pane 1');
             expect(clonedTab1pane2.content).toBe('Tab 1 pane 2');
             expect(clonedTab1pane3.content).toBe('Tab 1 pane 3');
