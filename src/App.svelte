@@ -199,6 +199,17 @@
 				>{`${tab.title} (${i})`}</button
 			>
 		{/each}
+		<button
+			class="tab clone"
+			on:click={() => {
+				const newTab = cloningService.cloneTab(currentTab);
+				currentLayout.tabs.push(newTab);
+				currentTab = newTab;
+
+				update = {};
+				currentLayout.tabs = currentLayout.tabs;
+			}}>Clone</button
+		>
 		{#if canRemoveTab}
 			<button
 				class="tab remove"
@@ -547,13 +558,21 @@
 		margin-left: auto;
 	}
 
-	.tab.remove {
+	.tab.clone {
 		margin-left: auto;
 		position: sticky;
-		right: 1rem;
+		right: 3.5rem;
+		margin-right: 0.5rem;
 	}
 
-	.tab.remove + .tab.add {
+	.tab.remove {
+		position: sticky;
+		right: 1rem;
+		margin-left: 0;
+	}
+
+	.tab.remove + .tab.add,
+	.tab.clone + .tab.add {
 		margin-left: unset;
 	}
 
@@ -563,11 +582,14 @@
 
 	.tab[data-selected="true"],
 	.tab.add,
-	.tab.remove {
+	.tab.remove,
+	.tab.clone {
 		flex-shrink: 0;
 		border-bottom-color: var(--bg-colour);
 		z-index: 1;
 		overflow: visible;
+		position: sticky;
+		left: 0;
 	}
 
 	.tab[data-selected="false"] {
