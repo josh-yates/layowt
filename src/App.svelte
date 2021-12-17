@@ -149,7 +149,24 @@
 				>
 			{/if}
 			{#if layouts.filter((l) => l.selected).length}
-				<!-- <button>Clone</button> -->
+				<button
+					on:click={() => {
+						const layoutsToClone = layouts.filter(
+							(l) => l.selected
+						);
+
+						layouts.push(
+							...layoutsToClone.map((l) =>
+								cloningService.cloneLayout(l)
+							)
+						);
+
+						layouts.forEach((l) => (l.selected = false));
+
+						update = {};
+						layouts = layouts;
+					}}>Clone</button
+				>
 				<button
 					on:click={() => {
 						layouts
