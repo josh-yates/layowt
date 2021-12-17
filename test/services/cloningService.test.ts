@@ -131,7 +131,7 @@ describe('CloningService', () => {
             expect(clonedTab2pane3.parentSplit).toBe(SplitType.Vertical);
 
             // Check content
-            expect(clonedLayout).toBe('Layowt (clone)');
+            expect(clonedLayout.title).toBe('Layowt (clone)');
             expect(clonedTab1pane1.content).toBe('Tab 1 pane 1');
             expect(clonedTab1pane2.content).toBe('Tab 1 pane 2');
             expect(clonedTab1pane3.content).toBe('Tab 1 pane 3');
