@@ -6,7 +6,9 @@ export class CloningService {
     public cloneLayout(layout: Layout): Layout {
         const newLayout = new Layout();
 
-        newLayout.title = layout.title + ' (clone)';
+        if (layout.title) {
+            newLayout.title = layout.title + ' (clone)';
+        }
 
         newLayout.tabs = layout.tabs.map(t => {
             const newTab = this.cloneTab(t);

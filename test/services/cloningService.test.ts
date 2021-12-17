@@ -145,6 +145,13 @@ describe('CloningService', () => {
             expect(clonedTab1pane1.cloneOnSplit).toBe(true);
             expect(clonedTab1pane1.persistTitle).toBe(false);
         });
+        it('Does not add "(clone)" to title if empty', () => {
+            layout.title = undefined;
+
+            const clonedLayout = sut.cloneLayout(layout);
+
+            expect(clonedLayout.title).toBeFalsy();
+        })
     });
     describe('cloneTab', () => {
         it('Exactly clones a tab', () => {
