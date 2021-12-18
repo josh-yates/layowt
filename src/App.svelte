@@ -188,6 +188,18 @@
 					}}>Remove</button
 				>
 			{/if}
+			<!-- svelte-ignore missing-declaration -->
+			<button on:click={() => {
+				const layoutsToSave = layouts.filter((l) => l.selected).length ? layouts.filter((l) => l.selected) : layouts;
+				const jsonToSave = jsonService.layoutsToJSON(layoutsToSave);
+				const blob = new Blob([jsonToSave], {type: 'application/json'});
+				const url = URL.createObjectURL(blob);
+
+				const downloadElement = document.createElement('a');
+				downloadElement.download = 'layowt.json';
+				downloadElement.href = url;
+				downloadElement.click();
+			}}>Export {layouts.filter((l) => l.selected).length ? 'selected' : 'all'}</button>
 		</div>
 	</main>
 {:else}
