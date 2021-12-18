@@ -1,21 +1,18 @@
 import type { SplitType } from "../models/splitType";
 import type { Tab } from "../models/tab";
 import { Pane } from "../models/pane";
+import type { CloningService } from "./cloningService";
 
 export class PaneService {
+    public constructor(private readonly _cloningService: CloningService) { }
+
     public split(node: Pane, split: SplitType): void {
-        const newChild = new Pane(node.tab);
+        const newChild = node.cloneOnSplit ?
+            this._cloningService.clonePane(node) :
+            new Pane(node.tab);
+
         newChild.parentSplit = split;
         newChild.parent = node;
-
-        if (node.cloneOnSplit) {
-            newChild.cloneOnSplit = node.cloneOnSplit;
-            newChild.colourScheme = node.colourScheme;
-            newChild.content = node.content;
-            newChild.directory = node.directory;
-            newChild.persistTitle = node.persistTitle;
-            newChild.title = node.title;
-        }
 
         node.children.push(newChild);
         node.tab.panes.push(newChild);

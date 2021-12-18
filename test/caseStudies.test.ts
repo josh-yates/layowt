@@ -1,5 +1,6 @@
 import { Layout } from "../src/models/layout";
 import { SplitType } from "../src/models/splitType";
+import { CloningService } from "../src/services/cloningService";
 import { CommandService } from "../src/services/commandService";
 import { GridService } from "../src/services/gridService";
 import { PaneService } from "../src/services/paneService";
@@ -7,7 +8,8 @@ import { UIService } from "../src/services/uiService";
 
 describe('Case studies', () => {
     it('Should support splitting horizontally then removing first node', () => {
-        const paneService = new PaneService();
+        const cloningService = new CloningService();
+        const paneService = new PaneService(cloningService);
         const gridService = new GridService(paneService);
         const commandService = new CommandService(paneService);
         const uiService = new UIService(gridService, commandService);
@@ -30,7 +32,8 @@ describe('Case studies', () => {
     });
 
     it('Should support splitting horizontally then removing first node, with text', () => {
-        const paneService = new PaneService();
+        const cloningService = new CloningService();
+        const paneService = new PaneService(cloningService);
         const gridService = new GridService(paneService);
         const commandService = new CommandService(paneService);
         const uiService = new UIService(gridService, commandService);
@@ -56,7 +59,8 @@ describe('Case studies', () => {
     });
 
     it('[#11] Should support splitting vertically then removing second node, with text', () => {
-        const paneService = new PaneService();
+        const cloningService = new CloningService();
+        const paneService = new PaneService(cloningService);
         const gridService = new GridService(paneService);
         const commandService = new CommandService(paneService);
         const uiService = new UIService(gridService, commandService);
@@ -82,7 +86,8 @@ describe('Case studies', () => {
     });
 
     it('[#11] Should support splitting vertically then horizontally, then removing top-right pane', () => {
-        const paneService = new PaneService();
+        const cloningService = new CloningService();
+        const paneService = new PaneService(cloningService);
         const gridService = new GridService(paneService);
         const commandService = new CommandService(paneService);
         const uiService = new UIService(gridService, commandService);

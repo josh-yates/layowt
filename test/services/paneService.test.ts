@@ -2,8 +2,10 @@ import { SplitType } from '../../src/models/splitType';
 import type { Tab } from '../../src/models/tab';
 import type { Pane } from '../../src/models/pane';
 import { PaneService } from '../../src/services/paneService';
+import { CloningService } from '../../src/services/cloningService';
 import { Layout } from '../../src/models/layout';
 
+let cloningService: CloningService;
 let sut: PaneService;
 
 let layout: Layout;
@@ -86,7 +88,8 @@ function setupScenario1(): void {
 };
 
 beforeEach(() => {
-    sut = new PaneService();
+    cloningService = new CloningService();
+    sut = new PaneService(cloningService);
     layout = new Layout();
     tab = layout.tabs[0];
 });
