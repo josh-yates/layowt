@@ -5,7 +5,7 @@
 	import { CloningService } from "./services/cloningService";
 	import { CommandService } from "./services/commandService";
 	import { GridService } from "./services/gridService";
-  import { ImportService } from "./services/importService";
+  	import { ImportService } from "./services/importService";
 	import { JSONService } from "./services/jsonService";
 	import { LocalStorageService } from "./services/localStorageService";
 	import { PaneService } from "./services/paneService";
@@ -20,19 +20,19 @@
 	const uiService = new UIService(gridService, commandService);
 	const jsonService = new JSONService(paneService);
 	const localStorageService = new LocalStorageService(jsonService);
-  const importService = new ImportService(
-		(importedLayouts) => {
-			importedLayouts.forEach(l => layouts.push(l));
-			layouts = layouts;
-			update = {};
-			importingFile = false;
-		},
-		(errorMessage) => {
-			alert(errorMessage);
-			importingFile = false;
-		},
-		jsonService
-	);
+	const importService = new ImportService(
+			(importedLayouts) => {
+				importedLayouts.forEach(l => layouts.push(l));
+				layouts = layouts;
+				update = {};
+				importingFile = false;
+			},
+			(errorMessage) => {
+				alert(errorMessage);
+				importingFile = false;
+			},
+			jsonService
+		);
 
 	let layouts = localStorageService.retrieveLayouts();
 
