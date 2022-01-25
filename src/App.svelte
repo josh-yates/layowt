@@ -5,6 +5,7 @@
 	import { CloningService } from "./services/cloningService";
 	import { CommandService } from "./services/commandService";
 	import { GridService } from "./services/gridService";
+	import { JSONService } from "./services/jsonService";
 	import { LocalStorageService } from "./services/localStorageService";
 	import { PaneService } from "./services/paneService";
 	import { TabService } from "./services/tabService";
@@ -16,7 +17,8 @@
 	const tabService = new TabService();
 	const commandService = new CommandService(paneService);
 	const uiService = new UIService(gridService, commandService);
-	const localStorageService = new LocalStorageService(paneService);
+	const jsonService = new JSONService(paneService);
+	const localStorageService = new LocalStorageService(jsonService);
 
 	let layouts = localStorageService.retrieveLayouts();
 
@@ -185,6 +187,23 @@
 						layouts = layouts;
 					}}>Remove</button
 				>
+			{/if}
+			{#if layouts.filter((l) => l.selected).length === 1}
+			<!-- svelte-ignore missing-declaration -->
+			<button on:click={() => {
+				const layoutToSave = layouts.filter((l) => l.selected)[0];
+				const jsonToSave = jsonService.layoutsToJSON([layoutToSave]);
+				const blob = new Blob([jsonToSave], {type: 'application/json'});
+				const url = URL.createObjectURL(blob);
+
+				const downloadElement = document.createElement('a');
+
+				downloadElement.download = `${layoutToSave.title?.trim().length ? layoutToSave.title.trim() : 'Untitled'}.layowt`;
+				downloadElement.href = url;
+				downloadElement.click();
+
+				downloadElement.remove();
+			}}>Export</button>
 			{/if}
 		</div>
 	</main>
