@@ -5,6 +5,7 @@
 	import { CloningService } from "./services/cloningService";
 	import { CommandService } from "./services/commandService";
 	import { GridService } from "./services/gridService";
+  	import { ImportService } from "./services/importService";
 	import { JSONService } from "./services/jsonService";
 	import { LocalStorageService } from "./services/localStorageService";
 	import { PaneService } from "./services/paneService";
@@ -19,6 +20,19 @@
 	const uiService = new UIService(gridService, commandService);
 	const jsonService = new JSONService(paneService);
 	const localStorageService = new LocalStorageService(jsonService);
+	const importService = new ImportService(
+			(importedLayouts) => {
+				importedLayouts.forEach(l => layouts.push(l));
+				layouts = layouts;
+				update = {};
+				importingFile = false;
+			},
+			(errorMessage) => {
+				alert(errorMessage);
+				importingFile = false;
+			},
+			jsonService
+		);
 
 	let layouts = localStorageService.retrieveLayouts();
 
@@ -26,6 +40,7 @@
 	let currentTab = currentLayout.tabs[0];
 
 	$: showLayoutListing = false;
+	$: importingFile = false;
 
 	$: update = {};
 	$: canRemovePane = !!update && currentTab.panes.length !== 1;
@@ -52,6 +67,16 @@
 		showCopied = true;
 
 		window.setTimeout(() => (showCopied = false), 2000);
+	};
+
+	const handleFileEvent = ($event: Event) => {
+		const target = $event.target as HTMLInputElement;
+
+		if (!target.files.length) return;
+
+		importingFile = true;
+
+		importService.import(target.files[0]);
 	};
 </script>
 
@@ -121,6 +146,11 @@
 					showLayoutListing = false;
 				}}>New layowt</button
 			>
+			
+			<label>
+				<input disabled="{importingFile}" type="file" accept=".layowt" on:change="{($event) => handleFileEvent($event)}">
+				Import
+			</label>
 			{#if layouts.filter((l) => l.selected).length > 1}
 				<button
 					on:click={() => {
@@ -149,6 +179,23 @@
 						layouts = layouts;
 					}}>Merge</button
 				>
+			{/if}
+			{#if layouts.filter((l) => l.selected).length === 1}
+			<!-- svelte-ignore missing-declaration -->
+			<button on:click={() => {
+				const layoutToSave = layouts.filter((l) => l.selected)[0];
+				const jsonToSave = jsonService.layoutsToJSON([layoutToSave]);
+				const blob = new Blob([jsonToSave], {type: 'application/json'});
+				const url = URL.createObjectURL(blob);
+
+				const downloadElement = document.createElement('a');
+
+				downloadElement.download = `${layoutToSave.title?.trim().length ? layoutToSave.title.trim() : 'Untitled'}.layowt`;
+				downloadElement.href = url;
+				downloadElement.click();
+
+				downloadElement.remove();
+			}}>Export</button>
 			{/if}
 			{#if layouts.filter((l) => l.selected).length}
 				<button
@@ -187,23 +234,6 @@
 						layouts = layouts;
 					}}>Remove</button
 				>
-			{/if}
-			{#if layouts.filter((l) => l.selected).length === 1}
-			<!-- svelte-ignore missing-declaration -->
-			<button on:click={() => {
-				const layoutToSave = layouts.filter((l) => l.selected)[0];
-				const jsonToSave = jsonService.layoutsToJSON([layoutToSave]);
-				const blob = new Blob([jsonToSave], {type: 'application/json'});
-				const url = URL.createObjectURL(blob);
-
-				const downloadElement = document.createElement('a');
-
-				downloadElement.download = `${layoutToSave.title?.trim().length ? layoutToSave.title.trim() : 'Untitled'}.layowt`;
-				downloadElement.href = url;
-				downloadElement.click();
-
-				downloadElement.remove();
-			}}>Export</button>
 			{/if}
 		</div>
 	</main>
@@ -496,6 +526,7 @@
 	.copy-button,
 	.tab,
 	.layout-buttons > button,
+	.layout-buttons > label,
 	#more-layouts {
 		padding: 0.5rem;
 		line-height: var(--command-font-size);
@@ -522,16 +553,25 @@
 		flex-shrink: 0;
 	}
 
-	.layout-buttons > button {
+	.layout-buttons > button,
+	.layout-buttons > label {
 		flex-shrink: 0;
 		flex-grow: 0;
+	}
+
+	.layout-buttons > label {
+		cursor: pointer;
+	}
+
+	.layout-buttons > label > input {
+		display: none;
 	}
 
 	.layout-buttons > :not(:last-child) {
 		margin-right: 0.5rem;
 	}
 
-	.layout-buttons > :nth-child(2) {
+	.layout-buttons > :nth-child(3) {
 		margin-left: auto;
 	}
 
