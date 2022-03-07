@@ -1,0 +1,40 @@
+import type { Pane } from "../models/pane";
+import { SplitType } from "../models/splitType";
+
+export class PercentageLayoutService {
+    public getGlobalSizePercentage(pane: Pane, split: SplitType): number {
+        return this.getGlobalSizePercentageInternal(pane, null, false, split);
+    }
+
+    public getGlobalPositionPercentage(pane: Pane, split: SplitType): number {
+        return this.getGlobalPositionPercentageInternal(pane, null, split);
+    }
+
+    private getGlobalSizePercentageInternal(pane: Pane, upTo: Pane, includeUpTo: boolean, split: SplitType): number {
+        const parentPercentage = pane.parent ? this.getGlobalSizePercentageInternal(pane.parent, pane, includeUpTo, split) : 100;
+
+        let returnPercentage = parentPercentage;
+
+        if (pane.parent) {
+            returnPercentage = ((split === SplitType.Horizontal ? pane.sizeH : pane.sizeV) / 100) * parentPercentage;
+        }
+
+        const indexOfUpTo = upTo ? pane.children.indexOf(upTo) : pane.children.length;
+
+        for (let i = 0; i < indexOfUpTo + Number(includeUpTo); i++) {
+            const child = pane.children[i];
+
+            const splitSize = 100 - (split === SplitType.Horizontal ? child.sizeH : child.sizeV);
+            returnPercentage = (splitSize / 100) * returnPercentage;
+        }
+
+        return returnPercentage;
+    }
+
+    private getGlobalPositionPercentageInternal(pane: Pane, upTo: Pane, split: SplitType): number {
+        const parentPosition = pane.parent ? this.getGlobalPositionPercentageInternal(pane.parent, pane, split) : 0;
+        const parentWidth = pane.parent ? this.getGlobalSizePercentageInternal(pane.parent, pane, true, split) : 0;
+
+        return parentPosition + parentWidth;
+    }
+}

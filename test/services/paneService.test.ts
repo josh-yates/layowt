@@ -302,29 +302,4 @@ describe('PaneService', () => {
             expect(priorSiblings[1] === tab.panes[3]).toBe(true);
         });
     });
-    describe('getGlobalSizePercentage', () => {
-        it('Returns the correct global percentage size', () => {
-            const sizeTestLayout = new Layout();
-
-            const sizeTestTab = sizeTestLayout.tabs[0];
-
-            const paneA = sizeTestTab.panes[0];
-
-            sut.split(paneA, SplitType.Vertical);
-
-            const paneB = paneA.children[0];
-
-            paneB.sizeV = 40;
-
-            sut.split(paneA, SplitType.Vertical);
-
-            const paneC = paneA.children[1];
-
-            paneC.sizeV = 70;
-
-            expect(sut.getGlobalSizePercentage(paneA, SplitType.Vertical)).toBeCloseTo(18);
-            expect(sut.getGlobalSizePercentage(paneB, SplitType.Vertical)).toBeCloseTo(40);
-            expect(sut.getGlobalSizePercentage(paneC, SplitType.Vertical)).toBeCloseTo(42);
-        });
-    });
 })
