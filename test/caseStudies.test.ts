@@ -4,6 +4,7 @@ import { CloningService } from "../src/services/cloningService";
 import { CommandService } from "../src/services/commandService";
 import { GridService } from "../src/services/gridService";
 import { PaneService } from "../src/services/paneService";
+import { PercentageLayoutService } from "../src/services/percentageLayoutService";
 import { UIService } from "../src/services/uiService";
 
 describe('Case studies', () => {
@@ -11,8 +12,9 @@ describe('Case studies', () => {
         const cloningService = new CloningService();
         const paneService = new PaneService(cloningService);
         const gridService = new GridService(paneService);
+        const percentageLayoutService = new PercentageLayoutService();
         const commandService = new CommandService(paneService);
-        const uiService = new UIService(gridService, commandService);
+        const uiService = new UIService(gridService, percentageLayoutService, commandService);
 
         const layout = new Layout();
 
@@ -35,8 +37,9 @@ describe('Case studies', () => {
         const cloningService = new CloningService();
         const paneService = new PaneService(cloningService);
         const gridService = new GridService(paneService);
+        const percentageLayoutService = new PercentageLayoutService();
         const commandService = new CommandService(paneService);
-        const uiService = new UIService(gridService, commandService);
+        const uiService = new UIService(gridService, percentageLayoutService, commandService);
 
         const layout = new Layout();
 
@@ -62,8 +65,9 @@ describe('Case studies', () => {
         const cloningService = new CloningService();
         const paneService = new PaneService(cloningService);
         const gridService = new GridService(paneService);
+        const percentageLayoutService = new PercentageLayoutService();
         const commandService = new CommandService(paneService);
-        const uiService = new UIService(gridService, commandService);
+        const uiService = new UIService(gridService, percentageLayoutService, commandService);
 
         const layout = new Layout();
 
@@ -89,8 +93,9 @@ describe('Case studies', () => {
         const cloningService = new CloningService();
         const paneService = new PaneService(cloningService);
         const gridService = new GridService(paneService);
+        const percentageLayoutService = new PercentageLayoutService();
         const commandService = new CommandService(paneService);
-        const uiService = new UIService(gridService, commandService);
+        const uiService = new UIService(gridService, percentageLayoutService, commandService);
 
         const layout = new Layout();
 

@@ -7,11 +7,13 @@ import { PaneService } from "../../src/services/paneService";
 import { UIService } from "../../src/services/uiService";
 import { Layout } from "../../src/models/layout";
 import { CloningService } from "../../src/services/cloningService";
+import { PercentageLayoutService } from "../../src/services/percentageLayoutService";
 
 let cloningService: CloningService;
 let paneService: PaneService;
 let commandService: CommandService;
 let gridService: GridService;
+let percentageLayoutService: PercentageLayoutService;
 let sut: UIService;
 
 let layout: Layout;
@@ -96,11 +98,12 @@ beforeEach(() => {
     cloningService = new CloningService();
     paneService = new PaneService(cloningService);
     gridService = new GridService(paneService);
+    percentageLayoutService = new PercentageLayoutService();
     commandService = new CommandService(paneService);
 
     layout = new Layout();
 
-    sut = new UIService(gridService, commandService);
+    sut = new UIService(gridService, percentageLayoutService, commandService);
 
     setupScenario1();
 });
@@ -155,6 +158,31 @@ describe('UIService', () => {
 
                 expect(style).toEqual(expected.styles);
             });
+        });
+    });
+    describe('getPanePositionStyles', () => {
+        it('Gets the grid styles for the panes correctly', () => {
+            const sizeTestLayout = new Layout();
+
+            const sizeTestTab = sizeTestLayout.tabs[0];
+
+            const paneA = sizeTestTab.panes[0];
+
+            paneService.split(paneA, SplitType.Vertical);
+
+            const paneB = paneA.children[0];
+
+            paneB.size = 40;
+
+            paneService.split(paneA, SplitType.Vertical);
+
+            const paneC = paneA.children[1];
+
+            paneC.size = 70;
+
+            expect(sut.getPanePositionStyles(paneA, {})).toBe('top: 0%; left: 0%; height: 100%; width: 18%;');
+            expect(sut.getPanePositionStyles(paneB, {})).toBe('top: 0%; left: 60%; height: 100%; width: 40%;');
+            expect(sut.getPanePositionStyles(paneC, {})).toBe('top: 0%; left: 18%; height: 100%; width: 42%;');
         });
     });
 });

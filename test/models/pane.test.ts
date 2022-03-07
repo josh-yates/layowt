@@ -14,28 +14,21 @@ beforeEach(() => {
 
 describe('Pane', () => {
     describe('constructor', () => {
-        it('sets the sizes to 50', () => {
-            expect(sut.sizeV).toBe(50);
-            expect(sut.sizeH).toBe(50);
+        it('sets the size to 50', () => {
+            expect(sut.size).toBe(50);
         });
     });
 
-    describe('sizeV/H', () => {
+    describe('size', () => {
         it('can be used to set and retrieve the sizes', () => {
-            sut.sizeV = 65;
-            sut.sizeH = 5;
+            sut.size = 65;
 
-            expect(sut.sizeV).toBe(65);
-            expect(sut.sizeH).toBe(5)
+            expect(sut.size).toBe(65);
         });
         it('throws for invalid sizes', () => {
-            expect(() => sut.sizeV = 0).toThrow();
-            expect(() => sut.sizeV = 100).toThrow();
-            expect(() => sut.sizeV = 63).toThrow();
-
-            expect(() => sut.sizeH = 0).toThrow();
-            expect(() => sut.sizeH = 100).toThrow();
-            expect(() => sut.sizeH = 63).toThrow();
+            expect(() => sut.size = 0).toThrow();
+            expect(() => sut.size = 100).toThrow();
+            expect(() => sut.size = 63).toThrow();
         });
     })
 });

@@ -7,7 +7,10 @@ export class PercentageLayoutService {
     }
 
     public getGlobalPositionPercentage(pane: Pane, split: SplitType): number {
-        return this.getGlobalPositionPercentageInternal(pane, null, split);
+        const parentPosition = pane.parent ? this.getGlobalPositionPercentage(pane.parent, split) : 0;
+        const parentWidth = pane.parent ? this.getGlobalSizePercentageInternal(pane.parent, pane, true, split) : 0;
+
+        return parentPosition + parentWidth;
     }
 
     private getGlobalSizePercentageInternal(pane: Pane, upTo: Pane, includeUpTo: boolean, split: SplitType): number {
@@ -29,12 +32,5 @@ export class PercentageLayoutService {
         }
 
         return returnPercentage;
-    }
-
-    private getGlobalPositionPercentageInternal(pane: Pane, upTo: Pane, split: SplitType): number {
-        const parentPosition = pane.parent ? this.getGlobalPositionPercentageInternal(pane.parent, pane, split) : 0;
-        const parentWidth = pane.parent ? this.getGlobalSizePercentageInternal(pane.parent, pane, true, split) : 0;
-
-        return parentPosition + parentWidth;
     }
 }

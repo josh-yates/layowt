@@ -27,13 +27,13 @@ describe('PercentageLayoutService', () => {
 
             const paneB = paneA.children[0];
 
-            paneB.sizeV = 40;
+            paneB.size = 40;
 
             paneService.split(paneA, SplitType.Vertical);
 
             const paneC = paneA.children[1];
 
-            paneC.sizeV = 70;
+            paneC.size = 70;
 
             expect(sut.getGlobalSizePercentage(paneA, SplitType.Vertical)).toBeCloseTo(18);
             expect(sut.getGlobalSizePercentage(paneB, SplitType.Vertical)).toBeCloseTo(40);
@@ -53,13 +53,13 @@ describe('PercentageLayoutService', () => {
 
             const paneB = paneA.children[0];
 
-            paneB.sizeV = 40;
+            paneB.size = 40;
 
             paneService.split(paneA, SplitType.Vertical);
 
             const paneC = paneA.children[1];
 
-            paneC.sizeV = 70;
+            paneC.size = 70;
 
             expect(sut.getGlobalPositionPercentage(paneA, SplitType.Vertical)).toBeCloseTo(0);
             expect(sut.getGlobalPositionPercentage(paneB, SplitType.Vertical)).toBeCloseTo(60);

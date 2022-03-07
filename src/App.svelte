@@ -5,34 +5,40 @@
 	import { CloningService } from "./services/cloningService";
 	import { CommandService } from "./services/commandService";
 	import { GridService } from "./services/gridService";
-  	import { ImportService } from "./services/importService";
+	import { ImportService } from "./services/importService";
 	import { JSONService } from "./services/jsonService";
 	import { LocalStorageService } from "./services/localStorageService";
 	import { PaneService } from "./services/paneService";
+	import { PercentageLayoutService } from "./services/percentageLayoutService";
 	import { TabService } from "./services/tabService";
 	import { UIService } from "./services/uiService";
 
 	const cloningService = new CloningService();
 	const paneService = new PaneService(cloningService);
 	const gridService = new GridService(paneService);
+	const percentageLayoutService = new PercentageLayoutService();
 	const tabService = new TabService();
 	const commandService = new CommandService(paneService);
-	const uiService = new UIService(gridService, commandService);
+	const uiService = new UIService(
+		gridService,
+		percentageLayoutService,
+		commandService
+	);
 	const jsonService = new JSONService(paneService);
 	const localStorageService = new LocalStorageService(jsonService);
 	const importService = new ImportService(
-			(importedLayouts) => {
-				importedLayouts.forEach(l => layouts.push(l));
-				layouts = layouts;
-				update = {};
-				importingFile = false;
-			},
-			(errorMessage) => {
-				alert(errorMessage);
-				importingFile = false;
-			},
-			jsonService
-		);
+		(importedLayouts) => {
+			importedLayouts.forEach((l) => layouts.push(l));
+			layouts = layouts;
+			update = {};
+			importingFile = false;
+		},
+		(errorMessage) => {
+			alert(errorMessage);
+			importingFile = false;
+		},
+		jsonService
+	);
 
 	let layouts = localStorageService.retrieveLayouts();
 
@@ -146,9 +152,14 @@
 					showLayoutListing = false;
 				}}>New layowt</button
 			>
-			
+
 			<label>
-				<input disabled="{importingFile}" type="file" accept=".layowt" on:change="{($event) => handleFileEvent($event)}">
+				<input
+					disabled={importingFile}
+					type="file"
+					accept=".layowt"
+					on:change={($event) => handleFileEvent($event)}
+				/>
 				Import
 			</label>
 			{#if layouts.filter((l) => l.selected).length > 1}
@@ -181,21 +192,33 @@
 				>
 			{/if}
 			{#if layouts.filter((l) => l.selected).length === 1}
-			<!-- svelte-ignore missing-declaration -->
-			<button on:click={() => {
-				const layoutToSave = layouts.filter((l) => l.selected)[0];
-				const jsonToSave = jsonService.layoutsToJSON([layoutToSave]);
-				const blob = new Blob([jsonToSave], {type: 'application/json'});
-				const url = URL.createObjectURL(blob);
+				<!-- svelte-ignore missing-declaration -->
+				<button
+					on:click={() => {
+						const layoutToSave = layouts.filter(
+							(l) => l.selected
+						)[0];
+						const jsonToSave = jsonService.layoutsToJSON([
+							layoutToSave,
+						]);
+						const blob = new Blob([jsonToSave], {
+							type: "application/json",
+						});
+						const url = URL.createObjectURL(blob);
 
-				const downloadElement = document.createElement('a');
+						const downloadElement = document.createElement("a");
 
-				downloadElement.download = `${layoutToSave.title?.trim().length ? layoutToSave.title.trim() : 'Untitled'}.layowt`;
-				downloadElement.href = url;
-				downloadElement.click();
+						downloadElement.download = `${
+							layoutToSave.title?.trim().length
+								? layoutToSave.title.trim()
+								: "Untitled"
+						}.layowt`;
+						downloadElement.href = url;
+						downloadElement.click();
 
-				downloadElement.remove();
-			}}>Export</button>
+						downloadElement.remove();
+					}}>Export</button
+				>
 			{/if}
 			{#if layouts.filter((l) => l.selected).length}
 				<button
