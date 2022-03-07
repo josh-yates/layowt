@@ -1,4 +1,4 @@
-import type { SplitType } from "../models/splitType";
+import { SplitType } from "../models/splitType";
 import type { Tab } from "../models/tab";
 import { Pane } from "../models/pane";
 import type { CloningService } from "./cloningService";
@@ -55,5 +55,30 @@ export class PaneService {
 
     public getRootNode(tab: Tab): Pane {
         return tab.panes.filter(n => !n.parent)[0];
+    }
+
+    public getGlobalSizePercentage(pane: Pane, split: SplitType): number {
+        return this.getGlobalSizePercentageUpTo(pane, null, split);
+    }
+
+    private getGlobalSizePercentageUpTo(pane: Pane, upTo: Pane, split: SplitType): number {
+        const parentPercentage = pane.parent ? this.getGlobalSizePercentageUpTo(pane.parent, pane, split) : 100;
+
+        let returnPercentage = parentPercentage;
+
+        if (pane.parent) {
+            returnPercentage = ((split === SplitType.Horizontal ? pane.sizeH : pane.sizeV) / 100) * parentPercentage;
+        }
+
+        const indexOfUpTo = upTo ? pane.children.indexOf(upTo) : pane.children.length;
+
+        for (let i = 0; i < indexOfUpTo; i++) {
+            const child = pane.children[i];
+
+            const splitSize = 100 - (split === SplitType.Horizontal ? child.sizeH : child.sizeV);
+            returnPercentage = (splitSize / 100) * returnPercentage;
+        }
+
+        return returnPercentage;
     }
 }
