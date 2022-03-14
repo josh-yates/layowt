@@ -312,13 +312,13 @@
 			}}>Add</button
 		>
 	</aside>
-	<main style={uiService.getContainerGridStyles(currentTab, update)}>
+	<main style="position: relative">
 		{#each currentTab.panes as pane, i}
 			<Pane
 				{pane}
 				canRemove={canRemovePane}
 				index={i}
-				style={uiService.getPaneGridStyles(pane, update)}
+				style={uiService.getPanePositionStyles(pane, update)}
 				on:input={() => (update = {})}
 				on:splitHorizontal={() => {
 					paneService.split(pane, SplitType.Horizontal);

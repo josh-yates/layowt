@@ -23,7 +23,8 @@ export class UIService {
     }
 
     public getPanePositionStyles(pane: Pane, update: any): string {
-        return `top: ${this._percentageLayoutService.getGlobalPositionPercentage(pane, SplitType.Horizontal)}%; ` +
+        return 'position: absolute; ' +
+            `top: ${this._percentageLayoutService.getGlobalPositionPercentage(pane, SplitType.Horizontal)}%; ` +
             `left: ${this._percentageLayoutService.getGlobalPositionPercentage(pane, SplitType.Vertical)}%; ` +
             `height: ${this._percentageLayoutService.getGlobalSizePercentage(pane, SplitType.Horizontal)}%; ` +
             `width: ${this._percentageLayoutService.getGlobalSizePercentage(pane, SplitType.Vertical)}%;`;

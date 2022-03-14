@@ -180,9 +180,9 @@ describe('UIService', () => {
 
             paneC.size = 70;
 
-            expect(sut.getPanePositionStyles(paneA, {})).toBe('top: 0%; left: 0%; height: 100%; width: 18%;');
-            expect(sut.getPanePositionStyles(paneB, {})).toBe('top: 0%; left: 60%; height: 100%; width: 40%;');
-            expect(sut.getPanePositionStyles(paneC, {})).toBe('top: 0%; left: 18%; height: 100%; width: 42%;');
+            expect(sut.getPanePositionStyles(paneA, {})).toBe('position: absolute; top: 0%; left: 0%; height: 100%; width: 18%;');
+            expect(sut.getPanePositionStyles(paneB, {})).toBe('position: absolute; top: 0%; left: 60%; height: 100%; width: 40%;');
+            expect(sut.getPanePositionStyles(paneC, {})).toBe('position: absolute; top: 0%; left: 18%; height: 100%; width: 42%;');
         });
     });
 });

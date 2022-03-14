@@ -124,4 +124,58 @@ describe('Case studies', () => {
         expect(uiService.getPaneGridStyles(firstNode, null)).toBe('grid-column: 1 / span 1; grid-row: 1 / span 1;');
         expect(uiService.getPaneGridStyles(thirdNode, null)).toBe('grid-column: 2 / span 1; grid-row: 1 / span 1;');
     });
+    it('Should support basic splitting with percentage layout', () => {
+        const cloningService = new CloningService();
+        const paneService = new PaneService(cloningService);
+        const gridService = new GridService(paneService);
+        const percentageLayoutService = new PercentageLayoutService();
+        const commandService = new CommandService(paneService);
+        const uiService = new UIService(gridService, percentageLayoutService, commandService);
+
+        const layout = new Layout();
+
+        const tab = layout.tabs[0];
+
+        const firstNode = tab.panes[0];
+
+        paneService.split(firstNode, SplitType.Vertical);
+
+        const secondNode = firstNode.children[0];
+
+        paneService.split(secondNode, SplitType.Vertical);
+
+        const thirdNode = secondNode.children[0];
+
+        expect(uiService.getPanePositionStyles(firstNode, null)).toBe('position: absolute; top: 0%; left: 0%; height: 100%; width: 50%;');
+        expect(uiService.getPanePositionStyles(secondNode, null)).toBe('position: absolute; top: 0%; left: 50%; height: 100%; width: 25%;');
+        expect(uiService.getPanePositionStyles(thirdNode, null)).toBe('position: absolute; top: 0%; left: 75%; height: 100%; width: 25%;');
+    });
+    it('Should support basic splitting with percentage layout - second pane has percentage', () => {
+        const cloningService = new CloningService();
+        const paneService = new PaneService(cloningService);
+        const gridService = new GridService(paneService);
+        const percentageLayoutService = new PercentageLayoutService();
+        const commandService = new CommandService(paneService);
+        const uiService = new UIService(gridService, percentageLayoutService, commandService);
+
+        const layout = new Layout();
+
+        const tab = layout.tabs[0];
+
+        const firstNode = tab.panes[0];
+
+        paneService.split(firstNode, SplitType.Vertical);
+
+        const secondNode = firstNode.children[0];
+
+        paneService.split(secondNode, SplitType.Vertical);
+
+        const thirdNode = secondNode.children[0];
+
+        secondNode.size = 60;
+
+        expect(uiService.getPanePositionStyles(firstNode, null)).toBe('position: absolute; top: 0%; left: 0%; height: 100%; width: 40%;');
+        expect(uiService.getPanePositionStyles(secondNode, null)).toBe('position: absolute; top: 0%; left: 40%; height: 100%; width: 30%;');
+        expect(uiService.getPanePositionStyles(thirdNode, null)).toBe('position: absolute; top: 0%; left: 70%; height: 100%; width: 30%;');
+    });
 });

@@ -1,6 +1,7 @@
 <script lang="ts">
     import { createEventDispatcher } from "svelte";
     import type { Pane } from "../models/pane";
+import { SplitType } from "../models/splitType";
     export let pane: Pane;
     export let style: string;
     export let index: number;
@@ -76,6 +77,21 @@
                         on:input={input}
                     />
                 </div>
+                {#if pane.parent}
+                <div class="form-row">
+                    <label for="size-{index}">Size ({pane.parentSplit === SplitType.Horizontal ? 'Horizontal' : 'Vertical'})</label>
+                    <input
+                        id="size-{index}"
+                        name="size-{index}"
+                        type="number"
+                        min=1
+                        max=99
+                        placeholder="eg. 42%"
+                        bind:value={pane.size}
+                        on:input={input}
+                    />
+                </div>
+                {/if}
                 <details class="form-row advanced-settings">
                     <summary>Advanced settings</summary>
                     <div class="form-row">
@@ -153,6 +169,7 @@
         position: relative;
         grid-template-columns: auto var(--button-thickness);
         grid-template-rows: auto var(--button-thickness);
+        overflow: auto;
         overflow: overlay;
         min-height: 0;
         min-width: 0;

@@ -18,7 +18,9 @@ export class PercentageLayoutService {
 
         let returnPercentage = parentPercentage;
 
-        if (pane.parent && pane.parentSplit === split) {
+        if (includeUpTo) returnPercentage = 100 - returnPercentage;
+
+        if (pane.parent && pane.parentSplit === split && !includeUpTo) {
             returnPercentage = (pane.size / 100) * parentPercentage;
         }
 

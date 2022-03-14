@@ -67,6 +67,7 @@ export class JSONService {
         newPane.content = pane.content;
         newPane.directory = pane.directory;
         newPane.parentSplit = pane.parentSplit;
+        newPane.size = pane.size ?? 50;
 
         newPane.children = pane.children.map(p => this.mapPaneForSaving(p));
 
