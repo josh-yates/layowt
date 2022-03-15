@@ -1,11 +1,15 @@
 <script lang="ts">
     import { createEventDispatcher } from "svelte";
     import type { Pane } from "../models/pane";
-import { SplitType } from "../models/splitType";
+    import { SplitType } from "../models/splitType";
     export let pane: Pane;
     export let style: string;
     export let index: number;
     export let canRemove: boolean;
+    export let hasRightBorder: boolean;
+    export let hasBottomBorder: boolean;
+    export let effectiveWidth: number;
+    export let effectiveHeight: number;
     const dispatch = createEventDispatcher();
     const splitVertical = () => dispatch("splitVertical");
     const splitHorizontal = () => dispatch("splitHorizontal");
@@ -18,7 +22,12 @@ import { SplitType } from "../models/splitType";
     let showOptions = false;
 </script>
 
-<div class="pane" {style}>
+<div
+    class="pane"
+    {style}
+    data-bottomBorder={hasBottomBorder}
+    data-rightBorder={hasRightBorder}
+>
     {#if showOptions}
         <form
             class="menu-form"
@@ -77,21 +86,6 @@ import { SplitType } from "../models/splitType";
                         on:input={input}
                     />
                 </div>
-                {#if pane.parent}
-                <div class="form-row">
-                    <label for="size-{index}">Size ({pane.parentSplit === SplitType.Horizontal ? 'Horizontal' : 'Vertical'})</label>
-                    <input
-                        id="size-{index}"
-                        name="size-{index}"
-                        type="number"
-                        min=1
-                        max=99
-                        placeholder="eg. 42%"
-                        bind:value={pane.size}
-                        on:input={input}
-                    />
-                </div>
-                {/if}
                 <details class="form-row advanced-settings">
                     <summary>Advanced settings</summary>
                     <div class="form-row">
@@ -106,6 +100,38 @@ import { SplitType } from "../models/splitType";
                             />
                             <label for="cloneOnSplit-{index}" />
                         </div>
+                    </div>
+                    {#if pane.parent}
+                        <div class="form-row">
+                            <label for="size-{index}"
+                                >Size ({pane.parentSplit ===
+                                SplitType.Horizontal
+                                    ? "Up - down"
+                                    : "Left - right"})</label
+                            >
+                            <input
+                                id="size-{index}"
+                                name="size-{index}"
+                                type="number"
+                                min="1"
+                                max="99"
+                                placeholder="eg. 42%"
+                                bind:value={pane.size}
+                                on:input={input}
+                            />
+                        </div>
+                    {/if}
+                    <div class="form-row">
+                        <span class="text-label">Width</span>
+                        <span class="text-value"
+                            >{Math.round(effectiveWidth)}%</span
+                        >
+                    </div>
+                    <div class="form-row">
+                        <span class="text-label">Height</span>
+                        <span class="text-value"
+                            >{Math.round(effectiveHeight)}%</span
+                        >
                     </div>
                 </details>
                 <!-- TODO: Fix issues with Tab Colour?-->
@@ -173,6 +199,14 @@ import { SplitType } from "../models/splitType";
         overflow: overlay;
         min-height: 0;
         min-width: 0;
+    }
+
+    .pane[data-bottomBorder="true"] {
+        border-bottom: 2px solid var(--fg-colour);
+    }
+
+    .pane[data-rightBorder="true"] {
+        border-right: 2px solid var(--fg-colour);
     }
 
     .menu-button {
@@ -308,7 +342,8 @@ import { SplitType } from "../models/splitType";
         font-family: monospace;
     }
 
-    .form-row > label {
+    .form-row > label,
+    .form-row > .text-label {
         width: 30%;
         display: inline-block;
         flex-grow: 0;
@@ -327,6 +362,17 @@ import { SplitType } from "../models/splitType";
         font-size: 1rem;
         font-weight: 900;
         color: var(--fg-colour);
+    }
+
+    .form-row > .text-value {
+        flex-grow: 1;
+        flex-shrink: 1;
+        padding: 0.5rem;
+        margin-left: 0.5rem;
+        min-width: 0;
+        font-size: 1rem;
+        font-weight: 900;
+        color: var(--fg-colour__secondary);
     }
 
     .form-row > input:focus {

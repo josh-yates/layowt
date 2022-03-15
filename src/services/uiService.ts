@@ -30,6 +30,22 @@ export class UIService {
             `width: ${this._percentageLayoutService.getGlobalSizePercentage(pane, SplitType.Vertical)}%;`;
     }
 
+    public getPaneHasRightBorder(pane: Pane, update: any): boolean {
+        return Math.abs(100 - (this._percentageLayoutService.getGlobalPositionPercentage(pane, SplitType.Vertical) + this._percentageLayoutService.getGlobalSizePercentage(pane, SplitType.Vertical))) > 1;
+    }
+
+    public getPaneHasBottomBorder(pane: Pane, update: any): boolean {
+        return Math.abs(100 - (this._percentageLayoutService.getGlobalPositionPercentage(pane, SplitType.Horizontal) + this._percentageLayoutService.getGlobalSizePercentage(pane, SplitType.Horizontal))) > 1;
+    }
+
+    public getPaneEffectiveWidth(pane: Pane, update: any): number {
+        return this._percentageLayoutService.getGlobalSizePercentage(pane, SplitType.Vertical);
+    }
+
+    public getPaneEffectiveHeight(pane: Pane, update: any): number {
+        return this._percentageLayoutService.getGlobalSizePercentage(pane, SplitType.Horizontal);
+    }
+
     public getCommandText(layout: Layout, update: any): string {
         return this._commandService.getCommand(layout);
     }

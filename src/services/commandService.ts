@@ -58,6 +58,13 @@ export class CommandService {
 
         const colourSchemeParam = hasColourScheme ? `--colorScheme "${node.colourScheme}" ` : '';
 
+        const hasSize = node.parent !== null &&
+            node.size !== undefined &&
+            node.size !== null &&
+            node.size !== 50;
+
+        const sizeParam = hasSize ? `-s ${node.size / 100} ` : '';
+
         const hasContent = node.content !== null &&
             node.content !== undefined &&
             node.content.trim().length;
@@ -67,6 +74,7 @@ export class CommandService {
         const childrenCommands = node.children.map(c => this.printNode(c));
 
         return splitCommand
+            + sizeParam
             + directoryParam
             + titleParam
             + persistTitleParam

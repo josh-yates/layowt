@@ -319,6 +319,10 @@
 				canRemove={canRemovePane}
 				index={i}
 				style={uiService.getPanePositionStyles(pane, update)}
+				hasBottomBorder={uiService.getPaneHasBottomBorder(pane, update)}
+				hasRightBorder={uiService.getPaneHasRightBorder(pane, update)}
+				effectiveWidth={uiService.getPaneEffectiveWidth(pane, update)}
+				effectiveHeight={uiService.getPaneEffectiveHeight(pane, update)}
 				on:input={() => (update = {})}
 				on:splitHorizontal={() => {
 					paneService.split(pane, SplitType.Horizontal);
