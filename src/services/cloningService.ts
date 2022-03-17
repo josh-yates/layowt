@@ -58,6 +58,7 @@ export class CloningService {
         newPane.directory = pane.directory;
         newPane.persistTitle = pane.persistTitle;
         newPane.title = pane.title;
+        newPane.size = pane.size;
 
         return newPane;
     }

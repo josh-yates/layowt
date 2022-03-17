@@ -41,6 +41,8 @@ function setupScenario1(): void {
 
     tab1pane2 = tab1pane1.children[0];
 
+    tab1pane2.size = 42;
+
     paneService.split(tab1pane2, SplitType.Horizontal);
 
     tab1pane3 = tab1pane2.children[0];
@@ -209,6 +211,7 @@ describe('CloningService', () => {
             expect(clonedPane.colourScheme).toBe('Tab 1 pane 1 colour scheme');
             expect(clonedPane.cloneOnSplit).toBe(true);
             expect(clonedPane.persistTitle).toBe(false);
+            expect(clonedPane.children[0].size).toBe(42);
         });
     });
 });
