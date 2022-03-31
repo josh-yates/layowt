@@ -337,6 +337,14 @@
 					update = {};
 					currentTab.panes = currentTab.panes;
 				}}
+				on:sizeChange={(event) => {
+					const split = event.detail.split;
+					const increase = event.detail.increase;
+
+					percentageLayoutService.adjustSize(pane, split, increase);
+
+					update = {};
+				}}
 			/>
 		{/each}
 	</main>

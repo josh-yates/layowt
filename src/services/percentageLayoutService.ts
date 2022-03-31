@@ -13,6 +13,47 @@ export class PercentageLayoutService {
         return parentPosition + (pane.parentSplit === split ? parentWidth : 0);
     }
 
+    public adjustSize(pane: Pane, split: SplitType, increase: boolean): void {
+        if (increase && this.getGlobalSizePercentage(pane, split) >= 99) return;
+        if (!increase && this.getGlobalSizePercentage(pane, split) <= 1) return;
+
+        /*
+        Effective search order:
+        Any direct children with the split type?
+            Yes: do opposite of 'increase' to their size by 1
+            No: Continue
+        Does the pane have the split type?
+            Yes: do 'increase' to its size by 1
+            No: Continue
+        Working up the parent chain, any parent with split type?
+            Yes: do 'increase' to its size by 1
+            No: exit, there's nothing to do
+        */
+
+        const childWithSplitType = pane.children.filter(c => c.parentSplit === split)[0];
+
+        if (childWithSplitType) {
+            childWithSplitType.size += (increase ? -1 : 1);
+            return;
+        }
+
+        if (pane.parentSplit === split) {
+            pane.size += (increase ? 1 : -1);
+            return;
+        }
+
+        let currentSearchParent = pane.parent;
+
+        while (currentSearchParent) {
+            if (currentSearchParent.parentSplit === split) {
+                currentSearchParent.size += (increase ? 1 : -1);
+                return;
+            }
+
+            currentSearchParent = currentSearchParent.parent;
+        }
+    }
+
     private getGlobalSizePercentageInternal(pane: Pane, upTo: Pane, includeUpTo: boolean, split: SplitType): number {
         const parentPercentage = pane.parent ? this.getGlobalSizePercentageInternal(pane.parent, pane, includeUpTo, split) : 100;
 

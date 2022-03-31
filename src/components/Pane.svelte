@@ -13,6 +13,8 @@
     const dispatch = createEventDispatcher();
     const splitVertical = () => dispatch("splitVertical");
     const splitHorizontal = () => dispatch("splitHorizontal");
+    const onSizeChange = (split: SplitType, increase: boolean) =>
+        dispatch("sizeChange", { split, increase });
     const input = () => dispatch("input");
     const remove = () => {
         showOptions = false;
@@ -101,36 +103,44 @@
                             <label for="cloneOnSplit-{index}" />
                         </div>
                     </div>
-                    {#if pane.parent}
-                        <div class="form-row">
-                            <label for="size-{index}"
-                                >Size ({pane.parentSplit ===
-                                SplitType.Horizontal
-                                    ? "Up - down"
-                                    : "Left - right"})</label
-                            >
-                            <input
-                                id="size-{index}"
-                                name="size-{index}"
-                                type="number"
-                                min="1"
-                                max="99"
-                                placeholder="eg. 42%"
-                                bind:value={pane.size}
-                                on:input={input}
-                            />
-                        </div>
-                    {/if}
                     <div class="form-row">
                         <span class="text-label">Width</span>
+                        <button
+                            type="button"
+                            class="form-button"
+                            on:click={() =>
+                                onSizeChange(SplitType.Vertical, false)}
+                            >-</button
+                        >
                         <span class="text-value"
                             >{Math.round(effectiveWidth)}%</span
+                        >
+                        <button
+                            type="button"
+                            class="form-button"
+                            on:click={() =>
+                                onSizeChange(SplitType.Vertical, true)}
+                            >+</button
                         >
                     </div>
                     <div class="form-row">
                         <span class="text-label">Height</span>
+                        <button
+                            type="button"
+                            class="form-button"
+                            on:click={() =>
+                                onSizeChange(SplitType.Horizontal, false)}
+                            >-</button
+                        >
                         <span class="text-value"
                             >{Math.round(effectiveHeight)}%</span
+                        >
+                        <button
+                            type="button"
+                            class="form-button"
+                            on:click={() =>
+                                onSizeChange(SplitType.Horizontal, true)}
+                            >+</button
                         >
                     </div>
                 </details>
@@ -365,14 +375,17 @@
     }
 
     .form-row > .text-value {
-        flex-grow: 1;
         flex-shrink: 1;
         padding: 0.5rem;
-        margin-left: 0.5rem;
-        min-width: 0;
+        min-width: 4rem;
+        text-align: center;
         font-size: 1rem;
         font-weight: 900;
         color: var(--fg-colour__secondary);
+    }
+
+    .form-row > :first-child + .form-button {
+        margin-left: 0.5rem;
     }
 
     .form-row > input:focus {
